@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://damon008.github.io/"/>
+  <link href="http://www.damon8.cn/"/>
   <updated>2020-07-13T01:11:21.766Z</updated>
-  <id>https://damon008.github.io/</id>
+  <id>http://www.damon8.cn/</id>
   
   <author>
     <name>Damon</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>ArrayList、LinkedList 你真的了解吗？</title>
-    <link href="https://damon008.github.io/2020/07/21/hello-world/"/>
-    <id>https://damon008.github.io/2020/07/21/hello-world/</id>
+    <link href="http://www.damon8.cn/2020/07/21/hello-world/"/>
+    <id>http://www.damon8.cn/2020/07/21/hello-world/</id>
     <published>2020-07-21T00:17:35.442Z</published>
     <updated>2020-07-13T01:11:21.766Z</updated>
     
@@ -43,8 +43,8 @@
   
   <entry>
     <title>首发基于OpenPAI细化部署 Hadoop 集群</title>
-    <link href="https://damon008.github.io/2020/07/18/hadoop-deploy/"/>
-    <id>https://damon008.github.io/2020/07/18/hadoop-deploy/</id>
+    <link href="http://www.damon8.cn/2020/07/18/hadoop-deploy/"/>
+    <id>http://www.damon8.cn/2020/07/18/hadoop-deploy/</id>
     <published>2020-07-18T06:34:34.000Z</published>
     <updated>2020-07-18T06:35:59.142Z</updated>
     
@@ -66,8 +66,8 @@
   
   <entry>
     <title>微服务自动化部署CI/CD</title>
-    <link href="https://damon008.github.io/2020/07/14/ci-cd/"/>
-    <id>https://damon008.github.io/2020/07/14/ci-cd/</id>
+    <link href="http://www.damon8.cn/2020/07/14/ci-cd/"/>
+    <id>http://www.damon8.cn/2020/07/14/ci-cd/</id>
     <published>2020-07-14T12:03:14.000Z</published>
     <updated>2020-07-14T01:51:34.160Z</updated>
     
@@ -88,8 +88,8 @@
   
   <entry>
     <title>Nginx 日常操作</title>
-    <link href="https://damon008.github.io/2020/07/14/nginx/"/>
-    <id>https://damon008.github.io/2020/07/14/nginx/</id>
+    <link href="http://www.damon8.cn/2020/07/14/nginx/"/>
+    <id>http://www.damon8.cn/2020/07/14/nginx/</id>
     <published>2020-07-14T07:05:15.000Z</published>
     <updated>2020-07-14T08:50:19.824Z</updated>
     
@@ -115,8 +115,8 @@
   
   <entry>
     <title>Spring cloud 之熔断机制（实战）</title>
-    <link href="https://damon008.github.io/2020/07/10/springcloud-04/"/>
-    <id>https://damon008.github.io/2020/07/10/springcloud-04/</id>
+    <link href="http://www.damon8.cn/2020/07/10/springcloud-04/"/>
+    <id>http://www.damon8.cn/2020/07/10/springcloud-04/</id>
     <published>2020-07-10T06:16:14.000Z</published>
     <updated>2020-07-14T01:54:56.433Z</updated>
     
@@ -139,8 +139,8 @@
   
   <entry>
     <title>Spring cloud 之多种方式限流（实战）</title>
-    <link href="https://damon008.github.io/2020/07/10/springcloud-03/"/>
-    <id>https://damon008.github.io/2020/07/10/springcloud-03/</id>
+    <link href="http://www.damon8.cn/2020/07/10/springcloud-03/"/>
+    <id>http://www.damon8.cn/2020/07/10/springcloud-03/</id>
     <published>2020-07-10T06:15:01.000Z</published>
     <updated>2020-07-14T01:54:49.883Z</updated>
     
@@ -163,8 +163,8 @@
   
   <entry>
     <title>面试被问finally 和 return，到底谁先执行？</title>
-    <link href="https://damon008.github.io/2020/07/10/core-java01/"/>
-    <id>https://damon008.github.io/2020/07/10/core-java01/</id>
+    <link href="http://www.damon8.cn/2020/07/10/core-java01/"/>
+    <id>http://www.damon8.cn/2020/07/10/core-java01/</id>
     <published>2020-07-10T06:13:40.000Z</published>
     <updated>2020-07-14T01:54:25.995Z</updated>
     
@@ -188,8 +188,8 @@
   
   <entry>
     <title>Spring Cloud Kubernetes之实战一配置管理</title>
-    <link href="https://damon008.github.io/2020/07/10/springcloud-02/"/>
-    <id>https://damon008.github.io/2020/07/10/springcloud-02/</id>
+    <link href="http://www.damon8.cn/2020/07/10/springcloud-02/"/>
+    <id>http://www.damon8.cn/2020/07/10/springcloud-02/</id>
     <published>2020-07-10T06:10:45.000Z</published>
     <updated>2020-07-14T01:54:46.041Z</updated>
     
@@ -212,8 +212,8 @@
   
   <entry>
     <title>浅谈微服务安全架构设计</title>
-    <link href="https://damon008.github.io/2020/07/10/micro-service01/"/>
-    <id>https://damon008.github.io/2020/07/10/micro-service01/</id>
+    <link href="http://www.damon8.cn/2020/07/10/micro-service01/"/>
+    <id>http://www.damon8.cn/2020/07/10/micro-service01/</id>
     <published>2020-07-10T05:57:33.000Z</published>
     <updated>2020-07-13T01:11:21.769Z</updated>
     
@@ -237,8 +237,8 @@
   
   <entry>
     <title>浅谈负载均衡</title>
-    <link href="https://damon008.github.io/2020/07/10/springcloud-01/"/>
-    <id>https://damon008.github.io/2020/07/10/springcloud-01/</id>
+    <link href="http://www.damon8.cn/2020/07/10/springcloud-01/"/>
+    <id>http://www.damon8.cn/2020/07/10/springcloud-01/</id>
     <published>2020-07-10T05:47:15.000Z</published>
     <updated>2020-07-14T01:54:08.381Z</updated>
     
