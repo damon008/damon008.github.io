@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>友情链接</title>
-    <url>/2020/07/22/links/</url>
-    <content><![CDATA[<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">InfoQ技术分享链接：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" style="text-decoration: none" title="InfoQ">InfoQ</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯自媒体技术分享链接：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" style="text-decoration: none" title="">腾讯自媒体专栏</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">GitChat技术分享专栏：<a class="nav-item-link" target="_blank" href="https://gitbook.cn/gitchat/author/5b7a2d1a7b604245d4244933" style="text-decoration: none" title="">GitChat文章</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">Damon陪你一起成长</a></p>]]></content>
-  </entry>
-  <entry>
     <title>ArrayList、LinkedList 你真的了解吗？</title>
     <url>/2020/07/21/hello-world/</url>
     <content><![CDATA[<h2 id="1、-前言"><a href="#1、-前言" class="headerlink" title="1、 前言"></a>1、 前言</h2><br>
