@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="java,key, key1, key2, key3" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue">
+    Damon 陪你一起成长
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/l1.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-ci-cd"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  微服务自动化部署CI/CD
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/14/ci-cd/" class="article-date">
+  <time datetime="2020-07-14T12:03:14.000Z" itemprop="datePublished">2020-07-14</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">6 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h4 id="一直有人说想了解微服务的自动化部署，今天它来了。"><a href="#一直有人说想了解微服务的自动化部署，今天它来了。" class="headerlink" title="一直有人说想了解微服务的自动化部署，今天它来了。"></a>一直有人说想了解微服务的自动化部署，今天它来了。</h4><br>
+
+<p><code>在微服务化的时代，自动化部署越来越成为企业的重中之重了，因为这样减少了人员的成本，开发人员将代码提交后，触发相关事件即可部署测试环境，甚至得到许可后部署到线上。这样，原先开发人员、运维人员等要做的事，通通不必再重复劳作了。这对于一个企业来说，leader比较在乎的一件事。今天讲解通过jenkins、gitlab、harbor、k8s来作简单的CI/CD平台，暂时未涉及到代码检测等。</code></p>
+<br>
+
+<h1 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubuntu16.04</span><br><span class="line">docker18.04</span><br><span class="line">k8s1.13.x +</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1. 准备"></a>1. 准备</h2><p>以上系统环境准备好，本文讲述的是用 k8s 来进行部署 jenkins</p>
+<br>
+
+<h2 id="2-部署-jenkins"><a href="#2-部署-jenkins" class="headerlink" title="2. 部署 jenkins"></a>2. 部署 jenkins</h2><p>新建部署脚本 jenkins.yaml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-service</span><br><span class="line">  namespace: default</span><br><span class="line">  labels:</span><br><span class="line">    app: jenkins</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  ports:</span><br><span class="line">  - port: 8080</span><br><span class="line">    targetPort: 8080</span><br><span class="line">    protocol: TCP</span><br><span class="line">    nodePort: 30600</span><br><span class="line">    name: jenkins</span><br><span class="line">  - port: 30000</span><br><span class="line">    targetPort: 30000</span><br><span class="line">    nodePort: 30000</span><br><span class="line">    protocol: TCP</span><br><span class="line">    name: agent</span><br><span class="line">  selector:</span><br><span class="line">    app: jenkins</span><br><span class="line">    tier: jenkins</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">apiVersion: apps&#x2F;v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-deployment</span><br><span class="line">  labels:</span><br><span class="line">    app: jenkins</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  strategy:</span><br><span class="line">    type: Recreate</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: jenkins</span><br><span class="line">        tier: jenkins</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">        - name: jenkins</span><br><span class="line">          image: jenkinsci&#x2F;blueocean:latest</span><br><span class="line">          imagePullPolicy: Always</span><br><span class="line">          ports:</span><br><span class="line">            - containerPort: 8080</span><br><span class="line">              name: jenkins</span><br><span class="line">            - containerPort: 30000</span><br><span class="line">              name: agent</span><br><span class="line">          volumeMounts:</span><br><span class="line">          - mountPath: &#x2F;var&#x2F;jenkins_home</span><br><span class="line">            name: jenkins-data</span><br><span class="line">          - mountPath: &#x2F;data&#x2F;jenkins</span><br><span class="line">            name: jenkins-log-path</span><br><span class="line">      volumes:</span><br><span class="line">      - name: jenkins-data</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;home&#x2F;demo&#x2F;jenkins</span><br><span class="line">      - name: jenkins-log-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;data&#x2F;jenkins</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>执行脚本：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f jenkins.yaml</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>查看部署成功的 pod</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>同时会看到一个 service 生成，映射端口到外部。</p>
+<p>接下来通过页面访问该服务，首次打开后，会让输入一个 admin 的密钥，这一串字符可以在日志中找到，执行 kubectl logs -f test-jenkins-c6bd58bf9-tgmsa 即可，输入一串字符后，进入下一步，需要安装一些插件，在安装插件的时候，需要注意的是，选择 jenkins 的 image 不同，其所需安装的插件也是不一样的，有的可能 image 已经存在了。<br>具体请看：<a href="https://jenkins.io/zh/doc/book/installing/" target="_blank" rel="noopener">https://jenkins.io/zh/doc/book/installing/</a></p>
+<p>安装完插件后，进入下一步，创建第一个账户，管理员账户，一般建议创建，方便后面使用，注：邮箱也需要填写。</p>
+<br>
+
+<p>完成以上后，我们进入正式界面：</p>
+<img src="/images/jenkins/jenkins1.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+
+<br>
+
+<p>第一步：点击系统管理—&gt;插件管理，添加一些插件，这里有用到kubernetes的插件，故安装了kubernetes plugins，其他的可根据自行项目确定下载、安装。</p>
+<br>
+
+<p>第二步：点击系统管理—&gt;系统设置</p>
+<img src="/images/jenkins/jenkins2.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>添加jenkins的地址以及邮件地址</p>
+<br>
+
+<p>第三步：拉动滚动框到最下面，新增一个云</p>
+<img src="/images/jenkins/jenkins3.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+
+<p>这里我加了kubernetes的配置，为什么后面会讲。</p>
+<br>
+
+<p>第四步：新建任务</p>
+<img src="/images/jenkins/jenkins4.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>在触发器中新增规则，最下面要生成token。</p>
+<br>
+
+
+<p>第五步：</p>
+<img src="/images/jenkins/jenkins5.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>接下来就是选择与gitlab互动，gitlab的地址以及凭据，凭据可通过首页加上可访问gitlab的用户信息，脚本路径需要根据自身的Jenkinsfile路径情况填写。</p>
+<br>
+
+<p>第六步：</p>
+<img src="/images/jenkins/jenkins6.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>如果启用全局安全，这个端口本身是50000，但由于k8s的默认nodePort范围是30000-32767，故可以修改在这区间内，比如：30000，这也是为什么上面创建时service的nodePort是30000了。</p>
+<br>
+
+<p>至此，jenkins环境配置完成</p>
+<br>
+
+<p>第七步：配置gitlab</p>
+<img src="/images/jenkins/jenkins7.png" style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>这里的url就是在新建任务时生成的Gitlab webhook，token就是上面截图生成的token，最后add webhook。</p>
+<br>
+
+<p>第八步：</p>
+<p>关于Harbor，自己可以简单搭建一个harbor服务，找度娘问一下很多，此处略。</p>
+<br>
+
+<p>第九步：</p>
+<p>新建Jenkinsfile文件，如果刚才的路径是在项目根目录，则直接在项目根目录下创建Jenkinsfile文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">def label &#x3D; &quot;mypod-$&#123;UUID.randomUUID().toString()&#125;&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def k8sPodYaml &#x3D; &quot;&quot;&quot;</span><br><span class="line">    apiVersion: &quot;v1&quot;</span><br><span class="line">    kind: &quot;Pod&quot;</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        jenkins: &quot;slave&quot;</span><br><span class="line">      name: &quot;$&#123;label&#125;&quot;</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - env:</span><br><span class="line">        - name: &quot;CI_ENV&quot;</span><br><span class="line">          value: &quot;YES&quot;</span><br><span class="line">        - name: &quot;JENKINS_AGENT_WORKDIR&quot;</span><br><span class="line">          value: &quot;&#x2F;home&#x2F;jenkins&#x2F;agent&quot;</span><br><span class="line">        image: &quot;jenkins&#x2F;jnlp-slave&quot;</span><br><span class="line">        imagePullPolicy: &quot;Always&quot;</span><br><span class="line">        name: &quot;jnlp&quot;</span><br><span class="line">        resources:</span><br><span class="line">          limits: &#123;&#125;</span><br><span class="line">          requests: &#123;&#125;</span><br><span class="line">        securityContext:</span><br><span class="line">          privileged: false</span><br><span class="line">        tty: false</span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: &quot;&#x2F;home&#x2F;jenkins&#x2F;.kube&quot;</span><br><span class="line">          name: &quot;volume-2&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;var&#x2F;run&#x2F;docker.sock&quot;</span><br><span class="line">          name: &quot;volume-0&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;var&#x2F;inference&#x2F;config&quot;</span><br><span class="line">          name: &quot;volume-1&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;usr&#x2F;local&#x2F;bin&#x2F;kubectl&quot;</span><br><span class="line">          name: &quot;volume-3&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;home&#x2F;jenkins&#x2F;agent&quot;</span><br><span class="line">          name: &quot;workspace-volume&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        workingDir: &quot;&#x2F;home&#x2F;jenkins&#x2F;agent&quot;</span><br><span class="line">      nodeSelector: &#123;&#125;</span><br><span class="line">      restartPolicy: &quot;Never&quot;</span><br><span class="line">      volumes:</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;var&#x2F;run&#x2F;docker.sock&quot;</span><br><span class="line">        name: &quot;volume-0&quot;</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;home&#x2F;leinao&#x2F;.kube&quot;</span><br><span class="line">        name: &quot;volume-2&quot;</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;home&#x2F;leinao&#x2F;inference-deploy&#x2F;output_config&quot;</span><br><span class="line">        name: &quot;volume-1&quot;</span><br><span class="line">      - emptyDir: &#123;&#125;</span><br><span class="line">        name: &quot;workspace-volume&quot;</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;usr&#x2F;local&#x2F;bin&#x2F;kubectl&quot;</span><br><span class="line">        name: &quot;volume-3&quot;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>下面是自己的任务构建项目时的逻辑，由于我们这块用了自己的框架写的编译逻辑，故比较简单的，这里不合适公开，但是逻辑都差不多，大家可自行编写。</p>
+<p>这块解释上面的k8s的yaml，这个就是为了在k8s中启动一个pod，通过该pod来执行构建逻辑的过程。</p>
+<br>
+<br>
+
+<p>到此，关于Jenkins结合harbor、gitlab、k8s来实现CI/CD结束了，有几点注意的地方：</p>
+<pre><code>1. 如果jenkins是在容器中启动的一定要记得将这个端口(30000)暴露到外部，不然jenkins-master会不知道slave是否已经启动，会反复去创建pod只到超过重试次数。
+
+2. 如果提示Jenkins doesn’t have label jenkins-jnlp-slave，可能原因：
+
+    1). 因为slave节点无法链接到jenkins节点开放端口50000导致
+
+    2). 因为slave镜像中slave启动失败导致的
+
+    3). 因为jenkins和k8s通信有延时导致超时jenkins会反复创建pod
+
+    4). 因为slave pod启动失败
+
+    5). 因为pipeline中指定的label与配置中的不一致导致
+
+3. 也可以通过Ingress暴露的方式来进行暴露。</code></pre><br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 docker、k8s 做微服务容器化，自动化部署等一站式项目部署、落地。Go 语言学习，k8s 研究，边缘计算框架 KubeEdge 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/14/ci-cd/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/07/18/hadoop-deploy/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            首发基于OpenPAI细化部署 Hadoop 集群
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/07/14/nginx/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Nginx 日常操作</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020
+        <i class="ri-heart-fill heart_icon"></i> Damon
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/logo1.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/course">课程</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/zsxq">星球</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">友情链接</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+
+<link rel="stylesheet" href="/css/clipboard.css">
+
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div>
+</body>
+
+</html>
