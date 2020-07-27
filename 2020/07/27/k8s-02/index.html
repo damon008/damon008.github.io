@@ -60,244 +60,200 @@
       
     <main class="content on">
       <section class="outer">
-  <article class="articles">
+  <article
+  id="post-k8s-02"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
     
-    
-    <h1 class="page-type-title">归档</h1>
-    
-    
-  
-  
-  
-  
-  
-  
-  <div class="archives-wrap">
-    <div class="archive-year-wrap">
-      <a href="/archives/2020" class="archive-year">2020</a>
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Kubernetes 经典命令
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/27/k8s-02/" class="article-date">
+  <time datetime="2020-07-27T09:41:37.000Z" itemprop="datePublished">2020-07-27</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">402</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">1 分钟</span>
+        </span>
+    </span>
+</div>
+ 
     </div>
-    <div class="archives">
       
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/27/k8s-02/" class="archive-article-date">
-  <time datetime="2020-07-27T09:41:37.000Z" itemprop="datePublished">07/27</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/27/k8s-02/"
-    >Kubernetes 经典命令</a> 
-</h2>
- 
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/27/docker-01/" class="archive-article-date">
-  <time datetime="2020-07-27T09:35:10.000Z" itemprop="datePublished">07/27</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/27/docker-01/"
-    >Docker常用命令，你都会了吗</a> 
-</h2>
- 
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/27/mq-01/" class="archive-article-date">
-  <time datetime="2020-07-27T02:26:55.000Z" itemprop="datePublished">07/27</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/27/mq-01/"
-    >消息中间件那点事儿</a> 
-</h2>
- 
 
-    </header>
-    
-    
-  </div>
-</article>
-      
   
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/k8s-01/" class="archive-article-date">
-  <time datetime="2020-07-23T07:23:59.000Z" itemprop="datePublished">07/23</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
        
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/k8s-01/"
-    >k8s master机器文件系统故障的一次恢复过程</a> 
-</h2>
- 
+  <p>最近大家想了解 Kubernetes 常见命令，今天它来了。</p>
+<br>
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/spring-cloud-k8s-discovery/" class="archive-article-date">
-  <time datetime="2020-07-23T01:38:22.000Z" itemprop="datePublished">07/23</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/spring-cloud-k8s-discovery/"
-    >Spring Cloud Kubernetes之实战服务注册与发现</a> 
-</h2>
- 
+<p>如果想玩玩单机版、集群版 k8s，可参考：<a class="nav-item-link" target="_blank" href="https://www.damon8.cn/2020/07/23/k8s/" title="k8s部署手册">k8s部署手册</a>，快速助力部署 k8s，还没毕业的都可以部署哟！</p>
+<br>
 
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/k8s/" class="archive-article-date">
-  <time datetime="2020-07-23T01:06:27.000Z" itemprop="datePublished">07/23</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/k8s/"
-    >k8s部署手册</a> 
-</h2>
+<p>k8s 常用命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">​netstat -nlpt | grep 关键字: 查询相关的网络问题</span><br><span class="line">​</span><br><span class="line">systemctl status -l kubelet: 查看kubelet状态</span><br><span class="line">​</span><br><span class="line">systemctl restart kube-apiserver: 重启apiserver</span><br><span class="line">​</span><br><span class="line">kubelet --version: 查看k8s版本</span><br><span class="line">​</span><br><span class="line">history |grep 关键字: 查看相关操作历史</span><br><span class="line">​</span><br><span class="line">kubectl cluster-info: 查看集群信息 or kubectl cluster-info dump</span><br><span class="line">​</span><br><span class="line">kubectl -n kube-system get sa: 查看所有账号</span><br><span class="line">​</span><br><span class="line">kubectl get ep: 获取所有endpoints信息</span><br><span class="line">​</span><br><span class="line">kubectl get svc: 获取服务 -n 空间名称，指定命名空间</span><br><span class="line">​</span><br><span class="line">kubectl get pods --all-namespaces -o wide: 获取所有的pods</span><br><span class="line">​</span><br><span class="line">kubectl create -f *.yaml: 使用yaml文件创建pod，这个不可重复执行</span><br><span class="line">​</span><br><span class="line">kubectl apply -f *.yaml: 可重复执行</span><br><span class="line">​</span><br><span class="line">kubectl delete -f *.yaml: 使用yaml文件删除pod</span><br><span class="line">​</span><br><span class="line">kubectl logs POD_NAME -n 空间名称: 显示指定命名空间的pod的日志</span><br><span class="line">​</span><br><span class="line">kubectl get nodes: 获取集群所有节点信息</span><br><span class="line">​</span><br><span class="line">kubectl delete node ip: 删除节点</span><br><span class="line">​</span><br><span class="line">kubectl describe node ip: 显示节点信息</span><br><span class="line">​</span><br><span class="line">kubectl describe pod podName: 显示pod信息</span><br><span class="line">​</span><br><span class="line">kubectl describe ep kubernetes</span><br><span class="line">​</span><br><span class="line">kubectl describe svc kubernetes</span><br><span class="line">​</span><br><span class="line">kubectl get svc kubernetes</span><br><span class="line">​</span><br><span class="line">kubectl delete pod --all: 删除所有pod</span><br><span class="line">​</span><br><span class="line">kubectl exec -it podname bash or sh: 进入某个pod容器</span><br><span class="line">​</span><br><span class="line">kubectl logs podname: 查看某个pod日志</span><br><span class="line">​</span><br><span class="line">kubectl logs -f podname: 实时查看某个pod日志</span><br><span class="line">​</span><br><span class="line">kubectl logs -f --tail&#x3D;100 podname: 实时查看某个pod最新100条日志</span><br><span class="line">​</span><br><span class="line">kubectl log  podname  -c containername: 若 pod 只有一个容器，可以不加 -c</span><br><span class="line">​</span><br><span class="line">kubectl scale --replicas&#x3D;2 deployment edge-cas-deployment: 以deployment形式启动2个pod</span><br><span class="line">​</span><br><span class="line">kubectl explain pod: 查看pod的注释</span><br><span class="line">kubectl explain pod.apiVersion</span><br></pre></td></tr></table></figure>
  
-
-    </header>
-    
-    
-  </div>
-</article>
+      <!-- reward -->
       
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/micro-service03/" class="archive-article-date">
-  <time datetime="2020-07-23T01:00:09.000Z" itemprop="datePublished">07/23</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/micro-service03/"
-    >浅入Spring Cloud架构</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/springcloud-alibaba01/" class="archive-article-date">
-  <time datetime="2020-07-23T00:50:27.000Z" itemprop="datePublished">07/23</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/springcloud-alibaba01/"
-    >Spring Cloud Alibaba 实战</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/micro-service02/" class="archive-article-date">
-  <time datetime="2020-07-23T00:47:27.000Z" itemprop="datePublished">07/23</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/micro-service02/"
-    >微服务架构设计之解耦合</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
-  
-  
-      <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2020/07/23/core-java02/" class="archive-article-date">
-  <time datetime="2020-07-23T00:41:01.000Z" itemprop="datePublished">07/23</time>
-</a>
-       
-<h2 itemprop="name">
-  <a class="archive-article-title" href="/2020/07/23/core-java02/"
-    >浅谈 Java 集合 | 底层源码解析</a> 
-</h2>
- 
-
-    </header>
-    
-    
-  </div>
-</article>
-      
+      <div id="reward-btn">
+        打赏
+      </div>
       
     </div>
-  </div>
-  
-  
-
-  
-  <nav class="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="page-number" href="/archives/page/3/">3</a><a class="extend next" rel="next" href="/archives/page/2/">下一页</a>
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/27/k8s-02/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/07/27/docker-01/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Docker常用命令，你都会了吗</div>
+      </a>
+    
   </nav>
-  
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
 </section>
       <footer class="footer">
   <div class="outer">
@@ -464,6 +420,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">

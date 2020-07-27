@@ -61,7 +61,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-ci-cd"
+  id="post-docker-01"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -72,22 +72,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  微服务自动化部署CI/CD
+  Docker常用命令，你都会了吗
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2020/07/14/ci-cd/" class="article-date">
-  <time datetime="2020-07-14T12:03:14.000Z" itemprop="datePublished">2020-07-14</time>
+      <a href="/2020/07/27/docker-01/" class="article-date">
+  <time datetime="2020-07-27T09:35:10.000Z" itemprop="datePublished">2020-07-27</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.6k</span>
+            <span class="post-count">1.3k</span>
         </span>
     </span>
 
@@ -96,7 +96,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">6 分钟</span>
+            <span class="post-count">5 分钟</span>
         </span>
     </span>
 </div>
@@ -111,117 +111,16 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h4 id="一直有人说想了解微服务的自动化部署，今天它来了。"><a href="#一直有人说想了解微服务的自动化部署，今天它来了。" class="headerlink" title="一直有人说想了解微服务的自动化部署，今天它来了。"></a>一直有人说想了解微服务的自动化部署，今天它来了。</h4><br>
-
-<p><code>在微服务化的时代，自动化部署越来越成为企业的重中之重了，因为这样减少了人员的成本，开发人员将代码提交后，触发相关事件即可部署测试环境，甚至得到许可后部署到线上。这样，原先开发人员、运维人员等要做的事，通通不必再重复劳作了。这对于一个企业来说，leader比较在乎的一件事。今天讲解通过jenkins、gitlab、harbor、k8s来作简单的CI/CD平台，暂时未涉及到代码检测等。</code></p>
+  <p>应大家要求，今天整理下 Docker 常见的一些命令。</p>
 <br>
 
-<h1 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubuntu16.04</span><br><span class="line">docker18.04</span><br><span class="line">k8s1.13.x +</span><br></pre></td></tr></table></figure>
-
-<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1. 准备"></a>1. 准备</h2><p>以上系统环境准备好，本文讲述的是用 k8s 来进行部署 jenkins</p>
+<p>关于 docker 的安装，在 <a class="nav-item-link" target="_blank" href="https://www.damon8.cn/2020/07/23/k8s/" title="k8s部署手册">k8s部署手册</a> 一文中，你可以快速安装docker的各种版本。</p>
 <br>
 
-<h2 id="2-部署-jenkins"><a href="#2-部署-jenkins" class="headerlink" title="2. 部署 jenkins"></a>2. 部署 jenkins</h2><p>新建部署脚本 jenkins.yaml:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-service</span><br><span class="line">  namespace: default</span><br><span class="line">  labels:</span><br><span class="line">    app: jenkins</span><br><span class="line">spec:</span><br><span class="line">  type: NodePort</span><br><span class="line">  ports:</span><br><span class="line">  - port: 8080</span><br><span class="line">    targetPort: 8080</span><br><span class="line">    protocol: TCP</span><br><span class="line">    nodePort: 30600</span><br><span class="line">    name: jenkins</span><br><span class="line">  - port: 30000</span><br><span class="line">    targetPort: 30000</span><br><span class="line">    nodePort: 30000</span><br><span class="line">    protocol: TCP</span><br><span class="line">    name: agent</span><br><span class="line">  selector:</span><br><span class="line">    app: jenkins</span><br><span class="line">    tier: jenkins</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">apiVersion: apps&#x2F;v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: jenkins-deployment</span><br><span class="line">  labels:</span><br><span class="line">    app: jenkins</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  strategy:</span><br><span class="line">    type: Recreate</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: jenkins</span><br><span class="line">        tier: jenkins</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">        - name: jenkins</span><br><span class="line">          image: jenkinsci&#x2F;blueocean:latest</span><br><span class="line">          imagePullPolicy: Always</span><br><span class="line">          ports:</span><br><span class="line">            - containerPort: 8080</span><br><span class="line">              name: jenkins</span><br><span class="line">            - containerPort: 30000</span><br><span class="line">              name: agent</span><br><span class="line">          volumeMounts:</span><br><span class="line">          - mountPath: &#x2F;var&#x2F;jenkins_home</span><br><span class="line">            name: jenkins-data</span><br><span class="line">          - mountPath: &#x2F;data&#x2F;jenkins</span><br><span class="line">            name: jenkins-log-path</span><br><span class="line">      volumes:</span><br><span class="line">      - name: jenkins-data</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;home&#x2F;demo&#x2F;jenkins</span><br><span class="line">      - name: jenkins-log-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;data&#x2F;jenkins</span><br></pre></td></tr></table></figure>
+<p>常见命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line">docker images: 查看镜像，后可跟 &quot;| grep 内容&quot;，可根据内容进行筛选。</span><br><span class="line">如：docker images | grep nginx</span><br><span class="line">​</span><br><span class="line">docker images [OPTIONS] [REPOSITORY[:TAG]]</span><br><span class="line">OPTIONS说明:</span><br><span class="line">-a: 列出本地所有的镜像</span><br><span class="line">--digests: 显示镜像的摘要信息</span><br><span class="line">-f: 显示满足条件的镜像</span><br><span class="line">--format: 指定返回值的模板文件</span><br><span class="line">--no-trunc: 显示完整的镜像信息</span><br><span class="line">-q: 只显示镜像ID</span><br><span class="line">​</span><br><span class="line">docker run: 创建一个新的容器并运行一个命令</span><br><span class="line">docker run [OPTIONS] IMAGE [COMMAND] [ARG...]</span><br><span class="line">OPTIONS说明:</span><br><span class="line">-d: 后台运行容器，并返回容器ID</span><br><span class="line">-i: 以交互模式运行容器，通常与 -t 同时使用</span><br><span class="line">-p: 指定端口映射，格式为：主机(宿主)端口:容器端口</span><br><span class="line">-t: 为容器重新分配一个伪输入终端，通常与 -i 同时使用</span><br><span class="line">--name &quot;nginx&quot;: 为容器指定一个名称</span><br><span class="line">-h &quot;localhost&quot;: 指定容器的hostname</span><br><span class="line">-e spring.profiles.active&#x3D;&quot;dev&quot;: 设置环境变量</span><br><span class="line">--env-file&#x3D;[]: 从指定文件读环境变量</span><br><span class="line">-m :设置容器使用内存最大值</span><br><span class="line">--volume &#x2F;home&#x2F;data:&#x2F;etc&#x2F;data :  绑定一个卷</span><br><span class="line">and so on</span><br><span class="line">​</span><br><span class="line">如：docker run -d -t -p 80:80 -v &#x2F;home&#x2F;data:&#x2F;usr&#x2F;data --name nginx nginx:latest</span><br><span class="line">​</span><br><span class="line">docker create: 创建一个新的容器但不启动它</span><br><span class="line">​</span><br><span class="line">docker stop: 停止一个运行的容器</span><br><span class="line">docker stop containerName</span><br><span class="line">​</span><br><span class="line">docker restart: 重启一个容器</span><br><span class="line">docker restart containerName</span><br><span class="line">​</span><br><span class="line">docker start: 启动一个被停止的容器</span><br><span class="line">docker start containerName</span><br><span class="line">​</span><br><span class="line">docker ps [OPTIONS]: 列出容器</span><br><span class="line">OPTIONS说明:</span><br><span class="line">-a: 显示所有的容器，包括未运行的</span><br><span class="line">-f: 根据条件过滤显示的内容</span><br><span class="line">--format: 指定返回值的模板文件</span><br><span class="line">-l: 显示最近创建的容器</span><br><span class="line">-n: 列出最近创建的n个容器</span><br><span class="line">--no-trunc: 不截断输出</span><br><span class="line">-q: 静默模式，只显示容器编号</span><br><span class="line">-s: 显示总的文件大小</span><br><span class="line">​</span><br><span class="line">docker ps -a: 查看所有容器</span><br><span class="line">​</span><br><span class="line">docker ps: 查看正在运行的容器</span><br><span class="line">​</span><br><span class="line">docker exec: 进入一个运行中的容器执行命令</span><br><span class="line">如：docker exec -it 容器id sh or bash or &#x2F;bin&#x2F;bash</span><br><span class="line">表示在容器中开启一个交互模式的终端</span><br><span class="line">​</span><br><span class="line">docker rm: 删除一个容器，可加-f 表示强制 -v：并删除挂载卷</span><br><span class="line">删除所有停止的容器：docker rm $(docker ps -a -q)</span><br><span class="line">​</span><br><span class="line">docker rmi: 删除一个镜像，可加-f 表示强制</span><br><span class="line">​</span><br><span class="line">docker inspect : 获取容器&#x2F;镜像的元数据</span><br><span class="line">如：docker inspect [OPTIONS] NAME|ID [NAME|ID...]</span><br><span class="line">OPTIONS说明:</span><br><span class="line">-f: 指定返回值的模板文件</span><br><span class="line">-s: 显示总文件大小</span><br><span class="line">-type: 为指定类型返回json数据</span><br><span class="line">​</span><br><span class="line">获取正在运行的容器 nginx 的 IP:</span><br><span class="line">docker inspect --format&#x3D;&#39;&#123;&#123;range .NetworkSettings.Networks&#125;&#125;&#123;&#123;.IPAddress&#125;&#125;&#123;&#123;end&#125;&#125;&#39; nginx</span><br><span class="line">​</span><br><span class="line">docker kill: 杀死一个运行中的容器</span><br><span class="line">如： docker kill -s killyou nginx</span><br><span class="line">​</span><br><span class="line">docker logs: 获取容器的日志</span><br><span class="line">如：docker logs -f -t 容器id or docker logs -f -t --tail&#x3D;100 容器id</span><br><span class="line">​</span><br><span class="line">docker build: 命令用于使用 Dockerfile 创建镜像</span><br><span class="line">docker build [OPTIONS] PATH | URL | -</span><br><span class="line">OPTIONS说明:</span><br><span class="line">-f: 指定要使用的Dockerfile路径</span><br><span class="line">-m: 设置内存最大值</span><br><span class="line">--memory-swap: 设置Swap的最大值为内存+swap，&quot;-1&quot;表示不限swap</span><br><span class="line">--no-cache: 创建镜像的过程不使用缓存</span><br><span class="line">--pull: 尝试去更新镜像的新版本</span><br><span class="line">-q: 安静模式，成功后只输出镜像 ID</span><br><span class="line">--rm: 设置镜像成功后删除中间容器</span><br><span class="line">--shm-size: 设置&#x2F;dev&#x2F;shm的大小，默认值是64M</span><br><span class="line">--tag: 镜像的名字及标签，通常 name:tag 或者 name 格式；可以在一次构建中为一个镜像设置多个标签</span><br><span class="line">--network: 默认 default。在构建期间设置RUN指令的网络模式</span><br><span class="line">​</span><br><span class="line">docker build -t 镜像标签名 .: docker build -t nginx:latest .</span><br><span class="line">docker build -f &#x2F;path&#x2F;to&#x2F;a&#x2F;Dockerfile .</span><br><span class="line">​</span><br><span class="line">docker tag: 标记本地镜像，将其归入某一仓库</span><br><span class="line">​</span><br><span class="line">docker tag nginx nginx:old</span><br><span class="line">​</span><br><span class="line">docker save: 将指定镜像保存成 tar 归档文件</span><br><span class="line">docker save -o nginx.tar nginx:latest</span><br><span class="line">​</span><br><span class="line">docker load: 导入使用 docker save 命令导出的镜像</span><br><span class="line">docker load -i tar文件名</span><br><span class="line">​</span><br><span class="line">docker info: 查看docker环境信息</span><br><span class="line">​</span><br><span class="line">docker version: 查看docker版本信息</span><br><span class="line">​</span><br><span class="line">docker login: 登录一个Docker镜像仓库</span><br><span class="line">docker login -u 用户名 -p 密码</span><br><span class="line">​</span><br><span class="line">docker logout: 退出登录</span><br><span class="line">​</span><br><span class="line">docker pull: 拉取或者更新指定镜像 -a 拉取所有的tag的镜像</span><br><span class="line">​</span><br><span class="line">docker push: 将本地的镜像上传到镜像仓库</span><br></pre></td></tr></table></figure>
 
-<br>
-
-<p>执行脚本：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f jenkins.yaml</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>查看部署成功的 pod</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get pod</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>同时会看到一个 service 生成，映射端口到外部。</p>
-<p>接下来通过页面访问该服务，首次打开后，会让输入一个 admin 的密钥，这一串字符可以在日志中找到，执行 kubectl logs -f test-jenkins-c6bd58bf9-tgmsa 即可，输入一串字符后，进入下一步，需要安装一些插件，在安装插件的时候，需要注意的是，选择 jenkins 的 image 不同，其所需安装的插件也是不一样的，有的可能 image 已经存在了。<br>具体请看：<a href="https://jenkins.io/zh/doc/book/installing/" target="_blank" rel="noopener">https://jenkins.io/zh/doc/book/installing/</a></p>
-<p>安装完插件后，进入下一步，创建第一个账户，管理员账户，一般建议创建，方便后面使用，注：邮箱也需要填写。</p>
-<br>
-
-<p>完成以上后，我们进入正式界面：</p>
-<img src="/images/jenkins/jenkins1.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-
-<br>
-
-<p>第一步：点击系统管理—&gt;插件管理，添加一些插件，这里有用到kubernetes的插件，故安装了kubernetes plugins，其他的可根据自行项目确定下载、安装。</p>
-<br>
-
-<p>第二步：点击系统管理—&gt;系统设置</p>
-<img src="/images/jenkins/jenkins2.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-<p>添加jenkins的地址以及邮件地址</p>
-<br>
-
-<p>第三步：拉动滚动框到最下面，新增一个云</p>
-<img src="/images/jenkins/jenkins3.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-
-<p>这里我加了kubernetes的配置，为什么后面会讲。</p>
-<br>
-
-<p>第四步：新建任务</p>
-<img src="/images/jenkins/jenkins4.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-<p>在触发器中新增规则，最下面要生成token。</p>
-<br>
-
-
-<p>第五步：</p>
-<img src="/images/jenkins/jenkins5.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-<p>接下来就是选择与gitlab互动，gitlab的地址以及凭据，凭据可通过首页加上可访问gitlab的用户信息，脚本路径需要根据自身的Jenkinsfile路径情况填写。</p>
-<br>
-
-<p>第六步：</p>
-<img src="/images/jenkins/jenkins6.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-<p>如果启用全局安全，这个端口本身是50000，但由于k8s的默认nodePort范围是30000-32767，故可以修改在这区间内，比如：30000，这也是为什么上面创建时service的nodePort是30000了。</p>
-<br>
-
-<p>至此，jenkins环境配置完成</p>
-<br>
-
-<p>第七步：配置gitlab</p>
-<img src="/images/jenkins/jenkins7.png" style="display: block; margin: 0 auto; max-width: 100%;">
-
-<p>这里的url就是在新建任务时生成的Gitlab webhook，token就是上面截图生成的token，最后add webhook。</p>
-<br>
-
-<p>第八步：</p>
-<p>关于Harbor，自己可以简单搭建一个harbor服务，找度娘问一下很多，此处略。</p>
-<br>
-
-<p>第九步：</p>
-<p>新建Jenkinsfile文件，如果刚才的路径是在项目根目录，则直接在项目根目录下创建Jenkinsfile文件:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">def label &#x3D; &quot;mypod-$&#123;UUID.randomUUID().toString()&#125;&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def k8sPodYaml &#x3D; &quot;&quot;&quot;</span><br><span class="line">    apiVersion: &quot;v1&quot;</span><br><span class="line">    kind: &quot;Pod&quot;</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        jenkins: &quot;slave&quot;</span><br><span class="line">      name: &quot;$&#123;label&#125;&quot;</span><br><span class="line">    spec:</span><br><span class="line">      containers:</span><br><span class="line">      - env:</span><br><span class="line">        - name: &quot;CI_ENV&quot;</span><br><span class="line">          value: &quot;YES&quot;</span><br><span class="line">        - name: &quot;JENKINS_AGENT_WORKDIR&quot;</span><br><span class="line">          value: &quot;&#x2F;home&#x2F;jenkins&#x2F;agent&quot;</span><br><span class="line">        image: &quot;jenkins&#x2F;jnlp-slave&quot;</span><br><span class="line">        imagePullPolicy: &quot;Always&quot;</span><br><span class="line">        name: &quot;jnlp&quot;</span><br><span class="line">        resources:</span><br><span class="line">          limits: &#123;&#125;</span><br><span class="line">          requests: &#123;&#125;</span><br><span class="line">        securityContext:</span><br><span class="line">          privileged: false</span><br><span class="line">        tty: false</span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: &quot;&#x2F;home&#x2F;jenkins&#x2F;.kube&quot;</span><br><span class="line">          name: &quot;volume-2&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;var&#x2F;run&#x2F;docker.sock&quot;</span><br><span class="line">          name: &quot;volume-0&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;var&#x2F;inference&#x2F;config&quot;</span><br><span class="line">          name: &quot;volume-1&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;usr&#x2F;local&#x2F;bin&#x2F;kubectl&quot;</span><br><span class="line">          name: &quot;volume-3&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        - mountPath: &quot;&#x2F;home&#x2F;jenkins&#x2F;agent&quot;</span><br><span class="line">          name: &quot;workspace-volume&quot;</span><br><span class="line">          readOnly: false</span><br><span class="line">        workingDir: &quot;&#x2F;home&#x2F;jenkins&#x2F;agent&quot;</span><br><span class="line">      nodeSelector: &#123;&#125;</span><br><span class="line">      restartPolicy: &quot;Never&quot;</span><br><span class="line">      volumes:</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;var&#x2F;run&#x2F;docker.sock&quot;</span><br><span class="line">        name: &quot;volume-0&quot;</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;home&#x2F;leinao&#x2F;.kube&quot;</span><br><span class="line">        name: &quot;volume-2&quot;</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;home&#x2F;leinao&#x2F;inference-deploy&#x2F;output_config&quot;</span><br><span class="line">        name: &quot;volume-1&quot;</span><br><span class="line">      - emptyDir: &#123;&#125;</span><br><span class="line">        name: &quot;workspace-volume&quot;</span><br><span class="line">      - hostPath:</span><br><span class="line">          path: &quot;&#x2F;usr&#x2F;local&#x2F;bin&#x2F;kubectl&quot;</span><br><span class="line">        name: &quot;volume-3&quot;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>下面是自己的任务构建项目时的逻辑，由于我们这块用了自己的框架写的编译逻辑，故比较简单的，这里不合适公开，但是逻辑都差不多，大家可自行编写。</p>
-<p>这块解释上面的k8s的yaml，这个就是为了在k8s中启动一个pod，通过该pod来执行构建逻辑的过程。</p>
-<br>
-<br>
-
-<p>到此，关于Jenkins结合harbor、gitlab、k8s来实现CI/CD结束了，有几点注意的地方：</p>
-<pre><code>1. 如果jenkins是在容器中启动的一定要记得将这个端口(30000)暴露到外部，不然jenkins-master会不知道slave是否已经启动，会反复去创建pod只到超过重试次数。
-
-2. 如果提示Jenkins doesn’t have label jenkins-jnlp-slave，可能原因：
-
-    1). 因为slave节点无法链接到jenkins节点开放端口50000导致
-
-    2). 因为slave镜像中slave启动失败导致的
-
-    3). 因为jenkins和k8s通信有延时导致超时jenkins会反复创建pod
-
-    4). 因为slave pod启动失败
-
-    5). 因为pipeline中指定的label与配置中的不一致导致
-
-3. 也可以通过Ingress暴露的方式来进行暴露。</code></pre><br data-tool="mdnice编辑器">
+<br data-tool="mdnice编辑器">
 
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
@@ -239,9 +138,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 
 
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
-
- 
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p> 
       <!-- reward -->
       
       <div id="reward-btn">
@@ -307,7 +204,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/14/ci-cd/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/27/docker-01/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -318,19 +215,19 @@ https://gitee.com/damon_one/spring-cloud-oauth2
    
   <nav class="article-nav">
     
-      <a href="/2020/07/18/hello-world/" class="article-nav-link">
+      <a href="/2020/07/27/k8s-02/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            ArrayList、LinkedList 你真的了解吗？
+            Kubernetes 经典命令
           
         </div>
       </a>
     
     
-      <a href="/2020/07/14/nginx/" class="article-nav-link">
+      <a href="/2020/07/27/mq-01/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">Nginx 日常操作</div>
+        <div class="article-nav-title">消息中间件那点事儿</div>
       </a>
     
   </nav>
