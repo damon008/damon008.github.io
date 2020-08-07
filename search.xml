@@ -8,6 +8,11 @@
 </video>
 
 
+<br>
+
+<div id="dplayer0" class="dplayer hexo-tag-dplayer-mark" style="margin-bottom: 20px;"></div><script>(function(){var player = new DPlayer({"container":document.getElementById("dplayer0"),"theme":"#FADFA3","loop":true,"video":{"url":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4","pic":"https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.jpg"},"danmaku":{"id":"9E2E3368B56CDBB4","api":"https://api.prprpr.me/dplayer/","token":"tokendemo","addition":["https://dplayer.daoapp.io/bilibili?aid=4157142"]}});window.dplayers||(window.dplayers=[]);window.dplayers.push(player);})()</script>
+
+
 <br data-tool="mdnice编辑器">
 
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
