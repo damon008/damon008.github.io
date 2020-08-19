@@ -61,7 +61,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-popularize-02"
+  id="post-k8s-image"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -72,22 +72,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  云产品年中大优惠
+  如何利用k8s拉取私有仓库镜像
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2021/08/19/popularize-02/" class="article-date">
-  <time datetime="2021-08-19T10:05:26.000Z" itemprop="datePublished">2021-08-19</time>
+      <a href="/2020/08/19/k8s-image/" class="article-date">
+  <time datetime="2020-08-19T09:15:58.000Z" itemprop="datePublished">2020-08-19</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">187</span>
+            <span class="post-count">989</span>
         </span>
     </span>
 
@@ -96,7 +96,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">1 分钟</span>
+            <span class="post-count">3 分钟</span>
         </span>
     </span>
 </div>
@@ -111,13 +111,73 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">阿里云产品大促：<a class="nav-item-link" target="_blank" href="https://www.aliyun.com/minisite/goods?userCode=cdnpht6s" style="text-decoration: none" title="InfoQ">立即领取吧！</a></p>
+  <h3 id="现象"><a href="#现象" class="headerlink" title="现象"></a>现象</h3><p>最近实战时，发现一个很奇怪的问题，在通过 k8s 创建 pod，拉取镜像时，总是显示如下信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Error syncing pod, skipping: failed to &quot;StartContainer&quot; for &quot;POD&quot; with ImagePullBackOff: &quot;Back-off pulling image ...&quot;</span><br></pre></td></tr></table></figure>
+
+<p>该现象出现的原因可能是网络问题、docker 环境问题等。但如果访问的是一个公开的镜像仓库，在 pull image 的时候，不应该会提示：<strong>ImagePullBackOff</strong>，但如果访问的是私有仓库，那就有可能出现如下的错误：</p>
+<br>
+
+<p><img src="https://imgkr2.cn-bj.ufileos.com/2d2008d0-a535-49a2-95b8-3deff3a4c2fb.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=gM%252FEgz%252FM88CdUpokzdh2mFXIyCs%253D&Expires=1597914835" alt=""></p>
+<br>
+
+<p>这个错误出现的原因，刚才说了，有可能的网络问题，也有可能是 docker 问题，但有时候，这些不能解决的情况下，可以采用下面三种方式来解决。</p>
+<br>
+<br>
+
+<h3 id="方式一"><a href="#方式一" class="headerlink" title="方式一"></a>方式一</h3><hr>
+<p>第一种方式，我们可以使用文件生成 secret，然后通过 k8s 中的 imagePullSecrets 来解决拉取镜像时的验证问题。具体方式如下：</p>
+<h5 id="修改-etc-docker-daemon-json"><a href="#修改-etc-docker-daemon-json" class="headerlink" title="修改 /etc/docker/daemon.json"></a>修改 /etc/docker/daemon.json</h5><p>在 k8s 集群节点上，修改 docker 的 daemon.json 配置文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;registry-mirrors&quot;: [ &quot;https:&#x2F;&#x2F;registry.docker-cn.com&quot;],</span><br><span class="line">&quot;insecure-registries&quot;:[&quot;私有仓库服务地址&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在里面加上自己私有的仓库服务地址，然后重启 docker 服务，使其生效。</p>
+<br>
+
+<h5 id="生成-docker-config-json-文件"><a href="#生成-docker-config-json-文件" class="headerlink" title="生成 ~/.docker/config.json 文件"></a>生成 ~/.docker/config.json 文件</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker login 私有服务地址</span><br></pre></td></tr></table></figure>
+
+<p>在命令行输入上面的命令，回车后，会提示输入用户名和密码。输入正确信息后，这会生成一个 /root/.docker/config.json 文件。同时会提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Login Succeeded</span><br></pre></td></tr></table></figure>
 
 <br>
 
-<p>专属折扣码：</p>
-<img src="/images/popularize/aliyun.png" style="display: block; margin: 0 auto; max-width: 100%;">
+<h5 id="生成-Secret-串"><a href="#生成-Secret-串" class="headerlink" title="生成 Secret 串"></a>生成 Secret 串</h5><p>根据上面生成的 ~/.docker/config.json 文件，我们可以生成一个密文秘钥：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">base64 -w 0 ~&#x2F;.docker&#x2F;config.json</span><br></pre></td></tr></table></figure>
 
+<p>执行上面的命令后，会生成一个长串，即为我们所要的 Secret 串。</p>
+<p>我们会在 source 下看见一个新的文件夹，_drafts，这个里面会装我们所有的草稿文件。</p>
+<h5 id="创建-Secret"><a href="#创建-Secret" class="headerlink" title="创建 Secret"></a>创建 Secret</h5><p>通过 k8s 我们可以生成一个 Secret 资源：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Secret</span><br><span class="line">metadata:</span><br><span class="line">  name: docker_reg_secret</span><br><span class="line">  namespace: default</span><br><span class="line">data:</span><br><span class="line">    .dockerconfigjson: ewoJImF1dGhjNWdlpHVnVaenB5Wld4aFFFeFdUa2xCVGtBeU1ERTMiCgkJfASEkidXJlZy5rOHMueXVud2VpLnJlbGEubWUiOiB7CgkJCSJhdXRoIjogIloyRnZaM1Z2WkdWdVSrsaaehoUUV4V1RrbEJUa0F5TURFMyIKCQl9Cgl9LAoJIkh0dHBIZWFkZXJzIjogewoJSetcaFTssZW50IjogIkRvY2tlci1DbGllbnQvMTguMDYuMS1jZSAobGludXgpIgoJfQp9</span><br><span class="line">type: kubernetes.io&#x2F;dockerconfigjson</span><br></pre></td></tr></table></figure>
+
+<p>执行这个资源的配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f secret.yml</span><br></pre></td></tr></table></figure>
+
+<h5 id="在服务配置加上依赖"><a href="#在服务配置加上依赖" class="headerlink" title="在服务配置加上依赖"></a>在服务配置加上依赖</h5><p>最后，可以在 我们的服务 yml 文件中加上拉取镜像时的依赖 secret，部分代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">imagePullSecrets:</span><br><span class="line">- name: docker_reg_secret</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h3 id="方式二"><a href="#方式二" class="headerlink" title="方式二"></a>方式二</h3><hr>
+<p>第二种方式，我们可以直接使用 docker 的用户信息来生成 secret：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create secret docker-registry docker_reg_secret --docker-server&#x3D;XXX --docker-username&#x3D;XXX --docker-password&#x3D;XXX</span><br></pre></td></tr></table></figure>
+
+<p>参数含义：</p>
+<p>docker_reg_secret: 指定密钥的键名称, 自定义</p>
+<p>docker-server: 指定 docker 仓库地址</p>
+<p>docker-username: 指定 docker 仓库账号</p>
+<p>docker-password: 指定 docker 仓库密码</p>
+<br>
+
+<p>创建完 Secret 资源后，其他的如方式一，这就简单了。</p>
+<br>
+
+<h3 id="方式三"><a href="#方式三" class="headerlink" title="方式三"></a>方式三</h3><hr>
+<p>第三种方式所使用的是最简单的办法，即我们利用 k8s 的拉取镜像的策略来处理，主要有如下三种：</p>
+<p>Always：每次创建时都会拉取镜像</p>
+<p>IfNotPresent：宿主机不存在时拉取镜像</p>
+<p>Never： 从不主动拉取镜像</p>
+<p>使用 IfNotPresent、Never 策略来处理。</p>
+<br>
+
+<p>以上三种方式，我比较推荐第二种，最中意第二种，因为假如密码修改了，就更新一下 secret 就好了，k8s node 不需要改动。而第一种需要改动，第三种会导致镜像丢失，毕竟只有本地存在。</p>
 <br data-tool="mdnice编辑器">
 
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
@@ -138,6 +198,9 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
 
+<br>
+
+<p><img src="https://imgkr2.cn-bj.ufileos.com/c841221b-4862-40a2-9713-b000ee91bce3.jpg?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=3mkNYl543gx2ngq9gXFQjVBjKm8%253D&Expires=1597915188" alt="公号：天山六路折梅手"></p>
  
       <!-- reward -->
       
@@ -204,7 +267,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2021/08/19/popularize-02/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/08/19/k8s-image/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -215,19 +278,19 @@ https://gitee.com/damon_one/spring-cloud-oauth2
    
   <nav class="article-nav">
     
-      <a href="/2021/08/20/new-web/" class="article-nav-link">
+      <a href="/2021/08/19/popularize-02/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            个站建立基础教程
+            云产品年中大优惠
           
         </div>
       </a>
     
     
-      <a href="/2020/08/19/k8s-image/" class="article-nav-link">
+      <a href="/2020/08/06/nfs-01/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">如何利用k8s拉取私有仓库镜像</div>
+        <div class="article-nav-title">如何保证NFS文件锁的一致性</div>
       </a>
     
   </nav>
