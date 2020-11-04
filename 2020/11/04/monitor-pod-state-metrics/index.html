@@ -111,7 +111,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">6 分钟</span>
+            <span class="post-count">5 分钟</span>
         </span>
     </span>
 </div>
@@ -126,7 +126,7 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>今天主要分享下，在 k8s 集群下，微服务的各种状态指标情况的监控，我们都知道Prometheus是做数据监控的，但说白点，其独特格式的数据，其实都是靠一些源来的，那么这些源有哪些呢？已经有了cadvisor、heapster、metric-server，<br>几乎容器运行的所有指标都能拿到，但是下面这种情况却无能为力：</p>
+  <p>今天主要分享下，在 k8s 集群下，微服务的各种状态指标情况的监控，我们都知道Prometheus是做数据监控的，但说白点，其独特格式的数据，其实都是靠一些源来的，那么这些源有哪些呢？已经有了cadvisor、heapster、metric-server，几乎容器运行的所有指标都能拿到，但是下面这种情况却无能为力：</p>
 <br>
 
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">我调度了多少个replicas？现在可用的有几个？</span><br><span class="line">多少个Pod是running&#x2F;stopped&#x2F;terminated状态？</span><br><span class="line">Pod重启了多少次？</span><br><span class="line">我有多少job在运行中</span><br></pre></td></tr></table></figure>
@@ -138,7 +138,7 @@
 
 <p>废话不多说，直接上教程，部署：</p>
 <h3 id="部署教程"><a href="#部署教程" class="headerlink" title="部署教程"></a>部署教程</h3><h5 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h5><ol>
-<li>在官网<a href="https://github.com/kubernetes/kube-state-metrics下载相应的源码以及部署脚本，本次使用release1.9.7，即v1.9.7版本的kube-state-metrics" target="_blank" rel="noopener">https://github.com/kubernetes/kube-state-metrics下载相应的源码以及部署脚本，本次使用release1.9.7，即v1.9.7版本的kube-state-metrics</a></li>
+<li>在官网 <img src="https://github.com/kubernetes/kube-state-metrics" alt="kube-state-metrics">下载相应的源码以及部署脚本，本次使用release1.9.7，即v1.9.7版本的 kube-state-metrics</li>
 </ol>
 <br>
 
@@ -196,7 +196,8 @@
 <p>导入到grafana后，即可看到效果咯：</p>
 <br>
 
-<p><img src="https://static001.geekbang.org/infoq/6c/6c0bfdf90d8f630821cc3fc4e8061823.png" alt=""><br><img src="https://static001.geekbang.org/infoq/88/88966e1cde86e1916ac6f91ff97e57a4.png" alt=""></p>
+<p><img src="https://static001.geekbang.org/infoq/6c/6c0bfdf90d8f630821cc3fc4e8061823.png" alt=""></p>
+<p><img src="https://static001.geekbang.org/infoq/88/88966e1cde86e1916ac6f91ff97e57a4.png" alt=""></p>
 <br data-tool="mdnice编辑器">
 
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
