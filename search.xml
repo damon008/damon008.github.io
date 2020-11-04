@@ -91,7 +91,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 
 <p>废话不多说，直接上教程。。。</p>
 <h3 id="部署教程"><a href="#部署教程" class="headerlink" title="部署教程"></a>部署教程</h3><h5 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h5><ol>
-<li>在官网 <img src="https://github.com/kubernetes/kube-state-metrics" alt="kube-state-metrics">下载相应的源码以及部署脚本，本次使用release1.9.7，即v1.9.7版本的 kube-state-metrics</li>
+<li>在官网 <a class="nav-item-link" target="_blank" href="https://github.com/kubernetes/kube-state-metrics" style="text-decoration: none" title="">kube-state-metrics</a> 下载相应的源码以及部署脚本，本次使用release1.9.7，即v1.9.7版本的 kube-state-metrics</li>
 </ol>
 <br>
 
@@ -143,7 +143,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 
 <h4 id="导入模板"><a href="#导入模板" class="headerlink" title="导入模板"></a>导入模板</h4><br>
 
-<p>最后从grafana.com 下载state-metrics监控模版(<a href="https://grafana.com/grafana/dashboards/8588)，导入模版" target="_blank" rel="noopener">https://grafana.com/grafana/dashboards/8588)，导入模版</a></p>
+<p>最后从grafana.com 下载state-metrics监控模版<a class="nav-item-link" target="_blank" href="https://grafana.com/grafana/dashboards/8588" style="text-decoration: none" title="">导入模板</a></p>
 <br>
 
 <p>导入到grafana后，即可看到效果咯：</p>
