@@ -77,7 +77,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 </script>]]></content>
   </entry>
   <entry>
-    <title>monitor-pod-state-metrics</title>
+    <title>k8s 集群下微服务 pod 的各种指标信息监控</title>
     <url>/2020/11/04/monitor-pod-state-metrics/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><br>
 
