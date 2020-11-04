@@ -79,13 +79,15 @@ https://gitee.com/damon_one/spring-cloud-oauth2
   <entry>
     <title>monitor-pod-state-metrics</title>
     <url>/2020/11/04/monitor-pod-state-metrics/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p><img src="https://static001.geekbang.org/infoq/dd/dda8b6ac0c8685c2fe1f371de0e5d8a2.jpeg" alt=""></p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><br>
+
+<p><img src="https://static001.geekbang.org/infoq/dd/dda8b6ac0c8685c2fe1f371de0e5d8a2.jpeg" alt=""></p>
 <br>
 
 <p>今天主要分享下，在 k8s 集群下，微服务的各种状态指标情况的监控，我们都知道Prometheus是做数据监控的，但说白点，其独特格式的数据，其实都是靠一些源来的，那么这些源有哪些呢？已经有了cadvisor、heapster、metric-server，几乎容器运行的所有指标都能拿到，但是下面这种情况却无能为力：</p>
 <br>
 
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">我调度了多少个replicas？现在可用的有几个？</span><br><span class="line">多少个Pod是running&#x2F;stopped&#x2F;terminated状态？</span><br><span class="line">Pod重启了多少次？</span><br><span class="line">我有多少job在运行中</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">调度了N个replicas？现在可用的有 N 个？</span><br><span class="line">N 个 Pod 是 running&#x2F;stopped&#x2F;terminated 状态？</span><br><span class="line">Pod 重启了N次？</span><br><span class="line">我有 N 个job在运行中</span><br></pre></td></tr></table></figure>
 
 <br>
 
