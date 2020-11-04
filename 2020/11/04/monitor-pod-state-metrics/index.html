@@ -149,9 +149,7 @@
 <br>
 
 <p>如果Prometheus已经部署，且部署在kube-system空间下，则源码中的namespace不需更改，否则可自定义为monitoring。</p>
-<h5 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h5><br>
-
-<ol>
+<h5 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h5><ol>
 <li>首先修改 service.yaml</li>
 </ol>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  annotations:</span><br><span class="line">    prometheus.io&#x2F;scrape: &quot;true&quot;</span><br><span class="line">  labels:</span><br><span class="line">    app.kubernetes.io&#x2F;name: kube-state-metrics</span><br><span class="line">    app.kubernetes.io&#x2F;version: v1.9.7</span><br><span class="line">  name: kube-state-metrics</span><br><span class="line">  namespace: kube-system</span><br><span class="line">spec:</span><br><span class="line">  clusterIP: None</span><br><span class="line">  ports:</span><br><span class="line">  - name: http-metrics</span><br><span class="line">    port: 8080</span><br><span class="line">    targetPort: http-metrics</span><br><span class="line">  - name: telemetry</span><br><span class="line">    port: 8081</span><br><span class="line">    targetPort: telemetry</span><br><span class="line">  selector:</span><br><span class="line">    app.kubernetes.io&#x2F;name: kube-state-metrics</span><br></pre></td></tr></table></figure>
@@ -166,8 +164,6 @@
 <ol start="2">
 <li>更改访问权限</li>
 </ol>
-<br>
-
 <p>vi cluster-role-binding.yaml</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: rbac.authorization.k8s.io&#x2F;v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  labels:</span><br><span class="line">    app.kubernetes.io&#x2F;name: kube-state-metrics</span><br><span class="line">    app.kubernetes.io&#x2F;version: v1.9.7</span><br><span class="line">  name: kube-state-metrics</span><br><span class="line">roleRef:</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin #kube-state-metrics</span><br><span class="line">subjects:</span><br><span class="line">- kind: ServiceAccount</span><br><span class="line">  name: kube-state-metrics</span><br><span class="line">  namespace: kube-system</span><br></pre></td></tr></table></figure>
 
