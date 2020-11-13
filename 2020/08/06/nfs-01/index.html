@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java,key, key1, key2, key3" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    Xiao8 | Micro-Service | Containerization | DevOps
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/logo.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Developer Xiao8 | Micro-Service | Containerization | DevOps
+  程序猿Damon | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+
+    <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-nfs-01"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  如何保证NFS文件锁的一致性
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/08/06/nfs-01/" class="article-date">
+  <time datetime="2020-08-06T03:18:42.000Z" itemprop="datePublished">2020-08-06</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">8 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><br>
+
+<p>在存储系统中， NFS（Network File System，即网络文件系统）是一个重要的概念，已成为兼容POSIX语义的分布式文件系统的基础。它允许在多个主机之间共享公共文件系统，并提供数据共享的优势，从而最小化所需的存储空间。本文将通过分析NFS文件锁状态视图一致性的原理，帮助大家理解NFS的一致性设计思路。</p>
+<br>
+
+<h3 id="文件锁"><a href="#文件锁" class="headerlink" title="文件锁"></a>文件锁</h3><br>
+
+<p>文件锁是文件系统的最基本特性之一，应用程序借助文件锁可以控制其他应用对文件的并发访问。NFS作为类UNIX系统的标准网络文件系统，在发展过程中逐步地原生地支持了文件锁(从NFSv4开始)。NFS从上个世界80年代诞生至今，共发布了3个版本：NFSv2、NFSv3、NFSv4。</p>
+<p>NFSv4最大的变化是有“状态”了。某些操作需要服务端维持相关状态，如文件锁，例如客户端申请了文件锁，服务端就需要维护该文件锁的状态，否则和其他客户端冲突的访问就无法检测。如果是NFSv3就需要NLM协助才能实现文件锁功能，但是有的时候两者配合不够协调就会容易出错。而NFSv4设计成了一种有状态的协议，自身就可以实现文件锁功能，也就不需要NLM协议了。</p>
+<br>
+
+<h3 id="应用接口"><a href="#应用接口" class="headerlink" title="应用接口"></a>应用接口</h3><br>
+
+<p>应用程序可以通过 fcntl() 或 flock() 系统调用管理NFS文件锁，下面是NAS使用NFSv4挂载时获取文件锁的调用过程：</p>
+<br>
+
+<p><img src="https://imgkr2.cn-bj.ufileos.com/0d2f206b-1e84-477d-b6ab-20016237f673.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=YWw%252FvOpspatHW%252B%252BjvQLznu6Dpi0%253D&Expires=1596770211" alt=""></p>
+<p>从上图调用栈容易看出，NFS文件锁实现逻辑基本复用了VFS层设计和数据结构，在通过RPC从Server成功获取文件锁后，调用 locks_lock_inode_wait() 函数将获得的文件锁交给VFS层管理，关于VFS层文件锁设计的相关资料比较多，在此就不再赘述了。</p>
+<br>
+
+<h3 id="EOS原理"><a href="#EOS原理" class="headerlink" title="EOS原理"></a>EOS原理</h3><br>
+
+<p>文件锁是典型的非幂等操作，文件锁操作的重试和Failover会导致文件锁状态视图在客户端和服务端间的不一致。NFSv4借助SeqId机制设计了最多执行一次的机制，具体方法如下：</p>
+<p>针对每个open/lock状态，Client和Server同时独立维护seqid，Client在发起会引起状态变化的操作时(open/close/lock/unlock/release_lockowner)会将seqid加1，并作为参数发送给Server，假定Client发送的seqid为R，Server维护的seqid为L，则：</p>
+<p>若R == L +1，表示合法请求，正常处理之。<br>若R == L，表示重试请求，Server将缓存的reply返回即可。<br>其他情况均为非法请求，决绝访问。<br>根据上述规则，Server可判断操作是否为正常、重试或非法请求。</p>
+<p>该方法能够保证每个文件锁操作在服务端最多执行一次，解决了RPC重试带来的重复执行的问题，但是仅靠这一点是不够的。比如LOCK操作发送后调用线程被信号中断，此后服务端又成功接受并执行了该LOCK操作，这样服务端就记录了客户端持有了锁，但客户端中却因为中断而没有维护这把锁，于是就造成了客户端和服务端间的锁状态视图不一致。因此，客户端还需要配合处理异常场景，最终才能够保证文件锁视图一致性。</p>
+<br>
+
+<h3 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h3><p>由上一节的分析可知，客户端需要配合处理异常场景才能够保证文件视图一致性，那么客户端设计者主要做了哪些配合的设计呢？目前客户端主要从SunRPC和NFS协议实现两个维度相互配合解决该问题，下面分别介绍这两个维度的设计如何保证文件锁状态视图一致性。</p>
+<br>
+
+<h3 id="SunRPC设计"><a href="#SunRPC设计" class="headerlink" title="SunRPC设计"></a>SunRPC设计</h3><br>
+
+<p>SunRPC是Sun公司专门为远程过程调用设计的网络通讯协议，这里从保障文件锁视图一致性的维度来了解一下SunRPC实现层面的设计理念：</p>
+<p>（1）客户端使用int32_t类型的xid标识上层使用者发起的每个远程过程调用过程，每个远程过程调用的多次RPC重试使用相同的xid标识，这样就保障了多次RPC重试中任何一个返回都可以告知上层远程过程调用已经成功，保证了服务端执行远程过程调用执行耗时较长时也能拿到结果，这一点和传统的netty/mina/brpc等都需要每个RPC都要有独立的xid/packetid不同。</p>
+<p>（2）服务端设计了DRC(duplicate request cache)缓存最近执行的RPC结果，接收到RPC时会首先通过xid检索DRC缓存，若命中则表明RPC为重试操作，直接返回缓存的结果即可，这在一定程度上规避了RPC重试带来的重复执行的问题。为了避免xid复用导致DRC缓存返回非预期的结果，开发者通过下述设计进一步有效地减少复用引起错误的概率：</p>
+<p><code>客户端建立新链接时初始xid采用随机值。</code><br><code>服务端DRC会额外记录请求的校验信息，缓存命中时会同时校验这些信息。</code></p>
+<p>（3）客户端允许在获得服务端响应前无限重试，保证调用者能够获得服务端确定性的执行结果，当然这样的策略会导致无响应时调用者会一直hang。</p>
+<p>（4）NFS允许用户在挂载时通过soft/hard参数指定SunRPC的重试策略，其中soft模式禁止超时后重试，hard模式则持续重试。当用户使用soft模式挂载时NFS实现不保证客户端和服务端状态视图的一致性，在遇到远程过程调用返回超时要求应用程序配合状态的清理和恢复，比如关闭访问出错的文件等，然而实践中很少有应用程序会配合，所以一般情况下NAS用户都使用hard模式挂载。</p>
+<p>总之，SunRPC要解决的核心问题之一是，远程过程调用执行时间是不可控的，协议设计者为此定制化设计，尽量避免非幂等操作RPC重试带来的副作用。</p>
+<br>
+
+<h4 id="信号中断"><a href="#信号中断" class="headerlink" title="信号中断"></a>信号中断</h4><br>
+
+<p>应用程序等待远程过程调用结果时允许被信号中断。当发生信号中断时，由于没有得到远程过程调用的执行结果，所以客户端和服务端的状态很可能就不一致了，比如加锁操作在服务端已经成功执行，但客户端并不知道这个情况。这就要求客户端做额外的工作将状态和服务端恢复一致。下面简要分析获取文件锁被信号中断后的处理，来说明NFS协议实现层面的一致性设计。</p>
+<p>通过获取NFSv4文件锁的过程可知，NFSv4获取文件锁最终会调用 _nfs4_do_setlk() 函数发起RPC操作，最终调用 nfs4_wait_for_completion_rpc_task() 等待，下面是相关代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">static int _nfs4_do_setlk(struct nfs4_state *state, int cmd, struct file_lock *fl, int recovery_type)</span><br><span class="line">&#123;</span><br><span class="line">  ......</span><br><span class="line">  task &#x3D; rpc_run_task(&amp;task_setup_data);</span><br><span class="line">  if (IS_ERR(task))</span><br><span class="line">      return PTR_ERR(task);</span><br><span class="line">  ret &#x3D; nfs4_wait_for_completion_rpc_task(task);</span><br><span class="line">  if (ret &#x3D;&#x3D; 0) &#123;</span><br><span class="line">      ret &#x3D; data-&gt;rpc_status;</span><br><span class="line">      if (ret)</span><br><span class="line">              nfs4_handle_setlk_error(data-&gt;server, data-&gt;lsp,</span><br><span class="line">                  data-&gt;arg.new_lock_owner, ret);</span><br><span class="line">      &#125; else</span><br><span class="line">          data-&gt;cancelled &#x3D; 1;</span><br><span class="line">  ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<p>通过分析 nfs4_wait_for_completion_rpc_task() 实现可知，当ret &lt; 0时，表明获取锁过程被信号中断，并使用 struct nfs4_lockdata 的 cancelled 成员记录。继续查看rpc_task完成后释放时的回调函数 nfs4_lock_release()：</p>
+<p><img src="https://imgkr2.cn-bj.ufileos.com/f4e546ef-79cd-4da7-855f-cf0def4045bf.png?UCloudPublicKey=TOKEN_8d8b72be-579a-4e83-bfd0-5f6ce1546f13&Signature=G9dV0ov%252FzJtxHMHn2gbgrRcrTtw%253D&Expires=1596770219" alt=""></p>
+<p>从上面红色框中的代码可知，nfs4_lock_release() 检测到存在信号中断时会调用 nfs4_do_unlck()函数尝试将可能成功获得文件锁释放掉，注意此时没有调用 nfs_free_seqid() 函数将持有的nfs_seqid释放掉，这是为了：</p>
+<p>保证订正状态过程中不会有用户新发起的并发加锁或者释放锁操作，简化实现。<br>保证hard模式下UNLOCK操作只会在LOCK操作返回后才会发送，保障已经获得锁能够被释放掉。<br>客户端通过上面的方法能够有效地保证信号中断后客户端和服务端锁状态的最终一致性,但也是在损失一部分可用性为代价的。</p>
+<br>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><br>
+
+<p>文件锁是文件系统原生支持的基础特性，NAS作为共享的文件系统要面临客户端和服务端锁状态视图一致性的问题，NFSv4.0在一定程度上解决了这个问题，当然，技术前进的脚步不会停止，NFS的更新迭代也就不会停止，未来的NFS将会有更多的期待。</p>
+<br>
+
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><br>
+
+<p>我们相信技术的力量，更相信拥有技术力量的人。我们期待存储的未来，更期待与你一起创造未来。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 docker、k8s 做微服务容器化，自动化部署等一站式项目部署、落地。Go 语言学习，k8s 研究，边缘计算框架 KubeEdge 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">程序猿Damon | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+<br>
+
+<code style="font-size: 20px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: red">
+特别声明 <br>
+原文作者：茶什i <br>
+本文原链：https://developer.aliyun.com/article/769594?spm=a2c6h.12873581.0.dArticle769594.37366446qrd1Wv&groupCode=alitech <br>
+本文转载如有侵权，请联系站长删除，谢谢 <br>
+</code>
+
+<br>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Unit one -->
+<p><ins class="adsbygoogle"
+     style="display:inline-block;text-align:center;width:880px;height:150px"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="8964778819"></ins></p>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script> 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/08/06/nfs-01/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/08/16/new-web/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            个站建立基础教程
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/08/05/film-01/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">电视剧 | 电影 | 影片 | 无广告</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020
+        <i class="ri-heart-fill heart_icon"></i> Damon
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/logo.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/course">课程</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/zsxq">星球</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">友情链接</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon8.cn">
+        <input type="hidden" name="site" value="damon8.cn">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div>
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

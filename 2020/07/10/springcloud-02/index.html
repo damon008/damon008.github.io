@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java,key, key1, key2, key3" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    Xiao8 | Micro-Service | Containerization | DevOps
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/logo.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Developer Xiao8 | Micro-Service | Containerization | DevOps
+  程序猿Damon | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+
+    <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-springcloud-02"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Spring Cloud Kubernetes之实战一配置管理
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/10/springcloud-02/" class="article-date">
+  <time datetime="2020-07-10T06:10:45.000Z" itemprop="datePublished">2020-07-10</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">19 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <img src="/images/title_img/7.jpg" alt style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>一直以来，玩springcloud的，基本都是在玩Springboot1.x，Springcloud(Dalston版)的众多相关组件来做配置中心、服务注册与发现，网关用的是Netflix公司对springboot做的LB，等等，但是这些东西太过沉重，复杂了。在一个以k8s为基础的iaas服务系统，如果不用k8s的特性来做这些事，那是说不过去的。理由这就不重复述说了。一句话：减少系统服务的复杂性。</p>
+<p>本文主要介绍springcloud结合k8s，做配置管理，避免更多服务组件的冗余，完美填坑版！</p>
+<p>环境：</p>
+<pre><code>ubuntu16.04
+
+docker18.04
+
+k8s1.13.x +
+
+maven3.5.3
+
+java1.8 +
+
+springboot 2.1.1
+
+spring-cloud-kubernetes：1.0.1.RELEAS</code></pre><ol>
+<li><p>前提</p>
+<pre><code>Ubuntu下安装docker18.04 or 其它较高版本，k8s1.13.x及以上，jvm环境等。</code></pre></li>
+<li><p>创建项目<br><img src="https://user-gold-cdn.xitu.io/2020/4/24/171aa1520aa32250?w=760&h=818&f=png&s=42056" alt="在这里插入图片描述"><br><img src="https://user-gold-cdn.xitu.io/2020/4/24/171aa1520a95d3a8?w=699&h=662&f=png&s=28152" alt="在这里插入图片描述"><br>基础依赖：</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.1.8.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;relativePath&#x2F;&gt;</span><br><span class="line">    &lt;&#x2F;parent&gt;</span><br><span class="line">	&lt;properties&gt;</span><br><span class="line">		&lt;project.build.sourceEncoding&gt;UTF-8&lt;&#x2F;project.build.sourceEncoding&gt;</span><br><span class="line">		&lt;project.reporting.outputEncoding&gt;UTF-8&lt;&#x2F;project.reporting.outputEncoding&gt;</span><br><span class="line">		&lt;java.version&gt;1.8&lt;&#x2F;java.version&gt;</span><br><span class="line">		&lt;swagger.version&gt;2.6.1&lt;&#x2F;swagger.version&gt;</span><br><span class="line">		&lt;xstream.version&gt;1.4.7&lt;&#x2F;xstream.version&gt;</span><br><span class="line">		&lt;pageHelper.version&gt;4.1.6&lt;&#x2F;pageHelper.version&gt;</span><br><span class="line">		&lt;fastjson.version&gt;1.2.51&lt;&#x2F;fastjson.version&gt;</span><br><span class="line">		&lt;shiro.version&gt;1.3.0&lt;&#x2F;shiro.version&gt;</span><br><span class="line">		&lt;!-- &lt;kubernetes-client-version&gt;6.0.1&lt;&#x2F;kubernetes-client-version&gt; --&gt;</span><br><span class="line">		&lt;kubernetes-client-version&gt;5.0.0&lt;&#x2F;kubernetes-client-version&gt;</span><br><span class="line">		&lt;fabric8-kubernetes-client.version&gt;4.6.1&lt;&#x2F;fabric8-kubernetes-client.version&gt;&lt;!-- 对应k8s v1.15.3 --&gt;</span><br><span class="line">		&lt;springcloud.version&gt;Greenwich.SR4&lt;&#x2F;springcloud.version&gt;</span><br><span class="line">		&lt;springcloud.kubernetes.version&gt;1.1.1.RELEASE&lt;&#x2F;springcloud.kubernetes.version&gt;</span><br><span class="line">		&lt;mysql.version&gt;5.1.46&lt;&#x2F;mysql.version&gt;</span><br><span class="line">	&lt;&#x2F;properties&gt;</span><br><span class="line"></span><br><span class="line">	&lt;dependencyManagement&gt;</span><br><span class="line">		&lt;dependencies&gt;</span><br><span class="line">			&lt;dependency&gt;</span><br><span class="line">				&lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;&#x2F;artifactId&gt;</span><br><span class="line">				&lt;version&gt;$&#123;springcloud.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">				&lt;type&gt;pom&lt;&#x2F;type&gt;</span><br><span class="line">				&lt;scope&gt;import&lt;&#x2F;scope&gt;</span><br><span class="line">			&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;&#x2F;dependencies&gt;</span><br><span class="line">	&lt;&#x2F;dependencyManagement&gt;</span><br></pre></td></tr></table></figure>
+
+<p>核心依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-web&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;exclusions&gt;</span><br><span class="line">				&lt;exclusion&gt;</span><br><span class="line">					&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">					&lt;artifactId&gt;spring-boot-starter-tomcat&lt;&#x2F;artifactId&gt;</span><br><span class="line">				&lt;&#x2F;exclusion&gt;</span><br><span class="line">			&lt;&#x2F;exclusions&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-undertow&lt;&#x2F;artifactId&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-actuator&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-actuator-autoconfigure&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-kubernetes-config&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- springcloud-k8s-discovery --&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-commons&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-kubernetes-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-kubernetes-discovery&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-kubernetes-ribbon&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-netflix-hystrix&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+<pre><code>**本次依赖引入配置管理、服务的发现(即消费者)。**</code></pre><p>如果有操作redis和db的话，引入相应的依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- mybatis --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.1&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mysql-connector-java&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;$&#123;mysql.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!--分页插件--&gt;</span><br><span class="line">	    &lt;dependency&gt;</span><br><span class="line">	      &lt;groupId&gt;com.github.pagehelper&lt;&#x2F;groupId&gt;</span><br><span class="line">	      &lt;artifactId&gt;pagehelper&lt;&#x2F;artifactId&gt;</span><br><span class="line">	      &lt;version&gt;$&#123;pageHelper.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">	    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- datasource pool--&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;druid&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.3&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		    &lt;groupId&gt;org.apache.commons&lt;&#x2F;groupId&gt;</span><br><span class="line">		    &lt;artifactId&gt;commons-lang3&lt;&#x2F;artifactId&gt;</span><br><span class="line">		    &lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		    &lt;groupId&gt;commons-collections&lt;&#x2F;groupId&gt;</span><br><span class="line">		    &lt;artifactId&gt;commons-collections&lt;&#x2F;artifactId&gt;</span><br><span class="line">		    &lt;version&gt;3.2.2&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;!-- 对redis支持,引入的话项目缓存就支持redis了,所以必须加上redis的相关配置,否则操作相关缓存会报异常 --&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-data-redis&lt;&#x2F;artifactId&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-redis&lt;&#x2F;artifactId&gt;</span><br><span class="line">			&lt;version&gt;1.4.7.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">		&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.google.guava&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;guava&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;19.0&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>剩下的就是构建镜像时的插件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&lt;build&gt;</span><br><span class="line">		&lt;finalName&gt;$&#123;project.artifactId&#125;&lt;&#x2F;finalName&gt;</span><br><span class="line">		&lt;plugins&gt;</span><br><span class="line">			&lt;plugin&gt;</span><br><span class="line">				&lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;spring-boot-maven-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">				&lt;configuration&gt;</span><br><span class="line">					&lt;jvmArguments&gt;-Dfile.encoding&#x3D;UTF-8&lt;&#x2F;jvmArguments&gt;</span><br><span class="line">					&lt;fork&gt;true&lt;&#x2F;fork&gt;</span><br><span class="line">				&lt;&#x2F;configuration&gt;</span><br><span class="line">			&lt;&#x2F;plugin&gt;</span><br><span class="line">			&lt;plugin&gt;</span><br><span class="line">				&lt;groupId&gt;org.jacoco&lt;&#x2F;groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;jacoco-maven-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">				&lt;version&gt;0.7.8&lt;&#x2F;version&gt;</span><br><span class="line">				&lt;executions&gt;</span><br><span class="line">					&lt;execution&gt;</span><br><span class="line">						&lt;goals&gt;</span><br><span class="line">							&lt;goal&gt;prepare-agent&lt;&#x2F;goal&gt;</span><br><span class="line">							&lt;goal&gt;report&lt;&#x2F;goal&gt;</span><br><span class="line">						&lt;&#x2F;goals&gt;</span><br><span class="line">					&lt;&#x2F;execution&gt;</span><br><span class="line">				&lt;&#x2F;executions&gt;</span><br><span class="line">			&lt;&#x2F;plugin&gt;</span><br><span class="line">		&lt;&#x2F;plugins&gt;</span><br><span class="line">	&lt;&#x2F;build&gt;</span><br></pre></td></tr></table></figure>
+
+<p>接下来，我们创建主类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@SpringBootApplication(scanBasePackages &#x3D; &#123; &quot;com.leinao&quot; &#125;)</span><br><span class="line">@EnableConfigurationProperties(EnvConfig.class)</span><br><span class="line">@EnableDiscoveryClient</span><br><span class="line">@EnableHystrix</span><br><span class="line">@EnableScheduling</span><br><span class="line">public class AdminApp &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		SpringApplication.run(AdminApp.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意这里创建启动类时，对springboot的项目进行了优化，避免启动时加载很多，启动繁重，具体深度优化，可参考：<a href="https://mp.weixin.qq.com/s?__biz=MzU2NjIzNDk5NQ==&amp;mid=2247487954&amp;idx=1&amp;sn=2426451f3bd83161cfe1237f82d6b448&amp;key=f8fb043b3d2681a794e51a46e142af77355722dff712776af12b1f3c831218df6dfc329df63c8e5e550b3d88d58f0f178c4c3c16b141733e0e3344fa595e2bc25241d864d45132753fd99279b832de85&amp;ascene=1&amp;uin=MzQzMzI2NjAxMQ%3D%3D&amp;devicetype=Windows+10&amp;version=62070158&amp;lang=zh_CN&amp;pass_ticket=pnSSI9jAq0M11V5hYMmkoVm5qO%2FWk9l3UUUJMglbdtdDOzLHa7iHsDmwSzs486sD。" target="_blank" rel="noopener">https://mp.weixin.qq.com/s?__biz=MzU2NjIzNDk5NQ==&amp;mid=2247487954&amp;idx=1&amp;sn=2426451f3bd83161cfe1237f82d6b448&amp;key=f8fb043b3d2681a794e51a46e142af77355722dff712776af12b1f3c831218df6dfc329df63c8e5e550b3d88d58f0f178c4c3c16b141733e0e3344fa595e2bc25241d864d45132753fd99279b832de85&amp;ascene=1&amp;uin=MzQzMzI2NjAxMQ%3D%3D&amp;devicetype=Windows+10&amp;version=62070158&amp;lang=zh_CN&amp;pass_ticket=pnSSI9jAq0M11V5hYMmkoVm5qO%2FWk9l3UUUJMglbdtdDOzLHa7iHsDmwSzs486sD。</a></p>
+<p>然后我们在进行配置，注意：据官方说，项目的src\main\resources路径下不要创建application.yml文件，只创建名为bootstrap.yml的文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">management:</span><br><span class="line">  endpoint:</span><br><span class="line">    restart:</span><br><span class="line">      enabled: true</span><br><span class="line">    health:</span><br><span class="line">      enabled: true</span><br><span class="line">    info:</span><br><span class="line">      enabled: true</span><br><span class="line"></span><br><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: edge-admin</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      config:</span><br><span class="line">        sources:</span><br><span class="line">         - name: $&#123;spring.application.name&#125;</span><br><span class="line">           namespace: default</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br><span class="line">      reload:</span><br><span class="line">        #自动更新配置的开关设置为打开</span><br><span class="line">        enabled: true</span><br><span class="line">        #更新配置信息的模式：polling是主动拉取，event是事件通知</span><br><span class="line">        mode: polling</span><br><span class="line">        #主动拉取的间隔时间是500毫秒</span><br><span class="line">        period: 500</span><br><span class="line">  http:</span><br><span class="line">    encoding:</span><br><span class="line">      charset: UTF-8</span><br><span class="line">      enabled: true</span><br><span class="line">      force: true</span><br><span class="line">  mvc:</span><br><span class="line">    throw-exception-if-no-handler-found: true</span><br><span class="line">  main:</span><br><span class="line">    allow-bean-definition-overriding: true # 当遇到同样名称时，是否允许覆盖注册</span><br></pre></td></tr></table></figure>
+<p>这里，我创建了bootstrap文件，同时也加了application文件，启动时会先加载bootstrap，验证有效。</p>
+<p>在application.yaml中，我们加入如下内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  port: 9999</span><br><span class="line">  undertow:</span><br><span class="line">    accesslog:</span><br><span class="line">      enabled: false</span><br><span class="line">      pattern: combined</span><br><span class="line">  servlet:</span><br><span class="line">    session:</span><br><span class="line">      timeout: PT120M</span><br><span class="line"></span><br><span class="line">logging:</span><br><span class="line">  path: &#x2F;data&#x2F;$&#123;spring.application.name&#125;&#x2F;logs</span><br><span class="line"></span><br><span class="line">management:</span><br><span class="line">  endpoint:</span><br><span class="line">    restart:</span><br><span class="line">      enabled: true</span><br><span class="line">    health:</span><br><span class="line">      enabled: true</span><br><span class="line">    info:</span><br><span class="line">      enabled: true</span><br><span class="line">client:</span><br><span class="line">  http:</span><br><span class="line">    request:</span><br><span class="line">      connectTimeout: 8000</span><br><span class="line">      readTimeout: 30000</span><br><span class="line"></span><br><span class="line">mybatis:</span><br><span class="line">  mapperLocations: classpath:mapper&#x2F;*.xml</span><br><span class="line">  typeAliasesPackage: com.demo.*.model</span><br><span class="line"></span><br><span class="line">backend:</span><br><span class="line">  ribbon:</span><br><span class="line">    eureka:</span><br><span class="line">      enabled: false</span><br><span class="line">    client:</span><br><span class="line">      enabled: true</span><br><span class="line">    ServerListRefreshInterval: 5000</span><br><span class="line">hystrix.command.BackendCall.execution.isolation.thread.timeoutInMilliseconds: 5000</span><br><span class="line">hystrix.threadpool.BackendCallThread.coreSize: 5</span><br></pre></td></tr></table></figure>
+<p>注意：这里的server设置session的超时时间，对于springboot2.0与1.0版本完全不一样了，具体看内容。</p>
+<p>其他的application-test.yaml等配置文件，配置的是日志的级别：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">logging:</span><br><span class="line">  level:</span><br><span class="line">    com:</span><br><span class="line">      leinao: INFO</span><br><span class="line">    org:</span><br><span class="line">      springframework:</span><br><span class="line">        web: INFO</span><br></pre></td></tr></table></figure>
+<p>接下来配置环境配置：</p>
+<p>EnvConfig.java类作为环境变量配置，注解ConfigurationProperties的prefix=”spring_cloud”，</p>
+<p>表示该类用到的配置项都是名为”spring_cloud”的配置项的子内容 ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br></pre></td><td class="code"><pre><span class="line">package com.demo.config;</span><br><span class="line"></span><br><span class="line">import org.springframework.boot.context.properties.ConfigurationProperties;</span><br><span class="line">import org.springframework.context.annotation.Configuration;</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * 配置信息</span><br><span class="line"> * @author Damon</span><br><span class="line"> * @date 2019年10月25日 下午1:54:01</span><br><span class="line"> *</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">@ConfigurationProperties(prefix &#x3D; &quot;greeting&quot;)</span><br><span class="line">public class EnvConfig &#123;</span><br><span class="line"></span><br><span class="line">    private String message &#x3D; &quot;This is a dummy message&quot;;</span><br><span class="line"></span><br><span class="line">    private String container_command;</span><br><span class="line">    private String model_dir_path;</span><br><span class="line">    private String so_path;</span><br><span class="line">    private String config_path;</span><br><span class="line">    private String task_role_name;</span><br><span class="line">    private String container_name;</span><br><span class="line">    private String container_workdir;</span><br><span class="line">    private String init_containers_image;</span><br><span class="line">    private String service_account_name;</span><br><span class="line">    private String spring_mq_host;</span><br><span class="line">    private String spring_mq_port;</span><br><span class="line">    private String spring_mq_user;</span><br><span class="line">    private String spring_mq_pwd;</span><br><span class="line">    private String jdbc_driverClassName;</span><br><span class="line">    private String jdbc_url;</span><br><span class="line">    private String jdbc_username;</span><br><span class="line">    private String jdbc_password;</span><br><span class="line">    private String spring_redis_host;</span><br><span class="line">    private String spring_redis_port;</span><br><span class="line">    private String spring_redis_pwd;</span><br><span class="line">    private String kube_apiserver_address;</span><br><span class="line">    private String image_path;</span><br><span class="line">    private String volume_image_path;</span><br><span class="line">    private String inference_job_namespace;</span><br><span class="line">    private String api_version;</span><br><span class="line">    private String remote_deployment_url;</span><br><span class="line">    private String remote_pods_url;</span><br><span class="line">    private String remote_deployment_pod_log_url;</span><br><span class="line">    private String base_path;</span><br><span class="line">    private String chunk_size;</span><br><span class="line">    private String cas_url;</span><br><span class="line">    private String create_job_url;</span><br><span class="line">    private String abnormal_data_dir;</span><br><span class="line"></span><br><span class="line">    private Long expire_time&#x3D; 600000L;</span><br><span class="line"></span><br><span class="line">    public String getMessage() &#123;</span><br><span class="line">        return this.message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setMessage(String message) &#123;</span><br><span class="line">        this.message &#x3D; message;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	public String getContainer_command() &#123;</span><br><span class="line">		return container_command;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setContainer_command(String container_command) &#123;</span><br><span class="line">		this.container_command &#x3D; container_command;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getModel_dir_path() &#123;</span><br><span class="line">		return model_dir_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setModel_dir_path(String model_dir_path) &#123;</span><br><span class="line">		this.model_dir_path &#x3D; model_dir_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSo_path() &#123;</span><br><span class="line">		return so_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSo_path(String so_path) &#123;</span><br><span class="line">		this.so_path &#x3D; so_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getConfig_path() &#123;</span><br><span class="line">		return config_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setConfig_path(String config_path) &#123;</span><br><span class="line">		this.config_path &#x3D; config_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getTask_role_name() &#123;</span><br><span class="line">		return task_role_name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setTask_role_name(String task_role_name) &#123;</span><br><span class="line">		this.task_role_name &#x3D; task_role_name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getContainer_name() &#123;</span><br><span class="line">		return container_name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setContainer_name(String container_name) &#123;</span><br><span class="line">		this.container_name &#x3D; container_name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getContainer_workdir() &#123;</span><br><span class="line">		return container_workdir;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setContainer_workdir(String container_workdir) &#123;</span><br><span class="line">		this.container_workdir &#x3D; container_workdir;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getInit_containers_image() &#123;</span><br><span class="line">		return init_containers_image;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setInit_containers_image(String init_containers_image) &#123;</span><br><span class="line">		this.init_containers_image &#x3D; init_containers_image;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getService_account_name() &#123;</span><br><span class="line">		return service_account_name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setService_account_name(String service_account_name) &#123;</span><br><span class="line">		this.service_account_name &#x3D; service_account_name;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_mq_host() &#123;</span><br><span class="line">		return spring_mq_host;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_mq_host(String spring_mq_host) &#123;</span><br><span class="line">		this.spring_mq_host &#x3D; spring_mq_host;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_mq_port() &#123;</span><br><span class="line">		return spring_mq_port;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_mq_port(String spring_mq_port) &#123;</span><br><span class="line">		this.spring_mq_port &#x3D; spring_mq_port;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_mq_user() &#123;</span><br><span class="line">		return spring_mq_user;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_mq_user(String spring_mq_user) &#123;</span><br><span class="line">		this.spring_mq_user &#x3D; spring_mq_user;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_mq_pwd() &#123;</span><br><span class="line">		return spring_mq_pwd;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_mq_pwd(String spring_mq_pwd) &#123;</span><br><span class="line">		this.spring_mq_pwd &#x3D; spring_mq_pwd;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getJdbc_driverClassName() &#123;</span><br><span class="line">		return jdbc_driverClassName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setJdbc_driverClassName(String jdbc_driverClassName) &#123;</span><br><span class="line">		this.jdbc_driverClassName &#x3D; jdbc_driverClassName;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getJdbc_url() &#123;</span><br><span class="line">		return jdbc_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setJdbc_url(String jdbc_url) &#123;</span><br><span class="line">		this.jdbc_url &#x3D; jdbc_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getJdbc_username() &#123;</span><br><span class="line">		return jdbc_username;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setJdbc_username(String jdbc_username) &#123;</span><br><span class="line">		this.jdbc_username &#x3D; jdbc_username;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getJdbc_password() &#123;</span><br><span class="line">		return jdbc_password;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setJdbc_password(String jdbc_password) &#123;</span><br><span class="line">		this.jdbc_password &#x3D; jdbc_password;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_redis_host() &#123;</span><br><span class="line">		return spring_redis_host;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_redis_host(String spring_redis_host) &#123;</span><br><span class="line">		this.spring_redis_host &#x3D; spring_redis_host;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_redis_port() &#123;</span><br><span class="line">		return spring_redis_port;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_redis_port(String spring_redis_port) &#123;</span><br><span class="line">		this.spring_redis_port &#x3D; spring_redis_port;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getSpring_redis_pwd() &#123;</span><br><span class="line">		return spring_redis_pwd;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setSpring_redis_pwd(String spring_redis_pwd) &#123;</span><br><span class="line">		this.spring_redis_pwd &#x3D; spring_redis_pwd;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getKube_apiserver_address() &#123;</span><br><span class="line">		return kube_apiserver_address;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setKube_apiserver_address(String kube_apiserver_address) &#123;</span><br><span class="line">		this.kube_apiserver_address &#x3D; kube_apiserver_address;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getImage_path() &#123;</span><br><span class="line">		return image_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setImage_path(String image_path) &#123;</span><br><span class="line">		this.image_path &#x3D; image_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getVolume_image_path() &#123;</span><br><span class="line">		return volume_image_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setVolume_image_path(String volume_image_path) &#123;</span><br><span class="line">		this.volume_image_path &#x3D; volume_image_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getInference_job_namespace() &#123;</span><br><span class="line">		return inference_job_namespace;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setInference_job_namespace(String inference_job_namespace) &#123;</span><br><span class="line">		this.inference_job_namespace &#x3D; inference_job_namespace;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getApi_version() &#123;</span><br><span class="line">		return api_version;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setApi_version(String api_version) &#123;</span><br><span class="line">		this.api_version &#x3D; api_version;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getRemote_deployment_url() &#123;</span><br><span class="line">		return remote_deployment_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setRemote_deployment_url(String remote_deployment_url) &#123;</span><br><span class="line">		this.remote_deployment_url &#x3D; remote_deployment_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getRemote_pods_url() &#123;</span><br><span class="line">		return remote_pods_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setRemote_pods_url(String remote_pods_url) &#123;</span><br><span class="line">		this.remote_pods_url &#x3D; remote_pods_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getRemote_deployment_pod_log_url() &#123;</span><br><span class="line">		return remote_deployment_pod_log_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setRemote_deployment_pod_log_url(String remote_deployment_pod_log_url) &#123;</span><br><span class="line">		this.remote_deployment_pod_log_url &#x3D; remote_deployment_pod_log_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getBase_path() &#123;</span><br><span class="line">		return base_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setBase_path(String base_path) &#123;</span><br><span class="line">		this.base_path &#x3D; base_path;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getChunk_size() &#123;</span><br><span class="line">		return chunk_size;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setChunk_size(String chunk_size) &#123;</span><br><span class="line">		this.chunk_size &#x3D; chunk_size;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public Long getExpire_time() &#123;</span><br><span class="line">		return expire_time;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setExpire_time(Long expire_time) &#123;</span><br><span class="line">		this.expire_time &#x3D; expire_time;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getCas_url() &#123;</span><br><span class="line">		return cas_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setCas_url(String cas_url) &#123;</span><br><span class="line">		this.cas_url &#x3D; cas_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getCreate_job_url() &#123;</span><br><span class="line">		return create_job_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setCreate_job_url(String create_job_url) &#123;</span><br><span class="line">		this.create_job_url &#x3D; create_job_url;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public String getAbnormal_data_dir() &#123;</span><br><span class="line">		return abnormal_data_dir;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setAbnormal_data_dir(String abnormal_data_dir) &#123;</span><br><span class="line">		this.abnormal_data_dir &#x3D; abnormal_data_dir;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">测试demo类：</span><br><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * @author Damon</span><br><span class="line"> * @date 2019年12月27日 上午9:16:41</span><br><span class="line"> *</span><br><span class="line"> *&#x2F;</span><br><span class="line"></span><br><span class="line">@RestController</span><br><span class="line">public class DemoController &#123;</span><br><span class="line"></span><br><span class="line">	@Autowired</span><br><span class="line">    private EnvConfig envConfig;</span><br><span class="line"></span><br><span class="line">	&#x2F;**</span><br><span class="line">	 *</span><br><span class="line">	 * @author Damon</span><br><span class="line">	 * @date 2019年12月26日</span><br><span class="line">	 *</span><br><span class="line">	 *&#x2F;</span><br><span class="line"></span><br><span class="line">	@GetMapping(value &#x3D; &quot;&#x2F;getTest&quot;)</span><br><span class="line">	public String getTest() &#123;</span><br><span class="line">		return envConfig.getBase_path();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重点：默认的svc是没有权限访问k8s的API Server的资源的，执行如下脚本，可以提升权限，允许其访问configmap的可读权限：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#使用这个代表集群最高权限，deployment中无需引入serviceAccount: config-reader</span><br><span class="line">apiVersion: rbac.authorization.k8s.io&#x2F;v1</span><br><span class="line">kind: ClusterRoleBinding</span><br><span class="line">metadata:</span><br><span class="line">  name: fabric8-rbac</span><br><span class="line">subjects:</span><br><span class="line">  - kind: ServiceAccount</span><br><span class="line">    # Reference to upper&#39;s &#96;metadata.name&#96;</span><br><span class="line">    name: default</span><br><span class="line">    # Reference to upper&#39;s &#96;metadata.namespace&#96;</span><br><span class="line">    namespace: default</span><br><span class="line">roleRef:</span><br><span class="line">  kind: ClusterRole</span><br><span class="line">  name: cluster-admin</span><br><span class="line">  apiGroup: rbac.authorization.k8s.io</span><br></pre></td></tr></table></figure>
+
+<p>配置configmap：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">kind: ConfigMap</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: edge-admin</span><br><span class="line">data:</span><br><span class="line">  application.yaml: |-</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the World</span><br><span class="line">    ---</span><br><span class="line">    spring:</span><br><span class="line">      profiles: dev</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Developers</span><br><span class="line">    ---</span><br><span class="line">    spring:</span><br><span class="line">      profiles: test</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Test</span><br><span class="line">    ---</span><br><span class="line">    spring:</span><br><span class="line">      profiles: prod</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Prod</span><br></pre></td></tr></table></figure>
+<p>接下来就是执行deployment启动项目了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: apps&#x2F;v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: edge-admin-deployment</span><br><span class="line">  labels:</span><br><span class="line">    app: edge-admin</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: edge-admin</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: edge-admin</span><br><span class="line">    spec:</span><br><span class="line">      nodeSelector:</span><br><span class="line">        edge-admin: &quot;true&quot;</span><br><span class="line">      containers:</span><br><span class="line">      - name: edge-admin</span><br><span class="line">        image: 10.11.2.20:8000&#x2F;harbor&#x2F;edge-admin</span><br><span class="line">        imagePullPolicy: IfNotPresent</span><br><span class="line">        ports:</span><br><span class="line">          - name: admin01</span><br><span class="line">            containerPort: 1002</span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: &#x2F;home&#x2F;edge-admin</span><br><span class="line">          name: edge-admin-path</span><br><span class="line">        - mountPath: &#x2F;data&#x2F;edge-admin</span><br><span class="line">          name: edge-admin-log-path</span><br><span class="line">        - mountPath: &#x2F;etc&#x2F;kubernetes</span><br><span class="line">          name: kube-config-path</span><br><span class="line">        - mountPath: &#x2F;abnormal_data_dir</span><br><span class="line">          name: abnormal-data-dir</span><br><span class="line">        args: [&quot;sh&quot;, &quot;-c&quot;, &quot;nohup java $JAVA_OPTS -jar -XX:MetaspaceSize&#x3D;128m -XX:MaxMetaspaceSize&#x3D;128m -Xms1024m -Xmx1024m -Xmn256m -Xss256k -XX:SurvivorRatio&#x3D;8 -XX:+UseConcMarkSweepGC edge-admin.jar --spring.profiles.active&#x3D;dev&quot;, &quot;&amp;&quot;]</span><br><span class="line">      hostAliases:</span><br><span class="line">      - ip: &quot;10.10.1.5&quot;</span><br><span class="line">        hostnames:</span><br><span class="line">        - &quot;k8s.api.server&quot;</span><br><span class="line">        - &quot;foo.remote&quot;</span><br><span class="line">      - ip: &quot;127.0.0.1&quot;</span><br><span class="line">        hostnames:</span><br><span class="line">        - &quot;foo.localhost&quot;</span><br><span class="line">      - ip: &quot;0.0.0.0&quot;</span><br><span class="line">        hostnames:</span><br><span class="line">        - &quot;foo.all&quot;</span><br><span class="line">      #利用admin-rbac.yaml来获取权限</span><br><span class="line">      #serviceAccount: config-reader</span><br><span class="line">      #serviceAccountName: config-reader</span><br><span class="line">      volumes:</span><br><span class="line">      - name: edge-admin-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;var&#x2F;pai&#x2F;edge-admin</span><br><span class="line">      - name: edge-admin-log-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;data&#x2F;edge-admin</span><br><span class="line">      - name: kube-config-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;etc&#x2F;kubernetes</span><br><span class="line">      - name: abnormal-data-dir</span><br><span class="line">        hostPath:</span><br><span class="line">          path: &#x2F;data&#x2F;images&#x2F;detect_result&#x2F;defect</span><br></pre></td></tr></table></figure>
+
+<p>其中，前面说的，项目启动参数对其性能优化，是对jvm的参数设置。分别执行kubectl apply -f deployment.yaml和configmap.yaml，创建demo时所用的configmap的资源以及利用k8s部署启动项目。</p>
+<p>最后打开浏览器：执行ip:port/hello，即可看到configmap中对应的属性值，这里就不展示了，有兴趣的可以试试。</p>
+<p>以上即是对springcloud和k8s首次结合后利用其configmap特性，来做配置管理，摒弃springcloud-config、spring-boot-starter-actuator的组件，减少系统的复杂性，毕竟k8s是肯定会被用到的，所以可以直接用其特性来做系统服务的环境配置管理。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 docker、k8s 做微服务容器化，自动化部署等一站式项目部署、落地。Go 语言学习，k8s 研究，边缘计算框架 KubeEdge 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">程序猿Damon | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+
+<br>
+
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Unit one -->
+<p><ins class="adsbygoogle"
+     style="display:inline-block;text-align:center;width:880px;height:150px"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="8964778819"></ins></p>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script> 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/10/springcloud-02/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/07/10/core-java01/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            面试被问finally 和 return，到底谁先执行？
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/07/10/springcloud-01/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">浅谈负载均衡</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020
+        <i class="ri-heart-fill heart_icon"></i> Damon
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/logo.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/course">课程</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/zsxq">星球</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">友情链接</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon8.cn">
+        <input type="hidden" name="site" value="damon8.cn">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div>
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

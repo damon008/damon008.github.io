@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java,key, key1, key2, key3" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    Xiao8 | Micro-Service | Containerization | DevOps
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/logo.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Developer Xiao8 | Micro-Service | Containerization | DevOps
+  程序猿Damon | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+
+    <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-mysql-norm"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  大佬整理的mysql规范，分享给大家
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/23/mysql-norm/" class="article-date">
+  <time datetime="2020-07-23T00:21:08.000Z" itemprop="datePublished">2020-07-23</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">5.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">20 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h5 id="最近涉及数据库相关操作较多，公司现有规范也不是太全面，就根据网上各路大神的相关规范，整理了一些自用的规范用法，万望指正。"><a href="#最近涉及数据库相关操作较多，公司现有规范也不是太全面，就根据网上各路大神的相关规范，整理了一些自用的规范用法，万望指正。" class="headerlink" title="最近涉及数据库相关操作较多，公司现有规范也不是太全面，就根据网上各路大神的相关规范，整理了一些自用的规范用法，万望指正。"></a>最近涉及数据库相关操作较多，公司现有规范也不是太全面，就根据网上各路大神的相关规范，整理了一些自用的规范用法，万望指正。</h5><h3 id="数据库环境"><a href="#数据库环境" class="headerlink" title="数据库环境"></a>数据库环境</h3><h4 id="dev-开发环境"><a href="#dev-开发环境" class="headerlink" title="dev: 开发环境"></a>dev: 开发环境</h4><p>开发可读写，可修改表结构。开发人员可以修改表结构，可以随意修改其中的数据但是需要保证不影响其他开发同事。</p>
+<h4 id="test-测试环境"><a href="#test-测试环境" class="headerlink" title="test: 测试环境"></a>test: 测试环境</h4><p>开发可读写，开发人员可以通过工具修改表结构。</p>
+<h4 id="online-线上环境"><a href="#online-线上环境" class="headerlink" title="online: 线上环境"></a>online: 线上环境</h4><p>开发人员不允许直接在线上环境进行数据库操作，如果需要操作必须找DBA进行操作并进行相应记录，禁止进行压力测试。<br>重点的问题，各个环境的mysql服务器对应的用户权限，一定要做到权限划分明确，有辨识度，能具体区分业务场景等。</p>
+<h3 id="命名规范"><a href="#命名规范" class="headerlink" title="命名规范"></a>命名规范</h3><h4 id="基本命名规则"><a href="#基本命名规则" class="headerlink" title="基本命名规则"></a>基本命名规则</h4><p>使用有意义的英文词汇，词汇中间以下划线分隔。（不要用拼音）<br>只能使用英文字母，数字，下划线，并以英文字母开头。<br>库、表、字段全部采用小写，不要使用驼峰式命名。<br>避免用ORACLE、MySQL的保留字，如desc，关键字如index。<br>命名禁止超过32个字符，须见名之意，建议使用名词不是动词<br>数据库，数据表一律使用前缀<br>临时库、表名必须以tmp为前缀，并以日期为后缀<br>备份库、表必须以bak为前缀，并以日期为后缀<br>为什么库、表、字段全部采用小写？<br>在 MySQL 中，数据库和表对就于那些目录下的目录和文件。因而，操作系统的敏感性决定数据库和表命名的大小写敏感。<br>Windows下是不区分大小写的。<br>Linux下大小写规则<br>数据库名与表名是严格区分大小写的；<br>表的别名是严格区分大小写的；<br>列名与列的别名在所有的情况下均是忽略大小写的；<br>变量名也是严格区分大小写的；<br>如果已经设置了驼峰式的命名如何解决？需要在MySQL的配置文件my.ini中增加 lower_case_table_names = 1即可。</p>
+<h4 id="表命名"><a href="#表命名" class="headerlink" title="表命名"></a>表命名</h4><p>同一个模块的表尽可能使用相同的前缀，表名称尽可能表达含义。所有日志表均以 log_ 开头</p>
+<h4 id="字段命名"><a href="#字段命名" class="headerlink" title="字段命名"></a>字段命名</h4><p>表达其实际含义的英文单词或简写。布尔意义的字段以is_作为前缀，后接动词过去分词。<br>各表之间相同意义的字段应同名。各表之间相同意义的字段，以去掉模块前缀的表名_字段名命名。<br>外键字段用表名_字段名表示其关联关系。<br>表的主键一般都约定成为id，自增类型，是别的表的外键均使用xxx_id的方式来表明。</p>
+<h4 id="索引命名"><a href="#索引命名" class="headerlink" title="索引命名"></a>索引命名</h4><p>非唯一索引必须按照“idx_字段名称_字段名称[_字段名]”进行命名<br>唯一索引必须按照“uniq_字段名称_字段名称[_字段名]”进行命名</p>
+<h4 id="约束命名"><a href="#约束命名" class="headerlink" title="约束命名"></a>约束命名</h4><p>主键约束：pk_表名称。<br>唯一约束：uk_表名称_字段名。（应用中需要同时有唯一性检查逻辑。）</p>
+<h4 id="表设计规范"><a href="#表设计规范" class="headerlink" title="表设计规范"></a>表设计规范</h4><p>表引擎取决于实际应用场景；日志及报表类表建议用myisam，与交易，审核，金额相关的表建议用innodb引擎。如无说明，建表时一律采用innodb引擎<br>默认使用utf8mb4字符集，数据库排序规则使用utf8mb4_general_ci，（由于数据库定义使用了默认，数据表可以不再定义，但为保险起见，建议都写上<br>为什么字符集不选择utf8，排序规则不使用utf8_general_ci<br>采用utf8编码的MySQL无法保存占位是4个字节的Emoji表情。为了使后端的项目，全面支持客户端输入的Emoji表情，升级编码为utf8mb4是最佳解决方案。对于JDBC连接串设置了characterEncoding为utf8或者做了上述配置仍旧无法正常插入emoji数据的情况，需要在代码中指定连接的字符集为utf8mb4。<br>所有表、字段均应用 comment 列属性来描述此表、字段所代表的真正含义，如枚举值则建议将该字段中使用的内容都定义出来。<br>如无说明，表中的第一个id字段一定是主键且为自动增长，禁止在非事务内作为上下文作为条件进行数据传递。禁止使用varchar类型作为主键语句设计。<br>如无说明，表必须包含create_time和modify_time字段，即表必须包含记录创建时间和修改时间的字段<br>如无说明，表必须包含is_del，用来标示数据是否被删除，原则上数据库数据不允许物理删除。<br>用尽量少的存储空间来存数一个字段的数据<br>能用int的就不用char或者varchar<br>能用tinyint的就不用int<br>使用UNSIGNED存储非负数值。<br>不建议使用ENUM、SET类型，使用TINYINT来代替<br>使用短数据类型，比如取值范围为0-80时，使用TINYINT UNSIGNED<br>存储精确浮点数必须使用DECIMAL替代FLOAT和DOUBLE<br>时间字段，除特殊情况一律采用int来记录unix_timestamp<br>存储年使用YEAR类型。<br>存储日期使用DATE类型。<br>存储时间（精确到秒）建议使用TIMESTAMP类型，因为TIMESTAMP使用4字节，DATETIME使用8个字节。<br>建议使用INT UNSIGNED存储IPV4。<br>尽可能不使用TEXT、BLOB类型<br>禁止在数据库中使用VARBINARY、BLOB存储图片、文件等。建议使用其他方式存储（TFS/SFS），MySQL只保存指针信息。<br>单条记录大小禁止超过8k（列长度(中文)_3(UTF8)+列长度(英文)_1）</p>
+<h5 id="datetime与timestamp有什么不同？"><a href="#datetime与timestamp有什么不同？" class="headerlink" title="datetime与timestamp有什么不同？"></a>datetime与timestamp有什么不同？</h5><p>相同点：<br>TIMESTAMP列的显示格式与DATETIME列相同。显示宽度固定在19字符，并且格式为YYYY-MM-DD HH:MM:SS。</p>
+<p>不同点：<br>TIMESTAMP<br>4个字节储存，时间范围：1970-01-01 08:00:01 ~ 2038-01-19 11:14:07 值以UTC格式保存，涉及时区转化 ，存储时对当前的时区进行转换，检索时再转换回当前的时区。<br>datetime 8个字节储存，时间范围：1000-01-01 00:00:00 ~ 9999-12-31 23:59:59<br>实际格式储存，与时区无关</p>
+<p>如何使用TIMESTAMP的自动赋值属性？<br>将当前时间作为ts的默认值：ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP。当行更新时，更新ts的值：ts TIMESTAMP DEFAULT 0 ON UPDATE CURRENT_TIMESTAMP。<br>可以将1和2结合起来：ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP。<br>如何使用INT UNSIGNED存储ip？<br>使用INT UNSIGNED而不是char(15)来存储ipv4地址，通过MySQL函数inet_ntoa和inet_aton来进行转化。Ipv6地址目前没有转化函数，需要使用DECIMAL或者两个bigINT来存储。<br>如无备注，所有字段都设置NOT NULL，并设置默认值；<br>禁止在数据库中存储明文密码<br>如无备注，所有的布尔值字段，如is_hot、is_deleted，都必须设置一个默认值，并设为0；<br>如无备注，排序字段order_id在程序中默认使用降序排列；<br>整形定义中不添加长度，比如使用INT，而不是INT[4]<br>INT[M]，M值代表什么含义？<br>注意数值类型括号后面的数字只是表示宽度而跟存储范围没有关系。很多人他们认为INT(4)和INT(10)其取值范围分别是 (-9999到9999)和(-9999999999到9999999999)，这种理解是错误的。其实对整型中的 M值与 ZEROFILL 属性结合使用时可以实现列值等宽。不管INT[M]中M值是多少，其取值范围还是 (-2147483648到2147483647 有符号时)，(0到4294967295无符号时)。<br>显示宽度并不限制可以在列内保存的值的范围，也不限制超过列的指定宽度的值的显示。当结合可选扩展属性ZEROFILL使用时默认补充的空格用零代替。例如：对于声明为INT(5) ZEROFILL的列，值4检索为00004。请注意如果在整数列保存超过显示宽度的一个值，当MySQL为复杂联接生成临时表时会遇到问题，因为在这些情况下MySQL相信数据适合原列宽度，如果为一个数值列指定ZEROFILL, MySQL自动为该列添加UNSIGNED属性。<br>使用VARBINARY存储大小写敏感的变长字符串<br>什么时候用CHAR，什么时候用VARCHAR？<br>CHAR和VARCHAR类型类似，但它们保存和检索的方式不同。它们的最大长度和是否尾部空格被保留等方面也不同。CHAR和VARCHAR类型声明的长度表示你想要保存的最大字符数。例如，CHAR(30)可以占用30个字符。<br>CHAR列的长度固定为创建表时声明的长度。长度可以为从0到255的任何值。当保存CHAR值时，在它们的右边填充空格以达到指定的长度。当检索到CHAR值时，尾部的空格被删除掉。在存储或检索过程中不进行大小写转换。<br>VARCHAR列中的值为可变长字符串。长度可以指定为0到65,535之间的值。(VARCHAR的最大有效长度由最大行大小和使用的字符集确定。整体最大长度是65,532字节）。同CHAR对比，VARCHAR值保存时只保存需要的字符数，另加一个字节来记录长度(如果列声明的长度超过255，则使用两个字节)。VARCHAR值保存时不进行填充。当值保存和检索时尾部的空格仍保留，符合标准SQL。<br>char适合存储用户密码的MD5哈希值，它的长度总是一样的。对于经常改变的值，char也好于varchar,因为固定长度的行不容易产生碎片，对于很短的列，char的效率也高于varchar。char(1)字符串对于单字节字符集只会占用一个字节，但是varchar(1)则会占用2个字节，因为1个字节用来存储长度信息。</p>
+<h4 id="索引设计规范"><a href="#索引设计规范" class="headerlink" title="索引设计规范"></a>索引设计规范</h4><p>MySQL的查询速度依赖良好的索引设计，因此索引对于高性能至关重要。合理的索引会加快查询速度（包括UPDATE和DELETE的速度，MySQL会将包含该行的page加载到内存中，然后进行UPDATE或者DELETE操作），不合理的索引会降低速度。MySQL索引查找类似于新华字典的拼音和部首查找，当拼音和部首索引不存在时，只能通过一页一页的翻页来查找。当MySQL查询不能使用索引时，MySQL会进行全表扫描，会消耗大量的IO。索引的用途：去重、加速定位、避免排序、覆盖索引。</p>
+<h4 id="什么是覆盖索引"><a href="#什么是覆盖索引" class="headerlink" title="什么是覆盖索引"></a>什么是覆盖索引</h4><p>InnoDB存储引擎中，secondary index（非主键索引）中没有直接存储行地址，存储主键值。如果用户需要查询secondary index中所不包含的数据列时，需要先通过secondary index查找到主键值，然后再通过主键查询到其他数据列，因此需要查询两次。覆盖索引的概念就是查询可以通过在一个索引中完成，覆盖索引效率会比较高，主键查询是天然的覆盖索引。合理的创建索引以及合理的使用查询语句，当使用到覆盖索引时可以获得性能提升。比如SELECT email,uid FROM user_email WHERE uid=xx，如果uid不是主键，适当时候可以将索引添加为index(uid,email)，以获得性能提升。</p>
+<h4 id="索引的基本规范"><a href="#索引的基本规范" class="headerlink" title="索引的基本规范"></a>索引的基本规范</h4><p>索引数量控制，单张表中索引数量不超过5个，单个索引中的字段数不超过5个。<br>综合评估数据密度和分布</p>
+<h4 id="考虑查询和更新比例"><a href="#考虑查询和更新比例" class="headerlink" title="考虑查询和更新比例"></a>考虑查询和更新比例</h4><p>为什么一张表中不能存在过多的索引？<br>InnoDB的secondary index使用b+tree来存储，因此在UPDATE、DELETE、INSERT的时候需要对b+tree进行调整，过多的索引会减慢更新的速度。<br>对字符串使用前缀索引，前缀索引长度不超过8个字符，建议优先考虑前缀索引，必要时可添加伪列并建立索引。<br>不要索引blob/text等字段,不要索引大型字段,这样做会让索引占用太多的存储空间</p>
+<h4 id="什么是前缀索引？"><a href="#什么是前缀索引？" class="headerlink" title="什么是前缀索引？"></a>什么是前缀索引？</h4><p>前缀索引说白了就是对文本的前几个字符（具体是几个字符在建立索引时指定）建立索引，这样建立起来的索引更小，所以查询更快。前缀索引能有效减小索引文件的大小，提高索引的速度。但是前缀索引也有它的坏处：MySQL 不能在 ORDER BY 或 GROUP BY 中使用前缀索引，也不能把它们用作覆盖索引(Covering Index)。<br>建立前缀索引的语法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER TABLE table_name ADD KEY(column_name(prefix_length));</span><br></pre></td></tr></table></figure>
+
+<h4 id="主键准则"><a href="#主键准则" class="headerlink" title="主键准则"></a>主键准则</h4><p>表必须有主键<br>不使用更新频繁的列<br>尽量不选择字符串列<br>不使用UUID MD5 HASH<br>默认使用非空的唯一键<br>建议选择自增或发号器<br>重要的SQL必须被索引，核心SQL优先考虑覆盖索索引<br>UPDATE、DELETE语句的WHERE条件列<br>ORDER BY、GROUP BY、DISTINCT的字段<br>多表JOIN的字段<br>区分度最大的字段放在前面<br>选择筛选性更优的字段放在最前面，比如单号、userid等，type，status等筛选性一般不建议放在最前面<br>索引根据左前缀原则，当建立一个联合索引(a,b,c)，则查询条件里面只有包含(a)或(a,b)或(a,b,c)的时候才能走索引,(a,c)作为条件的时候只能使用到a列索引,所以这个时候要确定a的返回列一定不能太多，不然语句设计就不合理,(b,c)则不能走索引<br>合理创建联合索引（避免冗余），(a,b,c) 相当于 (a) 、(a,b) 、(a,b,c)</p>
+<h4 id="索引禁忌"><a href="#索引禁忌" class="headerlink" title="索引禁忌"></a>索引禁忌</h4><p>不在低基数列上建立索引，例如“性别”<br>不在索引列进行数学运算和函数运算<br>不要索引常用的小型表<br>尽量不使用外键<br>外键用来保护参照完整性，可在业务端实现<br>对父表和子表的操作会相互影响，降低可用性<br>INNODB本身对online DDL的限制<br>MYSQL 中索引的限制<br>MYISAM 存储引擎索引长度的总和不能超过 1000 字节<br>BLOB 和 TEXT 类型的列只能创建前缀索引<br>MYSQL 目前不支持函数索引<br>使用不等于 (!= 或者 &lt;&gt;) 的时候, MYSQL 无法使用索引。<br>过滤字段使用函数运算 (如 abs (column)) 后, MYSQL无法使用索引。<br>join语句中join条件字段类型不一致的时候MYSQL无法使用索引<br>使用 LIKE 操作的时候如果条件以通配符开始 (如 ‘%abc…’)时, MYSQL无法使用索引。<br>使用非等值查询的时候, MYSQL 无法使用 Hash 索引。</p>
+<h4 id="语句设计规范"><a href="#语句设计规范" class="headerlink" title="语句设计规范"></a>语句设计规范</h4><p>使用预编译语句<br>只传参数，比传递SQL语句更高效<br>一次解析，多次使用<br>降低SQL注入概率<br>避免隐式转换<br>会导致索引失效<br>充分利用前缀索引<br>必须是最左前缀<br>不可能同时用到两个范围条件<br>不使用%前导的查询，如like “%ab”<br>不使用负向查询，如not in/like<br>无法使用索引，导致全表扫描<br>全表扫描导致buffer pool利用率降低<br>避免使用存储过程、触发器、UDF、events等<br>让数据库做最擅长的事<br>降低业务耦合度，为sacle out、sharding留有余地<br>避开BUG<br>避免使用大表的JOIN<br>MySQL最擅长的是单表的主键/二级索引查询<br>JOIN消耗较多内存，产生临时表<br>避免在数据库中进行数学运算<br>MySQL不擅长数学运算和逻辑判断<br>无法使用索引<br>减少与数据库的交互次数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">INSERT … ON DUPLICATE KEY UPDATE</span><br><span class="line">REPLACE INTO、INSERT IGNORE 、INSERT INTO VALUES(),(),()</span><br><span class="line">UPDATE … WHERE ID IN(10,20,50,…)</span><br></pre></td></tr></table></figure>
+
+<h4 id="合理的使用分页"><a href="#合理的使用分页" class="headerlink" title="合理的使用分页"></a>合理的使用分页</h4><p>限制分页展示的页数 只能点击上一页、下一页 采用延迟关联</p>
+<h4 id="如何正确的使用分页？"><a href="#如何正确的使用分页？" class="headerlink" title="如何正确的使用分页？"></a>如何正确的使用分页？</h4><p>假如有类似下面分页语句：SELECT * FROM table ORDER BY id LIMIT 10000, 10 由于MySQL里对LIMIT OFFSET的处理方式是取出OFFSET+LIMIT的所有数据，然后去掉OFFSET，返回底部的LIMIT。所以，在OFFSET数值较大时，MySQL的查询性能会非常低。可以使用id &gt; n 的方式进行解决：<br>使用id &gt; n 的方式有局限性，对于id不连续的问题，可以通过翻页的时候同时传入最后一个id方式来解决。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;example.com&#x2F;page.php?last&#x3D;100</span><br><span class="line">select * from table where id&lt;100 order by id desc limit 10</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;上一页</span><br><span class="line">http:&#x2F;&#x2F;example.com&#x2F;page.php?first&#x3D;110</span><br><span class="line">select * from table where id&gt;110 order by id desc limit 10</span><br></pre></td></tr></table></figure>
+
+<p>这种方式比较大的缺点是，如果在浏览中有插入/删除操作，翻页不会更新，而总页数可能仍然是根据新的count(*) 来计算，最终可能会产生某些记录访问不到。为了修补这个问题，可以继续引入当前页码以及在上次翻页以后是否有插入/删除等影响总记录数的操作并进行缓存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from table where id &gt;&#x3D; (select id from table order by id limit #offset#, 1)</span><br></pre></td></tr></table></figure>
+
+<p>拒绝大SQL，拆分成小SQL<br>充分利用QUERY CACHE<br>充分利用多核CPU<br>使用in代替or，in的值不超过1000个<br>禁止使用order by rand()<br>使用EXPLAIN诊断，避免生成临时表</p>
+<p>EXPLAIN语句（在MySQL客户端中执行）可以获得MySQL如何执行SELECT语句的信息。通过对SELECT语句执行EXPLAIN，可以知晓MySQL执行该SELECT语句时是否使用了索引、全表扫描、临时表、排序等信息。尽量避免MySQL进行全表扫描、使用临时表、排序等。详见官方文档。<br>用union all而不是union<br>union all与 union有什么区别？<br>union和union all关键字都是将两个结果集合并为一个，但这两者从使用和效率上来说都有所不同。<br>union在进行表链接后会筛选掉重复的记录，所以在表链接后会对所产生的结果集进行排序运算，删除重复的记录再返回结果。如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">select * from test_union1</span><br><span class="line">union select * from test_union2</span><br></pre></td></tr></table></figure>
+<p>这个SQL在运行时先取出两个表的结果，再用排序空间进行排序删除重复的记录，最后返回结果集，如果表数据量大的话可能会导致用磁盘进行排序。<br>而union all只是简单的将两个结果合并后就返回。这样，如果返回的两个结果集中有重复的数据，那么返回的结果集就会包含重复的数据了。<br>从效率上说，union all要比union快很多，所以，如果可以确认合并的两个结果集中不包含重复的数据的话，那么就使用union all，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">select * from test_union1 union all select * from test_union2</span><br></pre></td></tr></table></figure>
+
+<p>程序应有捕获SQL异常的处理机制<br>禁止单条SQL语句同时更新多个表<br>不使用select * ，SELECT语句只获取需要的字段<br>消耗CPU和IO、消耗网络带宽<br>无法使用覆盖索引<br>减少表结构变更带来的影响<br>因为大，select/join 可能生成临时表<br>UPDATE、DELETE语句不使用LIMIT<br>INSERT语句必须显式的指明字段名称，不使用INSERT INTO table()<br>INSERT语句使用batch提交（INSERT INTO table VALUES(),(),()……），values的个数不超过500<br>统计表中记录数时使用COUNT(*)，而不是COUNT(primary_key)和COUNT(1) 备注：仅针对Myisam<br>数据更新建议使用二级索引先查询出主键，再根据主键进行数据更新<br>禁止使用跨库查询<br>禁止使用子查询，建议将子查询转换成关联查询<br>针对varchar类型字段的程序处理，请验证用户输入，不要超出其预设的长度；</p>
+<h4 id="分表规范"><a href="#分表规范" class="headerlink" title="分表规范"></a>分表规范</h4><p>单表一到两年内数据量超过500w或数据容量超过10G考虑分表，需提前考虑历史数据迁移或应用自行删除历史数据，采用等量均衡分表或根据业务规则分表均可。要分表的数据表必须与DBA商量分表策略<br>用HASH进行散表，表名后缀使用十进制数，下标从0开始<br>按日期时间分表需符合YYYY[MM][dd][HH]格式<br>采用合适的分库分表策略。例如千库十表、十库百表等<br>禁止使用分区表，分区表对分区键有严格要，分区表在表变大后执行DDL、SHARDING、单表恢复等都变得更加困难。<br>拆分大字段和访问频率低的字段，分离冷热数据</p>
+<h4 id="行为规范"><a href="#行为规范" class="headerlink" title="行为规范"></a>行为规范</h4><p>批量导入、导出数据必须提前通知DBA协助观察<br>禁止在线上从库执行后台管理和统计类查询<br>禁止有super权限的应用程序账号存在<br>产品出现非数据库导致的故障时及时通知DBA协助排查<br>推广活动或上线新功能必须提前通知DBA进行流量评估<br>数据库数据丢失，及时联系DBA进行恢复<br>对单表的多次alter操作必须合并为一次操作<br>不在MySQL数据库中存放业务逻辑<br>重大项目的数据库方案选型和设计必须提前通知DBA参与<br>对特别重要的库表，提前与DBA沟通确定维护和备份优先级<br>不在业务高峰期批量更新、查询数据库其他规范<br>提交线上建表改表需求，必须详细注明所有相关SQL语句</p>
+<h4 id="其他规范"><a href="#其他规范" class="headerlink" title="其他规范"></a>其他规范</h4><p>日志类数据不建议存储在MySQL上，优先考虑Hbase或OceanBase，如需要存储请找DBA评估使用压缩表存储。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 docker、k8s 做微服务容器化，自动化部署等一站式项目部署、落地。Go 语言学习，k8s 研究，边缘计算框架 KubeEdge 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">程序猿Damon | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+<br>
+
+<code style="font-size: 20px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: red">
+特别声明 <br>
+原文作者：白程序员的自习室 <br>
+本文原链：https://www.studytime.xin/article/mysql-internal-specifications.html <br>
+本文转载如有侵权，请联系站长删除，谢谢 <br>
+</code>
+
+<br>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Unit one -->
+<p><ins class="adsbygoogle"
+     style="display:inline-block;text-align:center;width:880px;height:150px"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="8964778819"></ins></p>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script> 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/23/mysql-norm/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/07/23/core-java02/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            浅谈 Java 集合 | 底层源码解析
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/07/22/popularize-01/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">极客时间 | 买课奖励 | 返现 | 学习资料 | 学习路径 | 白嫖</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020
+        <i class="ri-heart-fill heart_icon"></i> Damon
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/logo.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/course">课程</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/zsxq">星球</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">友情链接</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon8.cn">
+        <input type="hidden" name="site" value="damon8.cn">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div>
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

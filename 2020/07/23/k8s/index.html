@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java,key, key1, key2, key3" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    Xiao8 | Micro-Service | Containerization | DevOps
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/logo.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Developer Xiao8 | Micro-Service | Containerization | DevOps
+  程序猿Damon | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+<link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+
+    <!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-k8s"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  k8s部署手册
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/23/k8s/" class="article-date">
+  <time datetime="2020-07-23T01:06:27.000Z" itemprop="datePublished">2020-07-23</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.9k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">16 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="1、-K8S-的由来"><a href="#1、-K8S-的由来" class="headerlink" title="1、 K8S 的由来"></a>1、 K8S 的由来</h2><h4 id="K8S-是-kubernetes-的英文缩写，是用-8-代替-8-个字符-“ubernete”-而成的缩写。"><a href="#K8S-是-kubernetes-的英文缩写，是用-8-代替-8-个字符-“ubernete”-而成的缩写。" class="headerlink" title="K8S 是 kubernetes 的英文缩写，是用 8 代替 8 个字符 “ubernete” 而成的缩写。"></a>K8S 是 kubernetes 的英文缩写，是用 8 代替 8 个字符 “ubernete” 而成的缩写。</h4><br>
+<br>
+
+<h2 id="2、-K8S-单机版实战"><a href="#2、-K8S-单机版实战" class="headerlink" title="2、 K8S 单机版实战"></a>2、 K8S 单机版实战</h2><h5 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h5><ul>
+<li><p>ubuntu 16.04</p>
+</li>
+<li><p>gpu 驱动 418.56</p>
+</li>
+<li><p>docker 18.06</p>
+</li>
+<li><p>k8s 1.13.5</p>
+</li>
+</ul>
+<h3 id="一、设置环境"><a href="#一、设置环境" class="headerlink" title="一、设置环境"></a>一、设置环境</h3><p>首先备份一下源配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp &#x2F;etc&#x2F;apt&#x2F;sources.list &#x2F;etc&#x2F;apt&#x2F;sources.list.cp</span><br></pre></td></tr></table></figure>
+
+<p>编辑，替换为阿里源:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;apt&#x2F;sources.list</span><br><span class="line"></span><br><span class="line">deb-src http:&#x2F;&#x2F;archive.ubuntu.com&#x2F;ubuntu xenial main restricted</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial main restricted</span><br><span class="line">deb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial main restricted multiverse universe</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-updates main restricted</span><br><span class="line">deb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-updates main restricted multiverse universe</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial universe</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-updates universe</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial multiverse</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-updates multiverse</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-backports main restricted universe multiverse</span><br><span class="line">deb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F;xenial-backports main restricted universe multiverse</span><br><span class="line">deb http:&#x2F;&#x2F;archive.canonical.com&#x2F;ubuntu xenial partner</span><br><span class="line">deb-src http:&#x2F;&#x2F;archive.canonical.com&#x2F;ubuntu xenial partner</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-security main restricted</span><br><span class="line">deb-src http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-security main restricted multiverse universe</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-security universe</span><br><span class="line">deb http:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;ubuntu&#x2F; xenial-security multiverse</span><br></pre></td></tr></table></figure>
+
+<p>更新源:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br></pre></td></tr></table></figure>
+
+<p>自动修复安装出现 broken 的 package:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt --fix-broken install</span><br></pre></td></tr></table></figure>
+
+<p>升级，对于 gpu 机器可不执行，否则可能升级 gpu 驱动导致问题:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get upgrade</span><br></pre></td></tr></table></figure>
+
+<p>关闭防火墙:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ufw disable</span><br></pre></td></tr></table></figure>
+
+<p>安装 selinux:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install selinux-utils</span><br></pre></td></tr></table></figure>
+
+<p>selinux 防火墙配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">setenforce 0</span><br><span class="line"></span><br><span class="line">vim&#x2F;etc&#x2F;selinux&#x2F;conifg</span><br><span class="line"></span><br><span class="line">SELINUX&#x3D;disabled</span><br></pre></td></tr></table></figure>
+
+<p>设置网络:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tee &#x2F;etc&#x2F;sysctl.d&#x2F;k8s.conf &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables &#x3D; 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables &#x3D; 1</span><br><span class="line">net.ipv4.ip_forward &#x3D; 1</span><br><span class="line">EOF</span><br><span class="line">​</span><br><span class="line">modprobe br_netfilter</span><br></pre></td></tr></table></figure>
+
+<p>查看 ipv4 与 v6 配置是否生效:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl --system</span><br></pre></td></tr></table></figure>
+
+<p>配置 iptables:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">iptables -P FORWARD ACCEPT</span><br><span class="line"></span><br><span class="line">vim &#x2F;etc&#x2F;rc.local</span><br><span class="line">&#x2F;usr&#x2F;sbin&#x2F;iptables -P FORWARD ACCEPT</span><br></pre></td></tr></table></figure>
+
+<p>永久关闭 swap 分区:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#39;s&#x2F;.*swap.*&#x2F;#&amp;&#x2F;&#39; &#x2F;etc&#x2F;fstab</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、安装-docker"><a href="#二、安装-docker" class="headerlink" title="二、安装 docker"></a>二、安装 docker</h3><p>执行下面的命令:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apt-get install apt-transport-https ca-certificates curl software-properties-common</span><br><span class="line">​</span><br><span class="line">curl -fsSL https:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;docker-ce&#x2F;linux&#x2F;ubuntu&#x2F;gpg | apt-key add -</span><br><span class="line">​</span><br><span class="line">add-apt-repository &quot;deb [arch&#x3D;amd64] https:&#x2F;&#x2F;download.docker.com&#x2F;linux&#x2F;ubuntu $(lsb_release -cs) stable&quot; apt-get update</span><br><span class="line">​</span><br><span class="line">apt-get purge docker-ce docker docker-engine docker.io  &amp;&amp; rm -rf &#x2F;var&#x2F;lib&#x2F;docker</span><br><span class="line"></span><br><span class="line">apt-get autoremove docker-ce docker docker-engine docker.io</span><br><span class="line">​</span><br><span class="line">apt-get install -y docker-ce&#x3D;18.06.3~ce~3-0~ubuntu</span><br></pre></td></tr></table></figure>
+
+<p>启动 docker 并设置开机自重启:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable docker &amp;&amp; systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p>Docker 配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;docker&#x2F;daemon.json</span><br><span class="line">&#123;</span><br><span class="line"> &quot;log-driver&quot;: &quot;json-file&quot;,</span><br><span class="line"> &quot;log-opts&quot;: &#123;</span><br><span class="line">   &quot;max-size&quot;: &quot;100m&quot;,</span><br><span class="line">   &quot;max-file&quot;: &quot;10&quot;</span><br><span class="line"> &#125;,</span><br><span class="line"> &quot;insecure-registries&quot;: [&quot;http:&#x2F;&#x2F;k8s.gcr.io&quot;],</span><br><span class="line"> &quot;data-root&quot;: &quot;&quot;,</span><br><span class="line"> &quot;default-runtime&quot;: &quot;nvidia&quot;,</span><br><span class="line"> &quot;runtimes&quot;: &#123;</span><br><span class="line">     &quot;nvidia&quot;: &#123;</span><br><span class="line">         &quot;path&quot;: &quot;&#x2F;usr&#x2F;bin&#x2F;nvidia-container-runtime&quot;,</span><br><span class="line">         &quot;runtimeArgs&quot;: []</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面是含 GPU 的配置，不含 GPU 的配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;registry-mirrors&quot;:[</span><br><span class="line">&quot;https:&#x2F;&#x2F;registry.docker-cn.com&quot;</span><br><span class="line">],</span><br><span class="line">&quot;storage-driver&quot;:&quot;overlay2&quot;,</span><br><span class="line">&quot;log-driver&quot;:&quot;json-file&quot;,</span><br><span class="line">&quot;log-opts&quot;:&#123;</span><br><span class="line">&quot;max-size&quot;:&quot;100m&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;exec-opts&quot;:[</span><br><span class="line">&quot;native.cgroupdriver&#x3D;systemd&quot;</span><br><span class="line">],</span><br><span class="line">&quot;insecure-registries&quot;:[&quot;http:&#x2F;&#x2F;k8s.gcr.io&quot;],</span><br><span class="line">&quot;live-restore&quot;:true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重启服务并设置开机自动重启:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload &amp;&amp; systemctl restart docker &amp;&amp; docker info</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、安装-k8s"><a href="#三、安装-k8s" class="headerlink" title="三、安装 k8s"></a>三、安装 k8s</h3><p>拉取镜像前的设置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">apt-get update &amp;&amp; apt-get install -y apt-transport-https curl</span><br><span class="line">​</span><br><span class="line">curl -s https:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;kubernetes&#x2F;apt&#x2F;doc&#x2F;apt-key.gpg | apt-key add -</span><br><span class="line">​</span><br><span class="line">tee &#x2F;etc&#x2F;apt&#x2F;sources.list.d&#x2F;kubernetes.list &lt;&lt;-&#39;EOF&#39;</span><br><span class="line">deb https:&#x2F;&#x2F;mirrors.aliyun.com&#x2F;kubernetes&#x2F;apt kubernetes-xenial main</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>更新:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get purge kubelet&#x3D;1.13.5-00 kubeadm&#x3D;1.13.5-00 kubectl&#x3D;1.13.5-00</span><br><span class="line">apt-get autoremove kubelet&#x3D;1.13.5-00 kubeadm&#x3D;1.13.5-00 kubectl&#x3D;1.13.5-00</span><br><span class="line">apt-get install -y kubelet&#x3D;1.13.5-00 kubeadm&#x3D;1.13.5-00 kubectl&#x3D;1.13.5-00</span><br><span class="line">apt-mark hold kubelet&#x3D;1.13.5-00 kubeadm&#x3D;1.13.5-00 kubectl&#x3D;1.13.5-00</span><br></pre></td></tr></table></figure>
+
+<p>启动服务并设置开机自动重启:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl enable kubelet &amp;&amp; sudo systemctl start kubelet</span><br></pre></td></tr></table></figure>
+
+<p>安装 k8s 相关镜像，由于 gcr.io 网络访问不了，从 registry.cn-hangzhou.aliyuncs.com 镜像地址下载:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-apiserver:v1.13.5</span><br><span class="line"></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-controller-manager:v1.13.5</span><br><span class="line"></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-scheduler:v1.13.5</span><br><span class="line"></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-proxy:v1.13.5</span><br><span class="line"></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;kuberimages&#x2F;pause:3.1</span><br><span class="line"></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;kuberimages&#x2F;etcd:3.2.24</span><br><span class="line"></span><br><span class="line">docker pull registry.cn-hangzhou.aliyuncs.com&#x2F;kuberimages&#x2F;coredns:1.2.6</span><br></pre></td></tr></table></figure>
+
+<p>打标签:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-apiserver:v1.13.5 k8s.gcr.io&#x2F;kube-apiserver:v1.13.5</span><br><span class="line"></span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-controller-manager:v1.13.5 k8s.gcr.io&#x2F;kube-controller-manager:v1.13.5</span><br><span class="line"></span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-scheduler:v1.13.5 k8s.gcr.io&#x2F;kube-scheduler:v1.13.5</span><br><span class="line"></span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;gg-gcr-io&#x2F;kube-proxy:v1.13.5 k8s.gcr.io&#x2F;kube-proxy:v1.13.5</span><br><span class="line"></span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;kuberimages&#x2F;pause:3.1 k8s.gcr.io&#x2F;pause:3.1</span><br><span class="line"></span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;kuberimages&#x2F;etcd:3.2.24 k8s.gcr.io&#x2F;etcd:3.2.24</span><br><span class="line"></span><br><span class="line">docker tag registry.cn-hangzhou.aliyuncs.com&#x2F;kuberimages&#x2F;coredns:1.2.6 k8s.gcr.io&#x2F;coredns:1.2.6</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、kubeadm-初始化"><a href="#四、kubeadm-初始化" class="headerlink" title="四、kubeadm 初始化"></a>四、kubeadm 初始化</h3><p>利用 kubeadm 初始化 k8s，其中主机 IP 根据自己的实际情况输入:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init --kubernetes-version&#x3D;v1.13.5 --pod-network-cidr&#x3D;10.244.0.0&#x2F;16 --service-cidr&#x3D;10.16.0.0&#x2F;16 --apiserver-advertise-address&#x3D;$&#123;masterIp&#125; | tee kubeadm-init.log</span><br></pre></td></tr></table></figure>
+
+<p>此时，如果未知主机 IP，也可利用 yaml 文件动态初始化:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vi &#x2F;etc&#x2F;hosts</span><br><span class="line">10.10.5.100 k8s.api.server</span><br><span class="line"></span><br><span class="line">vi kube-init.yaml</span><br><span class="line"></span><br><span class="line">apiVersion: kubeadm.k8s.io&#x2F;v1beta1</span><br><span class="line">kind: ClusterConfiguration</span><br><span class="line">kubernetesVersion: v1.13.5</span><br><span class="line">imageRepository: registry.aliyuncs.com&#x2F;google_containers</span><br><span class="line">apiServer:</span><br><span class="line">  certSANs:</span><br><span class="line">  - &quot;k8s.api.server&quot;</span><br><span class="line">controlPlaneEndpoint: &quot;k8s.api.server:6443&quot;</span><br><span class="line">networking:</span><br><span class="line">  serviceSubnet: &quot;10.1.0.0&#x2F;16&quot;</span><br><span class="line">  podSubnet: &quot;10.244.0.0&#x2F;16&quot;</span><br></pre></td></tr></table></figure>
+
+<p>HA 版本:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: kubeadm.k8s.io&#x2F;v1beta1</span><br><span class="line">kind: ClusterConfiguration</span><br><span class="line">kubernetesVersion: v1.13.5</span><br><span class="line">imageRepository: registry.aliyuncs.com&#x2F;google_containers</span><br><span class="line">apiServer:</span><br><span class="line">  certSANs:</span><br><span class="line">  - &quot;api.k8s.com&quot;</span><br><span class="line">controlPlaneEndpoint: &quot;api.k8s.com:6443&quot;</span><br><span class="line">etcd:</span><br><span class="line">    external:</span><br><span class="line">        endpoints:</span><br><span class="line">        - https:&#x2F;&#x2F;ETCD_0_IP:2379</span><br><span class="line">        - https:&#x2F;&#x2F;ETCD_1_IP:2379</span><br><span class="line">        - https:&#x2F;&#x2F;ETCD_2_IP:2379</span><br><span class="line">networking:</span><br><span class="line">  serviceSubnet: 10.1.0.0&#x2F;16</span><br><span class="line">  podSubnet: 10.244.0.0&#x2F;16</span><br></pre></td></tr></table></figure>
+
+<p>注意: apiVersion 中用 kubeadm，因为需要用 kubeadm 来初始化，最后执行下面来初始化:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init --config&#x3D;kube-init.yaml</span><br></pre></td></tr></table></figure>
+
+<p>出现问题，解决后，reset 后再执行，如果需要更多，执行:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm --help</span><br></pre></td></tr></table></figure>
+
+<h3 id="五、部署出现问题"><a href="#五、部署出现问题" class="headerlink" title="五、部署出现问题"></a>五、部署出现问题</h3><p>先删除 node 节点(集群版)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">kubectl drain &lt;node name&gt; --delete-local-data --force --ignore-daemonsets</span><br><span class="line">​</span><br><span class="line">kubectl delete node &lt;node name&gt;</span><br></pre></td></tr></table></figure>
+
+<p>清空 init 配置在需要删除的节点上执行（注意，当执行 init 或者 join 后出现任何错误，都可以使用此命令返回）:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm reset</span><br></pre></td></tr></table></figure>
+
+<h3 id="六、查问题"><a href="#六、查问题" class="headerlink" title="六、查问题"></a>六、查问题</h3><p>初始化后出现问题，可以通过以下命令先查看其容器状态以及网络情况:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sudo docker ps -a | grep kube | grep -v pause</span><br><span class="line">​</span><br><span class="line">sudo docker logs CONTAINERID</span><br><span class="line">​</span><br><span class="line">sudo docker images &amp;&amp; systemctl status -l kubelet</span><br><span class="line">​</span><br><span class="line">netstat -nlpt</span><br><span class="line">​</span><br><span class="line">kubectl describe ep kubernetes</span><br><span class="line"></span><br><span class="line">kubectl describe svc kubernetes</span><br><span class="line">​</span><br><span class="line">kubectl get svc kubernetes</span><br><span class="line">​</span><br><span class="line">kubectl get ep</span><br><span class="line">​</span><br><span class="line">netstat -nlpt | grep apiser</span><br><span class="line"></span><br><span class="line">vi &#x2F;var&#x2F;log&#x2F;syslog</span><br></pre></td></tr></table></figure>
+
+<h3 id="七、给当前用户配置-k8s-apiserver-访问公钥"><a href="#七、给当前用户配置-k8s-apiserver-访问公钥" class="headerlink" title="七、给当前用户配置 k8s apiserver 访问公钥"></a>七、给当前用户配置 k8s apiserver 访问公钥</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir -p $HOME&#x2F;.kube</span><br><span class="line">​</span><br><span class="line">sudo cp -i &#x2F;etc&#x2F;kubernetes&#x2F;admin.conf $HOME&#x2F;.kube&#x2F;config</span><br><span class="line">​</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME&#x2F;.kube&#x2F;config</span><br></pre></td></tr></table></figure>
+
+<h3 id="八、网络插件"><a href="#八、网络插件" class="headerlink" title="八、网络插件"></a>八、网络插件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f https:&#x2F;&#x2F;docs.projectcalico.org&#x2F;v3.3&#x2F;getting-started&#x2F;kubernetes&#x2F;installation&#x2F;hosted&#x2F;rbac-kdd.yaml</span><br><span class="line">​</span><br><span class="line">wget https:&#x2F;&#x2F;docs.projectcalico.org&#x2F;v3.3&#x2F;getting-started&#x2F;kubernetes&#x2F;installation&#x2F;hosted&#x2F;kubernetes-datastore&#x2F;calico-networking&#x2F;1.7&#x2F;calico.yaml</span><br><span class="line"></span><br><span class="line">vi calico.yaml</span><br><span class="line"></span><br><span class="line">- name: CALICO_IPV4POOL_IPIP</span><br><span class="line"> value:&quot;off&quot;</span><br><span class="line">- name: CALICO_IPV4POOL_CIDR</span><br><span class="line"> value: &quot;10.244.0.0&#x2F;16</span><br><span class="line">​</span><br><span class="line">kubectl apply -f calico.yaml</span><br></pre></td></tr></table></figure>
+
+<p>单机下允许 master 节点部署 pod 命令如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes --all node-role.kubernetes.io&#x2F;master-</span><br></pre></td></tr></table></figure>
+
+<p>禁止 master 部署 pod:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl taint nodes k8s node-role.kubernetes.io&#x2F;master&#x3D;true:NoSchedule</span><br></pre></td></tr></table></figure>
+
+<p>以上单机版部署结束，如果你的项目中，交付的是软硬件结合的一体机，那么到此就结束了。记得<code>单机下要允许 master 节点部署</code>哟！</p>
+<h5 id="接下来，集群版本上线咯！"><a href="#接下来，集群版本上线咯！" class="headerlink" title="接下来，集群版本上线咯！"></a>接下来，集群版本上线咯！</h5><p>以上面部署的机器为例，作为 master 节点，继续执行:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">scp &#x2F;etc&#x2F;kubernetes&#x2F;admin.conf $nodeUser@$nodeIp:&#x2F;home&#x2F;$nodeUser</span><br><span class="line">​</span><br><span class="line">scp &#x2F;etc&#x2F;kubernetes&#x2F;pki&#x2F;etcd&#x2F;* $nodeUser@$nodeIp:&#x2F;home&#x2F;$nodeUser&#x2F;etcd</span><br><span class="line">​</span><br><span class="line">kubeadm token generate</span><br><span class="line">​</span><br><span class="line">kubeadm token create $token_name --print-join-command --ttl&#x3D;0</span><br><span class="line">​</span><br><span class="line">kubeadm join $masterIP:6443 --token  $token_name --discovery-token-ca-cert-hash $hash</span><br></pre></td></tr></table></figure>
+
+<p>Node 机器执行时，如果需要 cuda ，可以参考以下资料:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;docs.nvidia.com&#x2F;cuda&#x2F;cuda-installation-guide-linux&#x2F;index.html#ubuntu-installation</span><br><span class="line">​https:&#x2F;&#x2F;blog.csdn.net&#x2F;u012235003&#x2F;article&#x2F;details&#x2F;54575758</span><br><span class="line">https:&#x2F;&#x2F;blog.csdn.net&#x2F;qq_39670011&#x2F;article&#x2F;details&#x2F;90404111</span><br></pre></td></tr></table></figure>
+
+<p>正式执行:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;modprobe.d&#x2F;blacklist-nouveau.conf</span><br><span class="line">blacklist nouveau</span><br><span class="line">options nouveau modeset&#x3D;0</span><br><span class="line">update-initramfs -u</span><br></pre></td></tr></table></figure>
+
+<p>重启 ubuntu 查看是否禁用成功:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep nouveau</span><br><span class="line"></span><br><span class="line">apt-get remove --purge nvidia*</span><br><span class="line"></span><br><span class="line">https:&#x2F;&#x2F;developer.nvidia.com&#x2F;cuda-downloads</span><br><span class="line">​</span><br><span class="line">sudo apt-get install freeglut3-dev build-essential libx11-dev libxmu-dev libxi-dev libgl1-mesa-glx libglu1-mesa libglu1-mesa-dev</span><br></pre></td></tr></table></figure>
+
+<p>安装 cuda:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">​accept</span><br><span class="line">select &quot;Install&quot; &#x2F; Enter</span><br><span class="line">select &quot;Yes&quot;</span><br><span class="line">sh cuda_10.1.168_418.67_linux.run</span><br><span class="line">​</span><br><span class="line">echo &#39;export PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;cuda-10.1&#x2F;bin:$PATH&#39; &gt;&gt; ~&#x2F;.bashrc</span><br><span class="line">echo &#39;export PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;cuda-10.1&#x2F;NsightCompute-2019.3:$PATH&#39; &gt;&gt; ~&#x2F;.bashrc</span><br><span class="line">echo &#39;export LD_LIBRARY_PATH&#x3D;&#x2F;usr&#x2F;local&#x2F;cuda-10.1&#x2F;lib64:$LD_LIBRARY_PATH&#39; &gt;&gt; ~&#x2F;.bashrc</span><br><span class="line">source ~&#x2F;.bashrc</span><br></pre></td></tr></table></figure>
+
+<p>重启机器，检查 cuda 是否安装成功。</p>
+<p>查看是否有“nvidia*”的设备:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;dev &amp;&amp; ls -al</span><br></pre></td></tr></table></figure>
+
+<p>如果没有，创建一个 nv.sh:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">vi nv.sh</span><br><span class="line">#!&#x2F;bin&#x2F;bash &#x2F;sbin&#x2F;modprobe nvidia</span><br><span class="line">if [ &quot;$?&quot; -eq 0 ];</span><br><span class="line">then</span><br><span class="line">NVDEVS&#x3D;&#96;lspci |</span><br><span class="line"> grep -i NVIDIA</span><br><span class="line">&#96;</span><br><span class="line">N3D&#x3D;&#96;</span><br><span class="line">echo</span><br><span class="line">&quot;$NVDEVS&quot;</span><br><span class="line">| grep &quot;3D controller&quot; |</span><br><span class="line"> wc -l</span><br><span class="line">&#96;</span><br><span class="line">NVGA&#x3D;&#96;</span><br><span class="line">echo</span><br><span class="line">&quot;$NVDEVS&quot;</span><br><span class="line">| grep &quot;VGA compatible controller&quot; |</span><br><span class="line"> wc -l</span><br><span class="line">&#96;</span><br><span class="line">N&#x3D;&#96;</span><br><span class="line">expr $N3D + $NVGA -</span><br><span class="line">1</span><br><span class="line">&#96;</span><br><span class="line">for i in &#96;</span><br><span class="line">seq</span><br><span class="line">0</span><br><span class="line"> $N</span><br><span class="line">&#96;; do</span><br><span class="line">    mknod -m 666 &#x2F;dev&#x2F;nvidia$i c 195 $i</span><br><span class="line">done</span><br><span class="line">    mknod -m 666 &#x2F;dev&#x2F;nvidiactl c 195 255</span><br><span class="line">else</span><br><span class="line">    exit 1</span><br><span class="line">fi</span><br><span class="line">​</span><br><span class="line">chmod +x nv.sh &amp;&amp; bash nv.sh</span><br></pre></td></tr></table></figure>
+
+<p>再次重启机器查看 cuda 版本:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nvcc -V</span><br></pre></td></tr></table></figure>
+
+<p>编译:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;usr&#x2F;local&#x2F;cuda-10.1&#x2F;samples &amp;&amp;  make</span><br><span class="line"></span><br><span class="line">cd  &#x2F;usr&#x2F;local&#x2F;cuda-10.1&#x2F;samples&#x2F;bin&#x2F;x86_64&#x2F;linux&#x2F;release .&#x2F;deviceQuery</span><br></pre></td></tr></table></figure>
+
+<p>以上如果输出：“Result = PASS” 代表 cuda 安装成功。</p>
+<p>安装 nvdocker:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;docker&#x2F;daemon.json</span><br><span class="line">&#123;</span><br><span class="line">&quot;runtimes&quot;:&#123;</span><br><span class="line">    &quot;nvidia&quot;:&#123;</span><br><span class="line">         &quot;path&quot;:&quot;nvidia-container-runtime&quot;,</span><br><span class="line">          &quot;runtimeArgs&quot;:[]</span><br><span class="line">     &#125;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;registry-mirrors&quot;:[&quot;https:&#x2F;&#x2F;registry.docker-cn.com&quot;],</span><br><span class="line">&quot;storage-driver&quot;:&quot;overlay2&quot;,</span><br><span class="line">&quot;default-runtime&quot;:&quot;nvidia&quot;,</span><br><span class="line">&quot;log-driver&quot;:&quot;json-file&quot;,</span><br><span class="line">&quot;log-opts&quot;:&#123;</span><br><span class="line"> &quot;max-size&quot;:&quot;100m&quot;</span><br><span class="line">&#125;,</span><br><span class="line">&quot;exec-opts&quot;: [&quot;native.cgroupdriver&#x3D;systemd&quot;],</span><br><span class="line">&quot;insecure-registries&quot;: [$harborRgistry],</span><br><span class="line">&quot;live-restore&quot;: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>重启 docker:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl daemon-reload &amp;&amp; sudo systemctl restart docker &amp;&amp; docker info</span><br></pre></td></tr></table></figure>
+
+<p>检查 nvidia-docker 安装是否成功:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --runtime&#x3D;nvidia --rm nvidia&#x2F;cuda:9.0-base nvidia-smi</span><br></pre></td></tr></table></figure>
+
+<p>在节点机器进入 su 模式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">su $nodeUser</span><br></pre></td></tr></table></figure>
+
+<p>给当前节点用户配置 k8s apiserver 访问公钥:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME&#x2F;.kube</span><br><span class="line">​</span><br><span class="line">cp -i  admin.conf $HOME&#x2F;.kube&#x2F;config</span><br><span class="line">​</span><br><span class="line">chown $(id -u):$(id -g) $HOME&#x2F;.kube&#x2F;config</span><br><span class="line">​</span><br><span class="line">mkdir -p $HOME&#x2F;etcd</span><br><span class="line">​</span><br><span class="line">sudo rm -rf &#x2F;etc&#x2F;kubernetes</span><br><span class="line">​</span><br><span class="line">sudo mkdir -p &#x2F;etc&#x2F;kubernetes&#x2F;pki&#x2F;etcd</span><br><span class="line">​</span><br><span class="line">sudo cp &#x2F;home&#x2F;$nodeUser&#x2F;etcd&#x2F;* &#x2F;etc&#x2F;kubernetes&#x2F;pki&#x2F;etcd</span><br><span class="line">​</span><br><span class="line">sudo kubeadm join $masterIP:6443 --token  $token_name --discovery-token-ca-cert-hash $hash</span><br></pre></td></tr></table></figure>
+
+<p>如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm join 192.168.8.116:6443 --token vyi4ga.foyxqr2iz9i391q3 --discovery-token-ca-cert-hash sha256:929143bcdaa3e23c6faf20bc51ef6a57df02edf9df86cedf200320a9b4d3220a</span><br></pre></td></tr></table></figure>
+
+<p>检查 node 是否加入 master:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get node</span><br></pre></td></tr></table></figure>
+
+<h6 id="以上介绍了单机的-k8s-部署，以及-HA-的-master-节点的部署安装。"><a href="#以上介绍了单机的-k8s-部署，以及-HA-的-master-节点的部署安装。" class="headerlink" title="以上介绍了单机的 k8s 部署，以及 HA 的 master 节点的部署安装。"></a>以上介绍了单机的 k8s 部署，以及 HA 的 master 节点的部署安装。</h6><br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 docker、k8s 做微服务容器化，自动化部署等一站式项目部署、落地。Go 语言学习，k8s 研究，边缘计算框架 KubeEdge 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">程序猿Damon | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Unit one -->
+<p><ins class="adsbygoogle"
+     style="display:inline-block;text-align:center;width:880px;height:150px"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="8964778819"></ins></p>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script> 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/23/k8s/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/07/23/spring-cloud-k8s-discovery/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Spring Cloud Kubernetes之实战服务注册与发现
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/07/23/micro-service03/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">浅入Spring Cloud架构</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020
+        <i class="ri-heart-fill heart_icon"></i> Damon
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/logo.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/course">课程</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/zsxq">星球</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/links">友情链接</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon8.cn">
+        <input type="hidden" name="site" value="damon8.cn">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div>
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>
