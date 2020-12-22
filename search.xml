@@ -116,7 +116,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 <h3 id="3-2-跨语言间微服务的互通"><a href="#3-2-跨语言间微服务的互通" class="headerlink" title="3.2 跨语言间微服务的互通"></a>3.2 跨语言间微服务的互通</h3><p>在 k8s 集群内，通过 kube-proxy 结合 service 等一些功能组件来实现微服务之间的调用，不管是同语言也好，跨语言也罢。都会很好的进行处理，包括实现高可用以及负载均衡、服务治理等。</p>
 <br>
 
-<p>任何一个 k8s 集群中的 pod 都可以来访问其它 pod 的服务:</p>
+<p>任何一个 k8s 集群中的 pod 都可以通过 http 协议来访问其它 pod 的服务:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">root@rest-server-ver2-ds-vcfc7:&#x2F;usr&#x2F;src&#x2F;app# curl http:&#x2F;&#x2F;web-server-service.kube-system.svc.cluster.local:80&#x2F;api&#x2F;v1&#x2F;healthz</span><br><span class="line">&#123;</span><br><span class="line">  &quot;status&quot;: &#123;</span><br><span class="line">    &quot;code&quot;: 0,</span><br><span class="line">    &quot;msg&quot;: &quot;success&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;data&quot;: &quot;success&quot;</span><br><span class="line">&#125;root@rest-server-ver2-ds-vcfc7:&#x2F;usr&#x2F;src&#x2F;app#</span><br></pre></td></tr></table></figure>
 
 <p>其中的权限有的可以通过 namespace 来控制，有的可以通过服务本身的访问权限来控制，但一切都可以进行访问，不存在语言的差别对待。</p>
