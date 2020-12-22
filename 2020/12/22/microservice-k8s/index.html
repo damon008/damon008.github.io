@@ -140,6 +140,8 @@
 <li>kube-proxy</li>
 </ul>
 <p><img src="https://static001.geekbang.org/infoq/8d/8dc543a02801265b6ef2121b467f3bbf.jpeg" alt=""></p>
+<br>
+
 <p>K8s 中主要通过 kube-proxy 负责为 Service 提供 cluster 内部的服务发现和负载均衡，它是 K8s 集群内部的负载均衡器，也是一个分布式代理服务器，在 K8s 的每个节点上都有一个，这一设计体现了它的伸缩性优势，需要访问服务的节点越多，提供负载均衡能力的 kube-proxy 就越多，高可用节点也随之增多。通过 K8s service 的 “ClusterIP” 来实现集群内服务的 LB，当然，如果集群外需要访问 Service 对应的所有具有相同功能的 pod 应用程序，则可以通过 K8s service 的另外一种方式来实现：”NodePort”。</p>
 <h2 id="2-基于-Service-实现微服务负载均衡"><a href="#2-基于-Service-实现微服务负载均衡" class="headerlink" title="2. 基于 Service 实现微服务负载均衡"></a>2. 基于 Service 实现微服务负载均衡</h2><p>在 Java 语言，或其它语言中，通常需要做很多繁重的组件来实现服务的 LB。例如：Dubbo、SpringCloud、甚至 SpringCloudAlibaba 等。当然，对于 Python、Go 等语言，也有其 Restful API，所以也会集成标准的代理插件来进行做传统的 LB。但对于云原生时代的到来，服务容器化让微服务的访问更好了。K8s Service 提供的 LB，即为无语言边际的负载均衡，不用考虑任何语言的阻碍，只要是通用的 Restful API，即可借助 service 来进行处理集群内部微服务之间的 LB。</p>
 <p>在 K8s 集群中，如果内部访问，可以简单的通过 servicename 来进行访问。例如：</p>
@@ -155,7 +157,9 @@
 
 <h2 id="3-高可用案例"><a href="#3-高可用案例" class="headerlink" title="3. 高可用案例"></a>3. 高可用案例</h2><h3 id="3-1-传统微服务请求案例"><a href="#3-1-传统微服务请求案例" class="headerlink" title="3.1 传统微服务请求案例"></a>3.1 传统微服务请求案例</h3><p>传统的微服务中，不同语言构建的微服务架构很多，一般直接通过 http 协议进行访问，在同一种语言中，又会出现一种集成框架模式来实现微服务架构。如：Java 中 Dubbo、Springcloud 等，但其繁琐的框架结构导致了服务的繁重。</p>
 <h3 id="3-2-跨语言间微服务的互通"><a href="#3-2-跨语言间微服务的互通" class="headerlink" title="3.2 跨语言间微服务的互通"></a>3.2 跨语言间微服务的互通</h3><p>在 k8s 集群内，通过 kube-proxy 结合 service 等一些功能组件来实现微服务之间的调用，不管是同语言也好，跨语言也罢。都会很好的进行处理，包括实现高可用以及负载均衡、服务治理等。</p>
-<p>任何一个 k8s 集群中的 pod 都可以来访问其它 pod 的服务：</p>
+<br>
+
+<p>任何一个 k8s 集群中的 pod 都可以来访问其它 pod 的服务:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@rest-server-ver2-ds-vcfc7:&#x2F;usr&#x2F;src&#x2F;app# curl http:&#x2F;&#x2F;web-server-service.kube-system.svc.cluster.local:80&#x2F;api&#x2F;v1&#x2F;healthz</span><br><span class="line">&#123;</span><br><span class="line">  &quot;status&quot;: &#123;</span><br><span class="line">    &quot;code&quot;: 0,</span><br><span class="line">    &quot;msg&quot;: &quot;success&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;data&quot;: &quot;success&quot;</span><br><span class="line">&#125;root@rest-server-ver2-ds-vcfc7:&#x2F;usr&#x2F;src&#x2F;app#</span><br></pre></td></tr></table></figure>
 
 <p>其中的权限有的可以通过 namespace 来控制，有的可以通过服务本身的访问权限来控制，但一切都可以进行访问，不存在语言的差别对待。</p>
