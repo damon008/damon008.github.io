@@ -86,7 +86,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 </script>]]></content>
   </entry>
   <entry>
-    <title>云原生时代微服务的正确姿势</title>
+    <title>云原生时代跨语言间微服务的打法</title>
     <url>/2020/12/22/microservice-k8s/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="1-K8s-组件"><a href="#1-K8s-组件" class="headerlink" title="1. K8s 组件"></a>1. K8s 组件</h2><ul>
 <li>configMap</li>
