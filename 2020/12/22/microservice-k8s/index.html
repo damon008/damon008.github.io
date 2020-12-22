@@ -107,7 +107,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.2k</span>
+            <span class="post-count">1k</span>
         </span>
     </span>
 
@@ -152,7 +152,7 @@
 
 <br>
 
-<p>这里，K8s 通过虚拟出一个集群 IP，利用 kube-proxy 为 service 提供 cluster 内的服务发现和负载均衡，它运行在每个 node 节点上，负责 Pod 网络代理, 它会定时从 etcd 服务获取到 service 信息来做相应的策略，维护网络规则和四层负载均衡工作。在 K8s 集群中微服务的负载均衡是由 kube-proxy 实现的，它是 K8s 集群内部的负载均衡器，也是一个分布式代理服务器，在 K8s 的每个节点上都有一个，这一设计体现了它的伸缩性优势，需要访问服务的节点越多，提供负载均衡能力的 Kube-proxy 就越多，高可用节点也随之增多。</p>
+<p>这里，K8s 通过虚拟出一个集群 IP，利用 kube-proxy 为 service 提供 cluster 内的服务发现和负载均衡，上面说了 kube-proxy 的功能。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Name:              web-server-service</span><br><span class="line">Namespace:         default</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP:                20.16.249.134</span><br><span class="line">Port:              &lt;unset&gt;  80&#x2F;TCP</span><br><span class="line">TargetPort:        80&#x2F;TCP</span><br><span class="line">Endpoints:         20.162.35.223:80</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br></pre></td></tr></table></figure>
 
 <h2 id="3-高可用案例"><a href="#3-高可用案例" class="headerlink" title="3. 高可用案例"></a>3. 高可用案例</h2><h3 id="3-1-传统微服务请求案例"><a href="#3-1-传统微服务请求案例" class="headerlink" title="3.1 传统微服务请求案例"></a>3.1 传统微服务请求案例</h3><p>传统的微服务中，不同语言构建的微服务架构很多，一般直接通过 http 协议进行访问，在同一种语言中，又会出现一种集成框架模式来实现微服务架构。如：Java 中 Dubbo、Springcloud 等，但其繁琐的框架结构导致了服务的繁重。</p>
