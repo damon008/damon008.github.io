@@ -81,7 +81,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-popularize-02"
+  id="post-microservice-k8s"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -92,22 +92,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  云产品年中大优惠
+  microservice-k8s
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2021/08/19/popularize-02/" class="article-date">
-  <time datetime="2021-08-19T10:05:26.000Z" itemprop="datePublished">2021-08-19</time>
+      <a href="/2020/12/22/microservice-k8s/" class="article-date">
+  <time datetime="2020-12-22T10:28:34.000Z" itemprop="datePublished">2020-12-22</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">540</span>
+            <span class="post-count">1.2k</span>
         </span>
     </span>
 
@@ -116,7 +116,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">1 分钟</span>
+            <span class="post-count">4 分钟</span>
         </span>
     </span>
 </div>
@@ -131,49 +131,35 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">双十一阿里云全网最低：<a class="nav-item-link" target="_blank" href="https://www.aliyun.com/1111/pintuan-share?ptCode=MTc3NDc1NjEyMjkzNTc5N3x8MTE0fDE%3D&userCode=cdnpht6s" style="text-decoration: none" title="InfoQ">立即领取</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">阿里云产品大促：<a class="nav-item-link" target="_blank" href="https://www.aliyun.com/minisite/goods?userCode=cdnpht6s" style="text-decoration: none" title="InfoQ">立即领取</a></p>
+  <h2 id="1-K8s-组件"><a href="#1-K8s-组件" class="headerlink" title="1. K8s 组件"></a>1. K8s 组件</h2><ul>
+<li>configMap</li>
+<li>kube-apiserver</li>
+<li>scheduler</li>
+<li>etcd</li>
+<li>controller</li>
+<li>kube-proxy</li>
+</ul>
+<p><img src="https://static001.geekbang.org/infoq/8d/8dc543a02801265b6ef2121b467f3bbf.jpeg" alt=""></p>
+<p>K8s 中主要通过 kube-proxy 负责为 Service 提供 cluster 内部的服务发现和负载均衡，它是 K8s 集群内部的负载均衡器，也是一个分布式代理服务器，在 K8s 的每个节点上都有一个，这一设计体现了它的伸缩性优势，需要访问服务的节点越多，提供负载均衡能力的 kube-proxy 就越多，高可用节点也随之增多。通过 K8s service 的 “ClusterIP” 来实现集群内服务的 LB，当然，如果集群外需要访问 Service 对应的所有具有相同功能的 pod 应用程序，则可以通过 K8s service 的另外一种方式来实现：”NodePort”。</p>
+<h2 id="2-基于-Service-实现微服务负载均衡"><a href="#2-基于-Service-实现微服务负载均衡" class="headerlink" title="2. 基于 Service 实现微服务负载均衡"></a>2. 基于 Service 实现微服务负载均衡</h2><p>在 Java 语言，或其它语言中，通常需要做很多繁重的组件来实现服务的 LB。例如：Dubbo、SpringCloud、甚至 SpringCloudAlibaba 等。当然，对于 Python、Go 等语言，也有其 Restful API，所以也会集成标准的代理插件来进行做传统的 LB。但对于云原生时代的到来，服务容器化让微服务的访问更好了。K8s Service 提供的 LB，即为无语言边际的负载均衡，不用考虑任何语言的阻碍，只要是通用的 Restful API，即可借助 service 来进行处理集群内部微服务之间的 LB。</p>
+<p>在 K8s 集群中，如果内部访问，可以简单的通过 servicename 来进行访问。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: web-server-service</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">    - name: web-server</span><br><span class="line">      port: 80</span><br><span class="line">      targetPort: web-server-port</span><br><span class="line">  selector:</span><br><span class="line">    app: web-server</span><br></pre></td></tr></table></figure>
+
+<p>通过 <strong>selector</strong> 将 service 与服务 pod 对应起来，创建一个微服务的 service，默认其形式是：ClusterIP，则可以通过如下来访问该 service 对应的后端 pod:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http:&#x2F;&#x2F;$service_name.$namespace.svc.cluster.local:$service_port&#x2F;api&#x2F;v1&#x2F;***</span><br></pre></td></tr></table></figure>
 
 <br>
 
-<p>专属折扣码：</p>
-<img src="/images/popularize/aliyun.png" style="display: block; margin: 0 auto; max-width: 100%;">
+<p>这里，K8s 通过虚拟出一个集群 IP，利用 kube-proxy 为 service 提供 cluster 内的服务发现和负载均衡，它运行在每个 node 节点上，负责 Pod 网络代理, 它会定时从 etcd 服务获取到 service 信息来做相应的策略，维护网络规则和四层负载均衡工作。在 K8s 集群中微服务的负载均衡是由 kube-proxy 实现的，它是 K8s 集群内部的负载均衡器，也是一个分布式代理服务器，在 K8s 的每个节点上都有一个，这一设计体现了它的伸缩性优势，需要访问服务的节点越多，提供负载均衡能力的 Kube-proxy 就越多，高可用节点也随之增多。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Name:              web-server-service</span><br><span class="line">Namespace:         default</span><br><span class="line">Type:              ClusterIP</span><br><span class="line">IP:                20.16.249.134</span><br><span class="line">Port:              &lt;unset&gt;  80&#x2F;TCP</span><br><span class="line">TargetPort:        80&#x2F;TCP</span><br><span class="line">Endpoints:         20.162.35.223:80</span><br><span class="line">Session Affinity:  None</span><br><span class="line">Events:            &lt;none&gt;</span><br></pre></td></tr></table></figure>
 
+<h2 id="3-高可用案例"><a href="#3-高可用案例" class="headerlink" title="3. 高可用案例"></a>3. 高可用案例</h2><h3 id="3-1-传统微服务请求案例"><a href="#3-1-传统微服务请求案例" class="headerlink" title="3.1 传统微服务请求案例"></a>3.1 传统微服务请求案例</h3><p>传统的微服务中，不同语言构建的微服务架构很多，一般直接通过 http 协议进行访问，在同一种语言中，又会出现一种集成框架模式来实现微服务架构。如：Java 中 Dubbo、Springcloud 等，但其繁琐的框架结构导致了服务的繁重。</p>
+<h3 id="3-2-跨语言间微服务的互通"><a href="#3-2-跨语言间微服务的互通" class="headerlink" title="3.2 跨语言间微服务的互通"></a>3.2 跨语言间微服务的互通</h3><p>在 k8s 集群内，通过 kube-proxy 结合 service 等一些功能组件来实现微服务之间的调用，不管是同语言也好，跨语言也罢。都会很好的进行处理，包括实现高可用以及负载均衡、服务治理等。</p>
+<p>任何一个 k8s 集群中的 pod 都可以来访问其它 pod 的服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">root@rest-server-ver2-ds-vcfc7:&#x2F;usr&#x2F;src&#x2F;app# curl http:&#x2F;&#x2F;web-server-service.kube-system.svc.cluster.local:80&#x2F;api&#x2F;v1&#x2F;healthz</span><br><span class="line">&#123;</span><br><span class="line">  &quot;status&quot;: &#123;</span><br><span class="line">    &quot;code&quot;: 0,</span><br><span class="line">    &quot;msg&quot;: &quot;success&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;data&quot;: &quot;success&quot;</span><br><span class="line">&#125;root@rest-server-ver2-ds-vcfc7:&#x2F;usr&#x2F;src&#x2F;app#</span><br></pre></td></tr></table></figure>
+
+<p>其中的权限有的可以通过 namespace 来控制，有的可以通过服务本身的访问权限来控制，但一切都可以进行访问，不存在语言的差别对待。</p>
 <br data-tool="mdnice编辑器">
-
-<p>=============================================================================================================================</p>
-<br data-tool="mdnice编辑器">
-
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">【腾讯云】11.11 云上盛惠，云产品限时抢购，1核2G云服务器首年88元！<a class="nav-item-link" target="_blank" href="https://curl.qcloud.com/E29fNTk3" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">【腾讯云】境外1核2G服务器低至2折，半价续费券限量免费领取！<a class="nav-item-link" target="_blank" href="https://curl.qcloud.com/yGyHMrOc" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">【腾讯云】新客户无门槛领取总价值高达2860元代金券，每种代金券限量500张，先到先得！<a class="nav-item-link" target="_blank" href="https://curl.qcloud.com/ewl6G2Di" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">【腾讯云】热卖云产品3折起，云服务器、云数据库特惠，服务更稳，速度更快，价格更低！<a class="nav-item-link" target="_blank" href="https://curl.qcloud.com/VuHGCdHM" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">【腾讯云】腾讯云数据库性能卓越稳定可靠，为您解决数据库运维难题<a class="nav-item-link" target="_blank" href="https://curl.qcloud.com/yZ7iRLoW" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">【腾讯云】云数据库MySQL基础版1元体验<a class="nav-item-link" target="_blank" href="https://curl.qcloud.com/QYRX2K0A" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云新客专属福利：<a class="nav-item-link" target="_blank" href="https://url.cn/7JAnmBmX" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云十周年大促：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/act/cps/redirect?redirect=33567&cps_key=c140c92d2bde7476bad935dc8ea0ef41&from=activity" style="text-decoration: none" title="InfoQ">立即秒杀</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云服务器全球购：<a class="nav-item-link" target="_blank" href="https://url.cn/huMTG8Sc" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯企业上云特惠活动：<a class="nav-item-link" target="_blank" href="https://url.cn/Vx78pocV" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云产品三折：<a class="nav-item-link" target="_blank" href="https://url.cn/vzVRpgHO" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯服务器X实时音视频 联合大促：<a class="nav-item-link" target="_blank" href="https://url.cn/TpMozc1X" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云服务器购买页：<a class="nav-item-link" target="_blank" href="https://url.cn/FH9kStEc" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云数据库购买页：<a class="nav-item-link" target="_blank" href="https://url.cn/LyWcueXJ" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云新客专属福利：<a class="nav-item-link" target="_blank" href="https://url.cn/RMo8TtHA" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云限时秒杀活动：<a class="nav-item-link" target="_blank" href="https://url.cn/Npc7v6ae" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">腾讯云数据库Redis：<a class="nav-item-link" target="_blank" href="https://url.cn/mRkH6Kem" style="text-decoration: none" title="InfoQ">立即抢购</a></p>
-
-<br>
-
-<p>=============================================================================================================================</p>
-<br>
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">华为云新客专属福利：<a class="nav-item-link" target="_blank" href="https://account.huaweicloud.com/obmgr/invitation/invitation.html?bpName=000000010000000263EE620C0306EC55CA228C7F03DCE166723D7253C2DEA099D34C69DD0FECCE13692F65A613D7DEAFF4BEDA506668EFE88D57BC5DEDD5EA7D1DCC557E55B653A1&inviteCode=00000001000000020DDF706C9C17CC9385769E6F76491B4B2663ACCDCE6E162A8B68F6FBD5ECB0B9&bindType=1&isDefault=1" style="text-decoration: none" title="InfoQ">立即注册</a></p>
-
-
-<br>
 
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
@@ -192,6 +178,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
 
 <br>
 
@@ -222,16 +209,6 @@ https://gitee.com/damon_one/spring-cloud-oauth2
     
 
     <!-- copyright -->
-    
-    <div class="declare">
-      <ul class="post-copyright">
-        <li>
-          <i class="ri-copyright-line"></i>
-          <strong>版权声明： </strong>
-          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
-        </li>
-      </ul>
-    </div>
     
     <footer class="article-footer">
        
@@ -277,7 +254,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2021/08/19/popularize-02/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/12/22/microservice-k8s/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -288,10 +265,19 @@ https://gitee.com/damon_one/spring-cloud-oauth2
    
   <nav class="article-nav">
     
+      <a href="/2021/08/19/popularize-02/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            云产品年中大优惠
+          
+        </div>
+      </a>
     
-      <a href="/2020/12/22/microservice-k8s/" class="article-nav-link">
+    
+      <a href="/2020/12/16/geekbang-time/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">microservice-k8s</div>
+        <div class="article-nav-title">极客时间专栏分享</div>
       </a>
     
   </nav>
