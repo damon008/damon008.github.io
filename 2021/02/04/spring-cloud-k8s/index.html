@@ -212,7 +212,7 @@
 <p>开启服务发现功能：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br></pre></td></tr></table></figure>
 
-<p>开启后，我们在《<a href="https://gitbook.cn/books/5e914886a25ec85c46ecc10a/index.html" target="_blank" rel="noopener">微服务 Spring Cloud 架构设计</a>》一文中讲过，其实最终是向 K8s 的 API Server 发起 http 请求，获取 Service 资源的数据列表。然后根据底层的负载均衡策略来实现服务的发现，最终解析到某个 pod 上。那么为了同一服务的多个 pod 存在，我们需要执行：</p>
+<p>开启后，我们在《<a href="https://www.damon8.cn/2020/07/23/micro-service03/">微服务 Spring Cloud 架构设计</a>》一文中讲过，其实最终是向 K8s 的 API Server 发起 http 请求，获取 Service 资源的数据列表。然后根据底层的负载均衡策略来实现服务的发现，最终解析到某个 pod 上。那么为了同一服务的多个 pod 存在，我们需要执行：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale --replicas&#x3D;2 deployment admin-web-deployment</span><br></pre></td></tr></table></figure>
 
 <p>同时，我们如果通过 HTTP 的 RestTemplate Client 来作服务请求时，可以配置一些请求的策略，RestTemplate 一般与 Ribbon 结合使用：</p>
