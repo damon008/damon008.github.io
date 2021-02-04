@@ -86,7 +86,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 </script>]]></content>
   </entry>
   <entry>
-    <title>Springcloud 与 K8s 在 微服务层面的不同</title>
+    <title>Springcloud 与 K8s 在微服务层面的不同</title>
     <url>/2021/02/04/spring-cloud-k8s/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="Spring-Boot-1-x-与-2-x-的区别"><a href="#Spring-Boot-1-x-与-2-x-的区别" class="headerlink" title="Spring Boot 1.x 与 2.x 的区别"></a>Spring Boot 1.x 与 2.x 的区别</h3><p>在《<a href="https://www.damon8.cn/2020/07/23/micro-service03/">微服务 Spring Cloud 架构设计</a>》一文中，笔者讲过 Spring Cloud 的架构设计。其实 Spring Boot 在一开始时，运用到的基本就是 Eureka、Config、Zuul、Ribbon、Feign、Hystrix 等。到了 Spring Boot 2.x 的时候，大量的组件开始风云崛起。下面简单列下这两个版本之间的区别如下。</p>
 <p>Spring Boot 1.x 中，session 的超时时间是这样的：</p>
