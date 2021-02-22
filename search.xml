@@ -86,6 +86,82 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 </script>]]></content>
   </entry>
   <entry>
+    <title>备份Kubernetes的5个最佳实践</title>
+    <url>/2021/02/22/k8s-backup/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><p>备份应用程序和数据是组织经常需要处理的事情。尽管Kubernetes可以确保应用程序服务的高可用性和可伸缩性，但这些好处并不能有效地保护数据。因此，必须对Kubernetes应用程序进行数据管理和备份，并应将其纳入标准操作流程中。</p>
+<p>但是，备份Kubernetes应用程序需要一种独特的方法，该方法与传统的备份解决方案大不相同。使用Kubernetes，经常会将应用程序部署在集群中跨节点的多个容器中，要备份应用程序以及数据和存储量，你需要考虑所有各种Kubernetes对象和配置数据，还必须适应应用程序快速的开发和部署周期，DevOps的“左移(shift-left)”理念，数据保护，安全要求等。</p>
+<p>鉴于这些独特的要求，备份Kubernetes似乎是一项艰巨的任务，但是你可以采取一些步骤来简化该过程。以下是五个最佳做法：</p>
+<p><strong>1.考虑Kubernetes架构</strong></p>
+<p>一个典型的Kubernetes应用程序由数百个组件组成-Pod，服务(service)，证书，密钥(secret)等等。任何Kubernetes备份解决方案不仅要能够备份和还原数据，而且还要能够备份和还原所有这些组件。至关重要的是，备份解决方案要通过API自动与Kubernetes控制平面进行交互，以便不仅能够发现集群上运行的Kubernetes应用，而且还可以与基础计算，网络和存储基础架构集成。</p>
+<p>存储也是一个重要的考虑因素，必须包含在备份计划中。与应用程序配置数据一样，Kubernetes存储（用于应用程序容器的持久卷）包含需要保护的重要业务数据。</p>
+<p>最后，确定要备份存储的位置。你将其保留在本地s存储还是在云中？灵活性和易用性将成为任何数据备份存储的重要特征。</p>
+<p><strong>2.制定恢复计划</strong></p>
+<p>由于Kubernetes应用程序的分布式架构，还原数据需要很多步骤。例如，你需要验证集群依赖关系，创建新的Kubernetes视图的替代数据，并确定在何处启动恢复。然后，你需要标识备份数据源并准备目标存储。一旦计划了这些，就必须更新所有组件以创建新的存储资源。提前创建详细计划可以帮助你引导这个复杂的过程，幸运的是，有些Kubernetes备份解决方案可以自动为你执行此操作，你应该寻找一种支持此功能的解决方案。</p>
+<p>但是可靠的执行计划仅仅是开始。你还应该确保你的备份平台可以将各个步骤转换为相关的Kubernetes API调用。这样可确保恢复功能所需的资源可用，并确保正确部署和配置了云原生应用程序的所有组件。</p>
+<p><strong>3.简化操作</strong></p>
+<p>如果备份需要编码，打包或部署，则开发人员可能会避免使用它们。他们的目标是快速开发和部署应用程序，而复杂的备份过程可能会阻碍其进展。</p>
+<p>因此，备份应由API驱动，并且是无缝衔接的。确保你的解决方案具有针对应用程序而不是其单个组件的自动备份策略，并具有在部署新应用程序时检测和备份新应用程序的能力。最后，确保你的备份解决方案提供了简单的工作流程，并使你的运维团队能够顺畅地遵守任何法规和监控要求。</p>
+<p><strong>4.确保安全</strong></p>
+<p>与任何数据管理功能一样，安全性至关重要。执行Kubernetes备份时，要实施身份和访问管理以及基于角色的访问管理（RBAC）的控件，以确保只有授权的用户和组才能访问备份平台。这使你可以控制谁可以执行任务，例如监视和验证备份，执行还原等，并使你可以向开发人员授予从快照还原应用程序的权限。</p>
+<p>你的解决方案应集成到云提供商的身份验证解决方案中，而无需任何其他工具或API。最后，请确保你的数据已加密-无论是在传输中还是在静止状态。</p>
+<p><strong>5.利用Kubernetes的可移植性</strong></p>
+<p>要利用Kubernetes的可移植性功能，你的备份解决方案应该能够兼容几种发行版和基础架构配置执行还原，并自动转换应用程序的备份版本以在新环境中运行。</p>
+<p>备份解决方案要能够转换所有应用程序依赖项以与新环境兼容，这一点很重要。</p>
+<p><strong>Kubernetes原生备份是你的最佳选择</strong></p>
+<p>无论你的目标是保护Kubernetes应用程序免受数据丢失和损坏，为测试和开发目的备份数据，将应用程序迁移到新环境中，还是支持组织的灾难恢复计划，备份对于高效运维都是必不可少的。</p>
+<p>使用传统解决方案而不是专门为Kubernetes环境设计的解决方案会增加意外数据丢失和配置错误的风险，并且无法提供保护应用程序数据所需的细粒度，可感知的应用程序备份和恢复功能。为了遵守Kubernetes环境中的备份和恢复最佳实践，Kubernetes原生备份解决方案是最佳方法。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">Damon | Micro-Service | Containerization | DevOps</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+<br>
+
+<code style="font-size: 20px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: red">
+特别声明 <br>
+原文作者：王延飞 <br>
+本文原链：http://mtw.so/5GiprA <br>
+本文转载如有侵权，请联系站长删除，谢谢 <br>
+</code>
+
+<br>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Unit one -->
+<p><ins class="adsbygoogle"
+     style="display:inline-block;text-align:center;width:880px;height:150px"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="8964778819"></ins></p>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+]]></content>
+  </entry>
+  <entry>
     <title>Spring Cloud 与 K8s 在微服务层面的不同</title>
     <url>/2021/02/04/spring-cloud-k8s/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="Spring-Boot-1-x-与-2-x-的区别"><a href="#Spring-Boot-1-x-与-2-x-的区别" class="headerlink" title="Spring Boot 1.x 与 2.x 的区别"></a>Spring Boot 1.x 与 2.x 的区别</h3><p>在《<a href="https://www.damon8.cn/2020/07/23/micro-service03/">微服务 Spring Cloud 架构设计</a>》一文中，笔者讲过 Spring Cloud 的架构设计。其实 Spring Boot 在一开始时，运用到的基本就是 Eureka、Config、Zuul、Ribbon、Feign、Hystrix 等。到了 Spring Boot 2.x 的时候，大量的组件开始风云崛起。下面简单列下这两个版本之间的区别如下。</p>
@@ -3306,140 +3382,6 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 </script>]]></content>
   </entry>
   <entry>
-    <title>首发基于OpenPAI细化部署 Hadoop 集群</title>
-    <url>/2020/07/18/hadoop-deploy/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><ol>
-<li><a href="https://github.com/microsoft/pai/tree/v0.14.0" target="_blank" rel="noopener">https://github.com/microsoft/pai/tree/v0.14.0</a></li>
-<li>Hadoop 2.9.0</li>
-<li>k8s 1.9.4 (高版本未测)</li>
-</ol>
-<br>
-
-<h5 id="本次讲解的主要是基于-Microsoft-开源的-OpenPAI，向大家通俗易懂的讲解-OpenPAI-是如何快速部署-Hadoop-集群的。便于大家快速部署Hadoop集群。"><a href="#本次讲解的主要是基于-Microsoft-开源的-OpenPAI，向大家通俗易懂的讲解-OpenPAI-是如何快速部署-Hadoop-集群的。便于大家快速部署Hadoop集群。" class="headerlink" title="本次讲解的主要是基于 Microsoft 开源的 OpenPAI，向大家通俗易懂的讲解 OpenPAI 是如何快速部署 Hadoop 集群的。便于大家快速部署Hadoop集群。"></a><code>本次讲解的主要是基于 Microsoft 开源的 OpenPAI，向大家通俗易懂的讲解 OpenPAI 是如何快速部署 Hadoop 集群的。便于大家快速部署Hadoop集群。</code></h5><br>
-
-<h1 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ubuntu 16.04</span><br><span class="line">docker 18.06</span><br><span class="line">k8s 1.9.4</span><br><span class="line">Hadoop 2.9.0</span><br></pre></td></tr></table></figure>
-
-<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1. 准备"></a>1. 准备</h2><h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h5><p>以上系统环境准备好，首先克隆 Microsoft 开源的 OpenPAI 的代码: <a href="https://github.com/microsoft/pai，切换到分支" target="_blank" rel="noopener">https://github.com/microsoft/pai，切换到分支</a> v0.14.0。</p>
-<p>由于我的目录在 /home/damon 下，所以直接:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;home&#x2F;damon&#x2F;pai</span><br><span class="line">ll</span><br></pre></td></tr></table></figure>
-
-<p>可以看到有如下目录:</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/5bfd92d4-fc47-4561-840f-fd73d30027cc.png" alt=""></p>
-<p>其中，src 目录下都是一些代码目录以及脚本：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/195545aa-013f-473b-a372-eda5167d9bc2.png" alt=""></p>
-<br>
-<br>
-
-<p>我们再看看与 src 同一级的 deployment 目录:</p>
-<p><img src="https://static001.geekbang.org/infoq/6e/6e00143fcb9078825f72953aa8863acd.jpeg" alt=""></p>
-<p>看着很多，其实我们只要看 quick-start 下的几个文件:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;quick-start-example.yaml #配置master节点信息</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;kubernetes-configuration.yaml.template  #不作大改</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;layout.yaml.template  #增加机器相关信息</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;services-configuration.yaml.template #配置docker相关信息</span><br></pre></td></tr></table></figure>
-
-<br>
-<br>
-
-<p>第一个配置文件主要是关于 master 节点。第二个配置主要是配置 k8s 的基本信息，因为 OpenPAI 不仅可以部署 Hadoop，还可以基于 Docker、python 来部署 k8s。第三个配置主要是增加机器的信息，我们需要修改的是配置 master 节点的信息，至于 node 节点，我们可以通过打标签的方式来。第四个配置主要是配置 docker 信息，存储 image 的各种 tag 形式。</p>
-<br>
-<br>
-
-<h5 id="根据配置模板生成配置文件"><a href="#根据配置模板生成配置文件" class="headerlink" title="根据配置模板生成配置文件"></a>根据配置模板生成配置文件</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo python paictl.py config generate -i deployment&#x2F;quick-start&#x2F;quick-start-example.yaml -o ~&#x2F;damon&#x2F;pai-config -f</span><br></pre></td></tr></table></figure>
-
-<br>
-<br>
-
-<h5 id="把生成的本地配置文件推送到远程-k8s-集群"><a href="#把生成的本地配置文件推送到远程-k8s-集群" class="headerlink" title="把生成的本地配置文件推送到远程 k8s 集群"></a>把生成的本地配置文件推送到远程 k8s 集群</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo python paictl.py config push -p ~&#x2F;damon&#x2F;pai-config&#x2F;</span><br></pre></td></tr></table></figure>
-
-<p>执行上面的命令时，会出现输入命令，意思是让你输入一个 cluster-id，这是 OpenPAI 为集群设置的一个 id。输入后回车即可把配置推送到远程了。</p>
-<br>
-<br>
-
-<h5 id="获取-cluster-id"><a href="#获取-cluster-id" class="headerlink" title="获取 cluster-id"></a>获取 cluster-id</h5><p>如果生成过，执行</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">damon@master:~&#x2F;damon&#x2F;pai$ sudo python paictl.py config get-id</span><br><span class="line">2020-07-16 19:56:48,066 [INFO] - deployment.confStorage.get_cluster_id : Cluster-id is: ustc</span><br></pre></td></tr></table></figure>
-
-<p>即可获取。</p>
-<br>
-<br>
-
-<h5 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h5><p>以上配置都结束后，上面说过了，配置中只有 master 节点信息，需要手动给 node 节点打标签:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl label node nodeName hdfsrole&#x3D;master</span><br></pre></td></tr></table></figure>
-
-<p>同样的标签还有类似:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">master labels:</span><br><span class="line"></span><br><span class="line">hdfsrole&#x3D;master,jobhistory&#x3D;true,launcher&#x3D;true,node-exporter&#x3D;true,pai-master&#x3D;true,yarnrole&#x3D;master,zookeeper&#x3D;true</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">node labels:</span><br><span class="line">gpu-check&#x3D;true,hdfsrole&#x3D;worker,node-exporter&#x3D;true,pai-worker&#x3D;true,yarnrole&#x3D;worker</span><br></pre></td></tr></table></figure>
-
-<p>打完标签后，即可开始部署 Hadoop 集群了。</p>
-<h3 id="部署-Hadoop"><a href="#部署-Hadoop" class="headerlink" title="部署 Hadoop"></a>部署 Hadoop</h3><p>部署 Hadoop 的命令:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo python paictl.py service start [-c &#x2F;path&#x2F;to&#x2F;kubeconfig] [ -n service-name ]</span><br></pre></td></tr></table></figure>
-
-<p>解释：-c 参数中带的是 k8s 授权的 kube-config 路径，-n 参数是服务名，如果没带 -n，则会默认启动 src 下的所有的服务。</p>
-<br>
-<br>
-
-<p>Hadoop 中主要有这些服务:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zookeeper</span><br><span class="line">hadoop-name-node</span><br><span class="line">hadoop-data-node</span><br><span class="line">hadoop-resource-manager</span><br><span class="line">hadoop-node-manager</span><br><span class="line">hadoop-batch-job</span><br><span class="line">hadoop-jobhistory</span><br></pre></td></tr></table></figure>
-
-<p>那就手动一个个执行吧。执行一个后看看 pod 有没有启动，相关的 configmap 有没有创建，默认都是官方的。</p>
-<h3 id="注意项"><a href="#注意项" class="headerlink" title="注意项"></a>注意项</h3><p>如果发现 namenode 启用了安全模式，而不想启用的话，执行:</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl exec -it hadoop-name-node-e3bw9 bash</span><br><span class="line">hadoop dfsadmin -safemode leave</span><br></pre></td></tr></table></figure>
-
-<p>即：进入 name-node 容器中执行关闭。</p>
-<br>
-<br>
-
-<h5 id="模块功能说明"><a href="#模块功能说明" class="headerlink" title="模块功能说明"></a>模块功能说明</h5><ol>
-<li>resource-manager 是调度中心，负责资源管理。</li>
-<li>node-manager 是容器启动的的执行者。通常异常情况需要重启 node-manager。</li>
-<li>zookeeper 为数据的存储中心。</li>
-<li>namenode 和 datanode 为 hadoop 服务（HDFS）的基础层。</li>
-</ol>
-<h5 id="模块运维方法说明"><a href="#模块运维方法说明" class="headerlink" title="模块运维方法说明"></a>模块运维方法说明</h5><ol>
-<li>resource-manager 重启：大量任务 waiting 和 stopping 和数据不一致等情况。</li>
-<li>node-manager 重启：更新节点的资源信息或者节点故障等。</li>
-</ol>
-<br data-tool="mdnice编辑器">
-
-<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
-<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
-https://gitee.com/damon_one/spring-cloud-oauth2
-</code></pre>
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
-<br data-tool="mdnice编辑器">
-
-<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">Damon | Micro-Service | Containerization | DevOps</a>，欢迎來撩。</em></p>
-<br data-tool="mdnice编辑器">
-
-
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
-
-<br>
-
-<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
-
-
-<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
-<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
-<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
-<br>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Unit one -->
-<p><ins class="adsbygoogle"
-     style="display:inline-block;text-align:center;width:880px;height:150px"
-     data-ad-client="ca-pub-1354758384344627"
-     data-ad-slot="8964778819"></ins></p>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>]]></content>
-  </entry>
-  <entry>
     <title>ArrayList、LinkedList 你真的了解吗？</title>
     <url>/2020/07/18/hello-world/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="1、-前言"><a href="#1、-前言" class="headerlink" title="1、 前言"></a>1、 前言</h2><br>
@@ -3556,6 +3498,140 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
 
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- Unit one -->
+<p><ins class="adsbygoogle"
+     style="display:inline-block;text-align:center;width:880px;height:150px"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="8964778819"></ins></p>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>]]></content>
+  </entry>
+  <entry>
+    <title>首发基于OpenPAI细化部署 Hadoop 集群</title>
+    <url>/2020/07/18/hadoop-deploy/</url>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><ol>
+<li><a href="https://github.com/microsoft/pai/tree/v0.14.0" target="_blank" rel="noopener">https://github.com/microsoft/pai/tree/v0.14.0</a></li>
+<li>Hadoop 2.9.0</li>
+<li>k8s 1.9.4 (高版本未测)</li>
+</ol>
+<br>
+
+<h5 id="本次讲解的主要是基于-Microsoft-开源的-OpenPAI，向大家通俗易懂的讲解-OpenPAI-是如何快速部署-Hadoop-集群的。便于大家快速部署Hadoop集群。"><a href="#本次讲解的主要是基于-Microsoft-开源的-OpenPAI，向大家通俗易懂的讲解-OpenPAI-是如何快速部署-Hadoop-集群的。便于大家快速部署Hadoop集群。" class="headerlink" title="本次讲解的主要是基于 Microsoft 开源的 OpenPAI，向大家通俗易懂的讲解 OpenPAI 是如何快速部署 Hadoop 集群的。便于大家快速部署Hadoop集群。"></a><code>本次讲解的主要是基于 Microsoft 开源的 OpenPAI，向大家通俗易懂的讲解 OpenPAI 是如何快速部署 Hadoop 集群的。便于大家快速部署Hadoop集群。</code></h5><br>
+
+<h1 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h1><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ubuntu 16.04</span><br><span class="line">docker 18.06</span><br><span class="line">k8s 1.9.4</span><br><span class="line">Hadoop 2.9.0</span><br></pre></td></tr></table></figure>
+
+<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1. 准备"></a>1. 准备</h2><h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h5><p>以上系统环境准备好，首先克隆 Microsoft 开源的 OpenPAI 的代码: <a href="https://github.com/microsoft/pai，切换到分支" target="_blank" rel="noopener">https://github.com/microsoft/pai，切换到分支</a> v0.14.0。</p>
+<p>由于我的目录在 /home/damon 下，所以直接:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cd &#x2F;home&#x2F;damon&#x2F;pai</span><br><span class="line">ll</span><br></pre></td></tr></table></figure>
+
+<p>可以看到有如下目录:</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/5bfd92d4-fc47-4561-840f-fd73d30027cc.png" alt=""></p>
+<p>其中，src 目录下都是一些代码目录以及脚本：</p>
+<p><img src="https://imgkr.cn-bj.ufileos.com/195545aa-013f-473b-a372-eda5167d9bc2.png" alt=""></p>
+<br>
+<br>
+
+<p>我们再看看与 src 同一级的 deployment 目录:</p>
+<p><img src="https://static001.geekbang.org/infoq/6e/6e00143fcb9078825f72953aa8863acd.jpeg" alt=""></p>
+<p>看着很多，其实我们只要看 quick-start 下的几个文件:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;quick-start-example.yaml #配置master节点信息</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;kubernetes-configuration.yaml.template  #不作大改</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;layout.yaml.template  #增加机器相关信息</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;services-configuration.yaml.template #配置docker相关信息</span><br></pre></td></tr></table></figure>
+
+<br>
+<br>
+
+<p>第一个配置文件主要是关于 master 节点。第二个配置主要是配置 k8s 的基本信息，因为 OpenPAI 不仅可以部署 Hadoop，还可以基于 Docker、python 来部署 k8s。第三个配置主要是增加机器的信息，我们需要修改的是配置 master 节点的信息，至于 node 节点，我们可以通过打标签的方式来。第四个配置主要是配置 docker 信息，存储 image 的各种 tag 形式。</p>
+<br>
+<br>
+
+<h5 id="根据配置模板生成配置文件"><a href="#根据配置模板生成配置文件" class="headerlink" title="根据配置模板生成配置文件"></a>根据配置模板生成配置文件</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo python paictl.py config generate -i deployment&#x2F;quick-start&#x2F;quick-start-example.yaml -o ~&#x2F;damon&#x2F;pai-config -f</span><br></pre></td></tr></table></figure>
+
+<br>
+<br>
+
+<h5 id="把生成的本地配置文件推送到远程-k8s-集群"><a href="#把生成的本地配置文件推送到远程-k8s-集群" class="headerlink" title="把生成的本地配置文件推送到远程 k8s 集群"></a>把生成的本地配置文件推送到远程 k8s 集群</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo python paictl.py config push -p ~&#x2F;damon&#x2F;pai-config&#x2F;</span><br></pre></td></tr></table></figure>
+
+<p>执行上面的命令时，会出现输入命令，意思是让你输入一个 cluster-id，这是 OpenPAI 为集群设置的一个 id。输入后回车即可把配置推送到远程了。</p>
+<br>
+<br>
+
+<h5 id="获取-cluster-id"><a href="#获取-cluster-id" class="headerlink" title="获取 cluster-id"></a>获取 cluster-id</h5><p>如果生成过，执行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">damon@master:~&#x2F;damon&#x2F;pai$ sudo python paictl.py config get-id</span><br><span class="line">2020-07-16 19:56:48,066 [INFO] - deployment.confStorage.get_cluster_id : Cluster-id is: ustc</span><br></pre></td></tr></table></figure>
+
+<p>即可获取。</p>
+<br>
+<br>
+
+<h5 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h5><p>以上配置都结束后，上面说过了，配置中只有 master 节点信息，需要手动给 node 节点打标签:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl label node nodeName hdfsrole&#x3D;master</span><br></pre></td></tr></table></figure>
+
+<p>同样的标签还有类似:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">master labels:</span><br><span class="line"></span><br><span class="line">hdfsrole&#x3D;master,jobhistory&#x3D;true,launcher&#x3D;true,node-exporter&#x3D;true,pai-master&#x3D;true,yarnrole&#x3D;master,zookeeper&#x3D;true</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">node labels:</span><br><span class="line">gpu-check&#x3D;true,hdfsrole&#x3D;worker,node-exporter&#x3D;true,pai-worker&#x3D;true,yarnrole&#x3D;worker</span><br></pre></td></tr></table></figure>
+
+<p>打完标签后，即可开始部署 Hadoop 集群了。</p>
+<h3 id="部署-Hadoop"><a href="#部署-Hadoop" class="headerlink" title="部署 Hadoop"></a>部署 Hadoop</h3><p>部署 Hadoop 的命令:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">sudo python paictl.py service start [-c &#x2F;path&#x2F;to&#x2F;kubeconfig] [ -n service-name ]</span><br></pre></td></tr></table></figure>
+
+<p>解释：-c 参数中带的是 k8s 授权的 kube-config 路径，-n 参数是服务名，如果没带 -n，则会默认启动 src 下的所有的服务。</p>
+<br>
+<br>
+
+<p>Hadoop 中主要有这些服务:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">zookeeper</span><br><span class="line">hadoop-name-node</span><br><span class="line">hadoop-data-node</span><br><span class="line">hadoop-resource-manager</span><br><span class="line">hadoop-node-manager</span><br><span class="line">hadoop-batch-job</span><br><span class="line">hadoop-jobhistory</span><br></pre></td></tr></table></figure>
+
+<p>那就手动一个个执行吧。执行一个后看看 pod 有没有启动，相关的 configmap 有没有创建，默认都是官方的。</p>
+<h3 id="注意项"><a href="#注意项" class="headerlink" title="注意项"></a>注意项</h3><p>如果发现 namenode 启用了安全模式，而不想启用的话，执行:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">kubectl exec -it hadoop-name-node-e3bw9 bash</span><br><span class="line">hadoop dfsadmin -safemode leave</span><br></pre></td></tr></table></figure>
+
+<p>即：进入 name-node 容器中执行关闭。</p>
+<br>
+<br>
+
+<h5 id="模块功能说明"><a href="#模块功能说明" class="headerlink" title="模块功能说明"></a>模块功能说明</h5><ol>
+<li>resource-manager 是调度中心，负责资源管理。</li>
+<li>node-manager 是容器启动的的执行者。通常异常情况需要重启 node-manager。</li>
+<li>zookeeper 为数据的存储中心。</li>
+<li>namenode 和 datanode 为 hadoop 服务（HDFS）的基础层。</li>
+</ol>
+<h5 id="模块运维方法说明"><a href="#模块运维方法说明" class="headerlink" title="模块运维方法说明"></a>模块运维方法说明</h5><ol>
+<li>resource-manager 重启：大量任务 waiting 和 stopping 和数据不一致等情况。</li>
+<li>node-manager 重启：更新节点的资源信息或者节点故障等。</li>
+</ol>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
+https://gitee.com/damon_one/spring-cloud-oauth2
+</code></pre>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">Damon | Micro-Service | Containerization | DevOps</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
 
 <h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
 
