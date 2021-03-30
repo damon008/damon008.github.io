@@ -153,7 +153,7 @@
 <p>在 Sidecar 模式中，“边车”与父应用程序（即业务服务）是两个独立的进程，二者生命周期相同，同时被创建和退出。“边车”附加到业务服务，并为应用提供支持功能。</p>
 <p>业务所有的流量都转发到 Service Mesh 的代理服务 Sidecar 中，Sidecar 承担了微服务框架基础的功能，包括服务注册与发现、负载均衡、熔断限流、认证鉴权、日志、监控和缓存加速等。不同的是，Service Mesh 强调的是通过独立进程的代理方式。总体来说，Service Mesh 帮助应用程序在复杂的软件架构和网络中建立稳定的通信机制。</p>
 <h2 id="Service-Mesh-的开源组件"><a href="#Service-Mesh-的开源组件" class="headerlink" title="Service Mesh 的开源组件"></a>Service Mesh 的开源组件</h2><p>近几年 Service Mesh 社区比较活跃，其对应的开源组件也很丰富，从最早的 Linkerd 到当前火热的 Istio、Envoy 等组件，下面我们就来重点介绍下这三个开源组件。</p>
-<h3 id="1-Istio"><a href="#1-Istio" class="headerlink" title="1. Istio"></a>1. Istio</h3><p>Istio 由 Google、IBM 和 Lyft 合作开源，所以 Istio 自诞生之日起就备受瞩目。在 Istio 中，直接使用了 Lyft 公司的 Envoy 作为 Sidecar。2017 年 5 月 Istio 发布了 0.1 版本，现在已经发展到 1.6 版本。Istio 是 Service Mesh 的第二代产品，在刚开始发布时还曾计划提供对非 Kubernetes 的支持，发展到现在基本只支持 Kubernetes 上的使用，实质性取消了对虚拟机的支持。</p>
+<h3 id="1-Istio"><a href="#1-Istio" class="headerlink" title="1. Istio"></a>1. Istio</h3><p>Istio 由 Google、IBM 和 Lyft 合作开源，所以 Istio 自诞生之日起就备受瞩目。在 Istio 中，直接使用了 Lyft 公司的 Envoy 作为 Sidecar。2017 年 5 月 Istio 发布了 0.1 版本，现在已经发展到 1.9 版本。Istio 是 Service Mesh 的第二代产品，在刚开始发布时还曾计划提供对非 Kubernetes 的支持，发展到现在基本只支持 Kubernetes 上的使用，实质性取消了对虚拟机的支持。</p>
 <p>Istio 功能十分丰富，包括：</p>
 <p>流量管理：Istio 的基本功能，Istio 的流量路由规则使得你可以轻松控制服务之间的流量和 API 调用。</p>
 <p>策略控制：应用策略并确保其得到执行，并且资源在消费者之间公平分配。</p>
