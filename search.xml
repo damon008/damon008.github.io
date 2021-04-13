@@ -3658,7 +3658,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
 </script>]]></content>
   </entry>
   <entry>
-    <title>首发基于OpenPAI细化部署 Hadoop 集群</title>
+    <title>基于OpenPAI细化部署 Hadoop 集群</title>
     <url>/2020/07/18/hadoop-deploy/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><ol>
 <li><a href="https://github.com/microsoft/pai/tree/v0.14.0" target="_blank" rel="noopener">https://github.com/microsoft/pai/tree/v0.14.0</a></li>
