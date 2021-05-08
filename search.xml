@@ -743,7 +743,7 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">localhost:2000&#x2F;oauth&#x2F;authorize?response_type&#x3D;code&amp;client_id&#x3D;order-service&amp;redirect_uri&#x3D;http:&#x2F;&#x2F;order-service&#x2F;login&amp;scope&#x3D;all</span><br></pre></td></tr></table></figure>
 
 <p>此时，页面被拦截到登录页：</p>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/qnzibd6OnPzZnYURl87eVH8l5xUwJmL79XgdR8ChGFibhOuDhalnq0e5Gwj4Nb4V0BvyCWG0WIxy11MudHsAaDxw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt=""></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/qnzibd6OnPzZnYURl87eVH8l5xUwJmL79XgdR8ChGFibhOuDhalnq0e5Gwj4Nb4V0BvyCWG0WIxy11MudHsAaDxw/640" alt=""></p>
 <p>在点击 Approve、Authorize 后，输入用户名、密码，跳转到上面的重定向地址，并带有 code 属性参数:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">http:&#x2F;&#x2F;order-service&#x2F;login?code&#x3D;nbkiUe</span><br></pre></td></tr></table></figure>
 
