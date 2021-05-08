@@ -868,12 +868,12 @@
 <p>此时，页面被拦截到登录页：</p>
 <p><img src="https://mmbiz.qpic.cn/mmbiz_png/qnzibd6OnPzZnYURl87eVH8l5xUwJmL79XgdR8ChGFibhOuDhalnq0e5Gwj4Nb4V0BvyCWG0WIxy11MudHsAaDxw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt=""></p>
 <p>在点击 Approve、Authorize 后，输入用户名、密码，跳转到上面的重定向地址，并带有 code 属性参数:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;order-service&#x2F;login?code&#x3D;GW0OJ7</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http:&#x2F;&#x2F;order-service&#x2F;login?code&#x3D;nbkiUe</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li>根据 code 获取 access_token</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -X POST -d &quot;grant_type&#x3D;authorization_code&amp;code&#x3D;GW0OJ7&amp;client_id&#x3D;order-service&amp;client_secret&#x3D;order-service-123&amp;redirect_uri&#x3D;http:&#x2F;&#x2F;order-service&#x2F;login&quot; http:&#x2F;&#x2F;localhost:2000&#x2F;oauth&#x2F;token</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -X POST -d &quot;grant_type&#x3D;authorization_code&amp;code&#x3D;nbkiUe&amp;client_id&#x3D;order-service&amp;client_secret&#x3D;order-service-123&amp;redirect_uri&#x3D;http:&#x2F;&#x2F;order-service&#x2F;login&quot; http:&#x2F;&#x2F;localhost:2000&#x2F;oauth&#x2F;token</span><br></pre></td></tr></table></figure>
 
 <p>返回信息:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;access_token&quot;:&quot;a2af3f0b-27da-41b8-90c0-3bd2a1ed0421&quot;,&quot;token_type&quot;:&quot;bearer&quot;,&quot;refresh_token&quot;:&quot;91c22287-aa24-4305-95cf-38f7903865f3&quot;,&quot;expires_in&quot;:3283,&quot;scope&quot;:&quot;all&quot;&#125;</span><br></pre></td></tr></table></figure>
@@ -900,10 +900,10 @@
 <ol start="5">
 <li>退出</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -H &quot;Accept: application&#x2F;json&quot; -H &quot;Authorization:bearer 9d6d325a-8469-429f-8398-2812ee6cb231&quot; -X DELETE http:&#x2F;&#x2F;localhost:2000&#x2F;api&#x2F;logout</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -H &quot;Accept: application&#x2F;json&quot; -H &quot;Authorization:bearer 01f1beaa-ae21-4920-a349-be786ba327e7&quot; -X DELETE http:&#x2F;&#x2F;localhost:2000&#x2F;api&#x2F;logout</span><br></pre></td></tr></table></figure>
 
 <h6 id="密码模式"><a href="#密码模式" class="headerlink" title="密码模式"></a>密码模式</h6><p>密码模式由于都是通过直接调用服务来获取token，所以，咱们可以直接在容器内运行，看看效果：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -i -X POST -d &quot;username&#x3D;admin&amp;password&#x3D;123456&amp;grant_type&#x3D;password&amp;client_id&#x3D;order-service&amp;client_secret&#x3D;order-service-123&amp;scope&#x3D;all&quot; http:&#x2F;&#x2F;cas-server-service.system-server.svc.cluster.local:2000&#x2F;oauth&#x2F;token</span><br><span class="line">curl -i -X POST -H &quot;Authorization:Basic YWRtaW4td2ViOmFkbWluLXdlYi0xMjM&#x3D;&quot; -H &quot;Content-Type:application&#x2F;x-www-form-urlencoded&quot; -d &quot;username&#x3D;admin&amp;password&#x3D;123456&amp;grant_type&#x3D;password&amp;scope&#x3D;all&quot; http:&#x2F;&#x2F;cas-server-service.system-server.svc.cluster.local:2000&#x2F;oauth&#x2F;token</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">curl -i -X POST -d &quot;username&#x3D;admin&amp;password&#x3D;123456&amp;grant_type&#x3D;password&amp;client_id&#x3D;order-service&amp;client_secret&#x3D;order-service-123&amp;scope&#x3D;all&quot; http:&#x2F;&#x2F;cas-server-service.system-server.svc.cluster.local:2000&#x2F;oauth&#x2F;token</span><br><span class="line">Basic模式认证：</span><br><span class="line">curl -i -X POST -H &quot;Authorization:Basic YWRtaW4td2ViOmFkbWluLXdlYi0xMjM&#x3D;&quot; -H &quot;Content-Type:application&#x2F;x-www-form-urlencoded&quot; -d &quot;username&#x3D;admin&amp;password&#x3D;123456&amp;grant_type&#x3D;password&amp;scope&#x3D;all&quot; http:&#x2F;&#x2F;cas-server-service.system-server.svc.cluster.local:2000&#x2F;oauth&#x2F;token</span><br></pre></td></tr></table></figure>
 
 <p>认证成功后，会返回如下结果:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;access_token&quot;:&quot;d2066f68-665b-4038-9dbe-5dd1035e75a0&quot;,&quot;token_type&quot;:&quot;bearer&quot;,&quot;refresh_token&quot;:&quot;44009836-731c-4e6a-9cc3-274ce3af8c6b&quot;,&quot;expires_in&quot;:3599,&quot;scope&quot;:&quot;all&quot;&#125;</span><br></pre></td></tr></table></figure>
@@ -927,7 +927,7 @@
 <h4 id="云原生时代的微服务的未来"><a href="#云原生时代的微服务的未来" class="headerlink" title="云原生时代的微服务的未来"></a>云原生时代的微服务的未来</h4><p>&emsp;&emsp;云原生的第一个发展趋势：标准化和规范化，该技术的基础是容器化和容器编排技术，最经常会用到的技术是 Kubernetes 和 Docker 等。随着云原生技术的发展，云原生技术的标准化和规范化工作正在不断推进，其目的是促进技术的发展和避免供应商锁定的问题，这对于整个云原生技术的生态系统是至关重要的。</p>
 <p>&emsp;&emsp;云原生的第二个发展趋势：平台化，以服务网格技术为代表，这一趋势的出发点是增强云平台的能力，从而降低运维的复杂度。流量控制、身份认证和访问控制、性能指标数据收集、分布式服务追踪和集中式日志管理等功能，都可以由底层平台来提供，这就极大地降低了中小企业在运行和维护云原生应用时的复杂度，服务网格以 Istio 和 Linkerd 为开源代表。</p>
 <p>&emsp;&emsp;云原生的第三个发展趋势：应用管理技术的进步，如在 Kubernetes 平台上部署和更新应用一直以来都比较复杂，传统的基于资源声明 YAML 文件的做法，已经逐步被 Helm 所替代。操作员模式在 Helm 的基础上更进一步，以更高效、自动化和可扩展的方式对应用部署进行管理。</p>
-<h3 id="开源项目"><a href="#开源项目" class="headerlink" title="开源项目"></a>开源项目</h3><p>&emsp;&emsp;实践项目代码开源：<a href="https://gitee.com/damon_one/microservice-k8s" target="_blank" rel="noopener">云原生微服务架构设计实战代码</a>。</p>
+<h3 id="开源项目"><a href="#开源项目" class="headerlink" title="开源项目"></a>开源项目</h3><p>&emsp;&emsp;实践项目开源：<a href="https://gitee.com/damon_one/microservice-k8s" target="_blank" rel="noopener">云原生微服务架构设计实战代码</a>。</p>
 <p><strong>欢迎大家star、fork</strong>，欢迎联系我，一起学习。</p>
 <br data-tool="mdnice编辑器">
 
