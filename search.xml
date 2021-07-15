@@ -3,10 +3,7 @@
   <entry>
     <title>Jupyter Notebook 的使用</title>
     <url>/2021/07/12/jupyter/</url>
-    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><hr>
-<p>theme: channing-cyan<br>highlight: atom-one-dark</p>
-<hr>
-<h2 id="深度学习编程常用工具"><a href="#深度学习编程常用工具" class="headerlink" title="深度学习编程常用工具"></a>深度学习编程常用工具</h2><p>我们先来看 4 个常用的编程工具：Sublime Text、Vim、Jupyter。虽然我介绍的是 Jupyter，但并不是要求你必须使用它，你也可以根据自己的喜好自由选择。</p>
+    <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="深度学习编程常用工具"><a href="#深度学习编程常用工具" class="headerlink" title="深度学习编程常用工具"></a>深度学习编程常用工具</h2><p>我们先来看 4 个常用的编程工具：Sublime Text、Vim、Jupyter。虽然我介绍的是 Jupyter，但并不是要求你必须使用它，你也可以根据自己的喜好自由选择。</p>
 <h3 id="Sublime-Text"><a href="#Sublime-Text" class="headerlink" title="Sublime Text"></a>Sublime Text</h3><p>第一个是 Sublime Text，它是一个非常轻量且强大的文本编辑工具，内置了很多快捷的功能，同时还支持很丰富的插件功能，对我们来说非常方便。</p>
 <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dfeb7e6743984c8797599c30e4b39c3d~tplv-k3u1fbpfcp-watermark.image" alt="1625538727(1).jpg"></p>
 <p>如上图所示，它可以自动为项目中的类、方法和函数生成索引，我们让我们可以跟踪代码。可以通过它的 goto anything 功能，根据一些关键字查找到项目中的对应的代码行。</p>
