@@ -81,7 +81,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-hadoop-deploy"
+  id="post-spring-cloud-k8s-note1"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -92,22 +92,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  基于OpenPAI细化部署 Hadoop 集群
+  spring-cloud-k8s 跨 NS 的坑
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2020/07/18/hadoop-deploy/" class="article-date">
-  <time datetime="2020-07-18T06:34:34.000Z" itemprop="datePublished">2020-07-18</time>
+      <a href="/2021/11/11/spring-cloud-k8s-note1/" class="article-date">
+  <time datetime="2021-11-11T07:06:15.000Z" itemprop="datePublished">2021-11-11</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.2k</span>
+            <span class="post-count">1.8k</span>
         </span>
     </span>
 
@@ -116,7 +116,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">4 分钟</span>
+            <span class="post-count">8 分钟</span>
         </span>
     </span>
 </div>
@@ -131,136 +131,47 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><ol>
-<li><a href="https://github.com/microsoft/pai/tree/v0.14.0" target="_blank" rel="noopener">https://github.com/microsoft/pai/tree/v0.14.0</a></li>
-<li>Hadoop 2.9.0</li>
-<li>k8s 1.9.4 (高版本未测)</li>
-</ol>
-<br>
+  <h2 id="回顾"><a href="#回顾" class="headerlink" title="回顾"></a>回顾</h2><p>前面文章 (<a href="https://juejin.cn/post/6974562663833534494" target="_blank" rel="noopener">Spring Cloud Kubernetes 之实战服务注册与发现</a>) 中，讲述了 <code>spring-cloud-k8s</code> 在微服务实践中，带来了多大的优势。介绍了 k8s 中资源 Service，其如何来实现服务的注册与发现。</p>
+<p>其实在 k8s 中，Service 资源的类型比较多，有四种：</p>
+<ul>
+<li>ExternalName：创建一个 DNS 别名指向 service name，这样可以防止 service name 发生变化，但需要配合 DNS 插件使用。</li>
+<li>ClusterIP：默认的类型，用于为集群内 Pod 访问时，提供的固定访问地址,默认是自动分配地址,可使用 ClusterIP 关键字指定固定 IP。</li>
+<li>NodePort：基于 ClusterIp，用于为集群外部访问 Service 后面 Pod 提供访问接入端口。</li>
+<li>LoadBalancer：它是基于 NodePort。</li>
+</ul>
+<p>我们一般会默认使用的类型：ClusterIP，但此时会出现一种问题，那就是此类型的 Service 被用来访问非同一 NS 下的 pods，即<code>&lt;servicename&gt;.&lt;namespace&gt;.svc.cluster.local</code>形式访问 pod，只能通过 servicename 直接访问同一 namespace 下的 pod。</p>
+<h2 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h2><p>下面，我们来看案例：假设我这里有三个服务：cas-server、rest-service、diff-ns-service 等，我通过 deployment 来部署这些服务的 pod。</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2950309ca46a4cbaa608fb1c22e8ca3a~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>可以看到这些 pod 处于 不同的 namespace 下，同样的对应的 service 也是处于对应的 namespace 下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ns-app          diff-ns-service-service   ClusterIP   10.16.178.187   &lt;none&gt;        2008&#x2F;TCP        6h39m   app&#x3D;diff-ns-service</span><br><span class="line">system-server   cas-server-service        ClusterIP   10.16.134.168   &lt;none&gt;        2000&#x2F;TCP        16d     app&#x3D;cas-server</span><br><span class="line">system-server   rest-service-service      ClusterIP   10.16.128.58    &lt;none&gt;        2001&#x2F;TCP        16d     app&#x3D;rest-service</span><br></pre></td></tr></table></figure>
 
-<h5 id="本次讲解的主要是基于-Microsoft-开源的-OpenPAI，向大家通俗易懂的讲解-OpenPAI-是如何快速部署-Hadoop-集群的。便于大家快速部署Hadoop集群。"><a href="#本次讲解的主要是基于-Microsoft-开源的-OpenPAI，向大家通俗易懂的讲解-OpenPAI-是如何快速部署-Hadoop-集群的。便于大家快速部署Hadoop集群。" class="headerlink" title="本次讲解的主要是基于 Microsoft 开源的 OpenPAI，向大家通俗易懂的讲解 OpenPAI 是如何快速部署 Hadoop 集群的。便于大家快速部署Hadoop集群。"></a><code>本次讲解的主要是基于 Microsoft 开源的 OpenPAI，向大家通俗易懂的讲解 OpenPAI 是如何快速部署 Hadoop 集群的。便于大家快速部署Hadoop集群。</code></h5><br>
+<p>这里的 Service 类型都是 <code>ClusterIp</code>,在前面，我们验证过基于这样的服务，我们可以利用 springcloud-k8s 来实现同一 namespace 下服务之间的注册与发现，实现负载均衡。但如果不在同一 namespace 下呢？比如这里的<code>diff-ns-service</code>，它与另外两个服务不在同一 namespace。此时我们通过基于 Ribbon 的负载均衡策略。这是因为我们默认了 <code>KubernetesRibbonMode</code> 的模式：POD，就是获取服务提供者的 pod 的 ip 和 port，该 ip 是 kubernetes 集群的内部 ip，只要服务消费者是部署在同一个 kubernetes 集群内就能通过 pod 的 ip 和服务提供者暴露的端口访问。当我们使用当<code>mode</code>为<code>SERVICE</code>时，就是获取服务提供者在 k8s 中的 service 的名称和端口，使用这种模式会导致 Ribbon 的负载均衡失效，转而使用 k8s 的负载均衡。</p>
+<p>所以，如果不使用默认的 Ribbon 来实现负载均衡，可以配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      ribbon:</span><br><span class="line">        mode: SERVICE</span><br></pre></td></tr></table></figure>
 
-<h1 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ubuntu 16.04</span><br><span class="line">docker 18.06</span><br><span class="line">k8s 1.9.4</span><br><span class="line">Hadoop 2.9.0</span><br></pre></td></tr></table></figure>
+<p>这个前提其实还是在同一 namespace 下，但如果不在同一 NS 呢？还是设置为<code>SERVICE</code>模式，但里面还是用 k8s 原生的调用方式：<code>&lt;servicename&gt;.&lt;namespace&gt;.svc.cluster.local***</code>，假设这里需要调用 <code>diff-ns-service</code>,则：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ResponseEntity&lt;String&gt; responseEntity &#x3D; new RestTemplate().exchange(&quot;http:&#x2F;&#x2F;diff-ns-service-service&#x2F;getservicedetail?servicename&#x3D;cas-server-service&quot;,</span><br><span class="line">					HttpMethod.GET, formEntity, String.class);</span><br></pre></td></tr></table></figure>
 
-<h2 id="1-准备"><a href="#1-准备" class="headerlink" title="1. 准备"></a>1. 准备</h2><h5 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h5><p>以上系统环境准备好，首先克隆 Microsoft 开源的 OpenPAI 的代码: <a href="https://github.com/microsoft/pai，切换到分支" target="_blank" rel="noopener">https://github.com/microsoft/pai，切换到分支</a> v0.14.0。</p>
-<p>由于我的目录在 /home/damon 下，所以直接:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;home&#x2F;damon&#x2F;pai</span><br><span class="line">ll</span><br></pre></td></tr></table></figure>
+<p>访问请求该服务时，发现并未请求到：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">2021-11-04 09:23:16.830:147 [http-nio2-2001-exec-2] DEBUG org.springframework.web.client.RestTemplate -HTTP GET http:&#x2F;&#x2F;diff-ns-service-service&#x2F;getservicedetail?servicename&#x3D;cas-server-service</span><br><span class="line">2021-11-04 09:23:16.834:147 [http-nio2-2001-exec-2] DEBUG org.springframework.web.client.RestTemplate -Accept&#x3D;[text&#x2F;plain, application&#x2F;json, application&#x2F;*+json, *&#x2F;*]</span><br><span class="line">2021-11-04 09:23:16.859:255 [http-nio2-2001-exec-2] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor -Using &#39;text&#x2F;html&#39;, given [text&#x2F;html, application&#x2F;xhtml+xml, image&#x2F;avif, image&#x2F;webp, image&#x2F;apng, application&#x2F;xml;q&#x3D;0.9, application&#x2F;signed-exchange;v&#x3D;b3;q&#x3D;0.9, *&#x2F;*;q&#x3D;0.8] and supported [text&#x2F;plain, *&#x2F;*, text&#x2F;plain, *&#x2F;*, application&#x2F;json, application&#x2F;*+json, application&#x2F;json, application&#x2F;*+json]</span><br><span class="line">2021-11-04 09:23:16.860:91 [http-nio2-2001-exec-2] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor -Writing [&quot;&quot;]</span><br></pre></td></tr></table></figure>
 
-<p>可以看到有如下目录:</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/5bfd92d4-fc47-4561-840f-fd73d30027cc.png" alt=""></p>
-<p>其中，src 目录下都是一些代码目录以及脚本：</p>
-<p><img src="https://imgkr.cn-bj.ufileos.com/195545aa-013f-473b-a372-eda5167d9bc2.png" alt=""></p>
-<br>
-<br>
+<p>如果走 mode 为<code>POD</code>的 Ribbon 的负载均衡：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">2021-11-04 09:34:32.188:147 [http-nio2-2001-exec-2] DEBUG org.springframework.web.client.RestTemplate -HTTP GET http:&#x2F;&#x2F;diff-ns-service-service&#x2F;getservicedetail?servicename&#x3D;cas-server-service</span><br><span class="line">2021-11-04 09:34:32.193:147 [http-nio2-2001-exec-2] DEBUG org.springframework.web.client.RestTemplate -Accept&#x3D;[text&#x2F;plain, application&#x2F;json, application&#x2F;*+json, *&#x2F;*]</span><br><span class="line">2021-11-04 09:34:32.261:115 [http-nio2-2001-exec-2] INFO  com.netflix.config.ChainedDynamicProperty -Flipping property: diff-ns-service-service.ribbon.ActiveConnectionsLimit to use NEXT property: niws.loadbalancer.availabilityFilteringRule.activeConnectionsLimit &#x3D; 2147483647</span><br><span class="line">2021-11-04 09:34:32.271:197 [http-nio2-2001-exec-2] INFO  com.netflix.loadbalancer.BaseLoadBalancer -Client: diff-ns-service-service instantiated a LoadBalancer: DynamicServerListLoadBalancer:&#123;NFLoadBalancer:name&#x3D;diff-ns-service-service,current list of Servers&#x3D;[],Load balancer stats&#x3D;Zone stats: &#123;&#125;,Server stats: []&#125;ServerList:null</span><br><span class="line">2021-11-04 09:34:32.278:222 [http-nio2-2001-exec-2] INFO  com.netflix.loadbalancer.DynamicServerListLoadBalancer -Using serverListUpdater PollingServerListUpdater</span><br><span class="line">2021-11-04 09:34:32.281:88 [http-nio2-2001-exec-2] WARN  org.springframework.cloud.kubernetes.ribbon.KubernetesEndpointsServerList -Did not find any endpoints in ribbon in namespace [system-server] for name [diff-ns-service-service] and portName [null]</span><br><span class="line">2021-11-04 09:34:32.282:150 [http-nio2-2001-exec-2] INFO  com.netflix.loadbalancer.DynamicServerListLoadBalancer -DynamicServerListLoadBalancer for client diff-ns-service-service initialized: DynamicServerListLoadBalancer:&#123;NFLoadBalancer:name&#x3D;diff-ns-service-service,current list of Servers&#x3D;[],Load balancer stats&#x3D;Zone stats: &#123;&#125;,Server stats: []&#125;ServerList:org.springframework.cloud.kubernetes.ribbon.KubernetesEndpointsServerList@d48bf01</span><br><span class="line">2021-11-04 09:34:32.308:255 [http-nio2-2001-exec-2] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor -Using &#39;text&#x2F;html&#39;, given [text&#x2F;html, application&#x2F;xhtml+xml, image&#x2F;avif, image&#x2F;webp, image&#x2F;apng, application&#x2F;xml;q&#x3D;0.9, application&#x2F;signed-exchange;v&#x3D;b3;q&#x3D;0.9, *&#x2F;*;q&#x3D;0.8] and supported [text&#x2F;plain, *&#x2F;*, text&#x2F;plain, *&#x2F;*, application&#x2F;json, application&#x2F;*+json, application&#x2F;json, application&#x2F;*+json]</span><br><span class="line">2021-11-04 09:34:32.309:91 [http-nio2-2001-exec-2] DEBUG org.springframework.web.servlet.mvc.method.annotation.RequestResponseBodyMethodProcessor -Writing [&quot;&quot;]</span><br><span class="line">2021-11-04 09:34:32.316:1131 [http-nio2-2001-exec-2] DEBUG org.springframework.web.servlet.DispatcherServlet -Completed 200 OK</span><br></pre></td></tr></table></figure>
 
-<p>我们再看看与 src 同一级的 deployment 目录:</p>
-<p><img src="https://static001.geekbang.org/infoq/6e/6e00143fcb9078825f72953aa8863acd.jpeg" alt=""></p>
-<p>看着很多，其实我们只要看 quick-start 下的几个文件:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;quick-start-example.yaml #配置master节点信息</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;kubernetes-configuration.yaml.template  #不作大改</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;layout.yaml.template  #增加机器相关信息</span><br><span class="line">sudo vi deployment&#x2F;quick-start&#x2F;services-configuration.yaml.template #配置docker相关信息</span><br></pre></td></tr></table></figure>
+<p>此时，给我的感觉就是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      ribbon:</span><br><span class="line">        #直接走k8s的LB</span><br><span class="line">        mode: SERVICE #POD走ribbon的LB</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br></pre></td></tr></table></figure>
 
-<br>
-<br>
+<p>此类配置是无法进行 Service 到应用服务的访问，只能访问到 Service。同时我们看到日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2021-11-04 09:34:32.281:88 [http-nio2-2001-exec-2] WARN  org.springframework.cloud.kubernetes.ribbon.KubernetesEndpointsServerList -Did not find any endpoints in ribbon in namespace [system-server] for name [diff-ns-service-service] and portName [null]</span><br></pre></td></tr></table></figure>
 
-<p>第一个配置文件主要是关于 master 节点。第二个配置主要是配置 k8s 的基本信息，因为 OpenPAI 不仅可以部署 Hadoop，还可以基于 Docker、python 来部署 k8s。第三个配置主要是增加机器的信息，我们需要修改的是配置 master 节点的信息，至于 node 节点，我们可以通过打标签的方式来。第四个配置主要是配置 docker 信息，存储 image 的各种 tag 形式。</p>
-<br>
-<br>
+<p>上面给到的是 mode 为 POD 时，走的 Ribbon 的负载均衡后，无法找到当前 pod 对应的 NS 下的 Servcie 为 diff-ns-service-service 的服务。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2021-11-04 09:20:27.109:89 [PollingServerListUpdater-1] WARN  org.springframework.cloud.kubernetes.ribbon.KubernetesServicesServerList -Did not find any service in ribbon in namespace [system-server] for name [diff-ns-service-service] and portName [null]</span><br></pre></td></tr></table></figure>
 
-<h5 id="根据配置模板生成配置文件"><a href="#根据配置模板生成配置文件" class="headerlink" title="根据配置模板生成配置文件"></a>根据配置模板生成配置文件</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo python paictl.py config generate -i deployment&#x2F;quick-start&#x2F;quick-start-example.yaml -o ~&#x2F;damon&#x2F;pai-config -f</span><br></pre></td></tr></table></figure>
-
-<br>
-<br>
-
-<h5 id="把生成的本地配置文件推送到远程-k8s-集群"><a href="#把生成的本地配置文件推送到远程-k8s-集群" class="headerlink" title="把生成的本地配置文件推送到远程 k8s 集群"></a>把生成的本地配置文件推送到远程 k8s 集群</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo python paictl.py config push -p ~&#x2F;damon&#x2F;pai-config&#x2F;</span><br></pre></td></tr></table></figure>
-
-<p>执行上面的命令时，会出现输入命令，意思是让你输入一个 cluster-id，这是 OpenPAI 为集群设置的一个 id。输入后回车即可把配置推送到远程了。</p>
-<br>
-<br>
-
-<h5 id="获取-cluster-id"><a href="#获取-cluster-id" class="headerlink" title="获取 cluster-id"></a>获取 cluster-id</h5><p>如果生成过，执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">damon@master:~&#x2F;damon&#x2F;pai$ sudo python paictl.py config get-id</span><br><span class="line">2020-07-16 19:56:48,066 [INFO] - deployment.confStorage.get_cluster_id : Cluster-id is: ustc</span><br></pre></td></tr></table></figure>
-
-<p>即可获取。</p>
-<br>
-<br>
-
-<h5 id="重点"><a href="#重点" class="headerlink" title="重点"></a>重点</h5><p>以上配置都结束后，上面说过了，配置中只有 master 节点信息，需要手动给 node 节点打标签:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl label node nodeName hdfsrole&#x3D;master</span><br></pre></td></tr></table></figure>
-
-<p>同样的标签还有类似:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">master labels:</span><br><span class="line"></span><br><span class="line">hdfsrole&#x3D;master,jobhistory&#x3D;true,launcher&#x3D;true,node-exporter&#x3D;true,pai-master&#x3D;true,yarnrole&#x3D;master,zookeeper&#x3D;true</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node labels:</span><br><span class="line">gpu-check&#x3D;true,hdfsrole&#x3D;worker,node-exporter&#x3D;true,pai-worker&#x3D;true,yarnrole&#x3D;worker</span><br></pre></td></tr></table></figure>
-
-<p>打完标签后，即可开始部署 Hadoop 集群了。</p>
-<h3 id="部署-Hadoop"><a href="#部署-Hadoop" class="headerlink" title="部署 Hadoop"></a>部署 Hadoop</h3><p>部署 Hadoop 的命令:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo python paictl.py service start [-c &#x2F;path&#x2F;to&#x2F;kubeconfig] [ -n service-name ]</span><br></pre></td></tr></table></figure>
-
-<p>解释：-c 参数中带的是 k8s 授权的 kube-config 路径，-n 参数是服务名，如果没带 -n，则会默认启动 src 下的所有的服务。</p>
-<br>
-<br>
-
-<p>Hadoop 中主要有这些服务:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">zookeeper</span><br><span class="line">hadoop-name-node</span><br><span class="line">hadoop-data-node</span><br><span class="line">hadoop-resource-manager</span><br><span class="line">hadoop-node-manager</span><br><span class="line">hadoop-batch-job</span><br><span class="line">hadoop-jobhistory</span><br></pre></td></tr></table></figure>
-
-<p>那就手动一个个执行吧。执行一个后看看 pod 有没有启动，相关的 configmap 有没有创建，默认都是官方的。</p>
-<h3 id="注意项"><a href="#注意项" class="headerlink" title="注意项"></a>注意项</h3><p>如果发现 namenode 启用了安全模式，而不想启用的话，执行:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kubectl exec -it hadoop-name-node-e3bw9 bash</span><br><span class="line">hadoop dfsadmin -safemode leave</span><br></pre></td></tr></table></figure>
-
-<p>即：进入 name-node 容器中执行关闭。</p>
-<br>
-<br>
-
-<h5 id="模块功能说明"><a href="#模块功能说明" class="headerlink" title="模块功能说明"></a>模块功能说明</h5><ol>
-<li>resource-manager 是调度中心，负责资源管理。</li>
-<li>node-manager 是容器启动的的执行者。通常异常情况需要重启 node-manager。</li>
-<li>zookeeper 为数据的存储中心。</li>
-<li>namenode 和 datanode 为 hadoop 服务（HDFS）的基础层。</li>
-</ol>
-<h5 id="模块运维方法说明"><a href="#模块运维方法说明" class="headerlink" title="模块运维方法说明"></a>模块运维方法说明</h5><ol>
-<li>resource-manager 重启：大量任务 waiting 和 stopping 和数据不一致等情况。</li>
-<li>node-manager 重启：更新节点的资源信息或者节点故障等。</li>
-</ol>
-<br data-tool="mdnice编辑器">
-
-<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
-<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px; border-radius: 5px; box-shadow: rgba(0, 0, 0, 0.55) 0px 2px 10px;"><span style="display: block; background: url(https://imgkr.cn-bj.ufileos.com/97e4eed2-a992-4976-acf0-ccb6fb34d308.png); height: 30px; width: 100%; background-size: 40px; background-repeat: no-repeat; background-color: #282c34; margin-bottom: -7px; border-radius: 5px; background-position: 10px 10px;"></span><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; font-size: 12px; -webkit-overflow-scrolling: touch; padding-top: 15px; background: #282c34; border-radius: 5px;">https://gitee.com/damon_one/spring-cloud-k8s
-https://gitee.com/damon_one/spring-cloud-oauth2
-</code></pre>
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
-<br data-tool="mdnice编辑器">
-
-<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">Damon | Micro-Service | Containerization | DevOps</a>，欢迎來撩。</em></p>
-<br data-tool="mdnice编辑器">
-
-
-
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
-<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
-
-<br>
-
-<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
-
-
-<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：程序猿Damon"></p>
-<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
-<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
-<br>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Unit one -->
-<p><ins class="adsbygoogle"
-     style="display:inline-block;text-align:center;width:880px;height:150px"
-     data-ad-client="ca-pub-1354758384344627"
-     data-ad-slot="8964778819"></ins></p>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script> 
+<p>同样地，当 mode 为 SERVICE 时，依然无法找到当前 pod 的对应的 NS 的 Servcie 为 diff-ns-service-service 的服务。</p>
+<p>同样会拿不到请求返回信息，这里说明：<code>在不同NS下，Service为ClusterIP，不管如何负载均衡，都无法访问。</code></p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h4 id="一、通过-Springcloud-k8s-社区来实现跨-NS-下的服务的相互访问的简单策略"><a href="#一、通过-Springcloud-k8s-社区来实现跨-NS-下的服务的相互访问的简单策略" class="headerlink" title="一、通过 Springcloud k8s 社区来实现跨 NS 下的服务的相互访问的简单策略"></a>一、通过 Springcloud k8s 社区来实现跨 NS 下的服务的相互访问的简单策略</h4><h4 id="二、走-K8s-的原生的负载均衡策略"><a href="#二、走-K8s-的原生的负载均衡策略" class="headerlink" title="二、走 K8s 的原生的负载均衡策略"></a>二、走 K8s 的原生的负载均衡策略</h4><p>从前面的分析可以看到：虽然 spring-cloud-k8s 帮我们发现了 Service，但在底层策略时，不同的NS还是做了隔离，只能通过 k8s 原生的方式来进行服务的发现：<code>&lt;servicename&gt;.&lt;namespace&gt;.svc.cluster.local</code></p>
+<p>PS：<code>同时，我们需要注意的是，此时基于 k8s 负载均衡，我们不能再基于 Ribbon 或其他来进行负载均衡机制了，直接通过 Http 协议来请求 k8s 的 service，实现跨 NS 的 pod 之间的互通。</code></p>
+ 
       <!-- reward -->
       
       <div id="reward-btn">
@@ -327,7 +238,7 @@ https://gitee.com/damon_one/spring-cloud-oauth2
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/18/hadoop-deploy/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2021/11/11/spring-cloud-k8s-note1/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -338,19 +249,19 @@ https://gitee.com/damon_one/spring-cloud-oauth2
    
   <nav class="article-nav">
     
-      <a href="/2020/07/18/hello-world/" class="article-nav-link">
+      <a href="/2021/11/11/spring-cloud-k8s-note2/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            ArrayList、LinkedList 你真的了解吗？
+            基于 spring-cloud-k8s 跨NS坑续集
           
         </div>
       </a>
     
     
-      <a href="/2020/07/14/ci-cd/" class="article-nav-link">
+      <a href="/2021/07/12/jupyter/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">微服务自动化部署CI/CD</div>
+        <div class="article-nav-title">Jupyter Notebook 的使用</div>
       </a>
     
   </nav>
