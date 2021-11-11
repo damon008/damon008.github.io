@@ -131,9 +131,12 @@
        
   <p>在 <a href="https://juejin.cn/post/6970882539820941325" target="_blank" rel="noopener">浅谈微服务安全架构设计</a> 一文中，介绍了基于Springcloud 结合了Oauth2分析了其各种模式下的鉴权认证，今天主要分析如何结合k8s作实现鉴权的高可用。</p>
 <p>假设我们的项目中有几个模块：</p>
-<pre><code>鉴权中心：Oauth2服务
-订单系统：客户端A
-用户管理系统：客户端B</code></pre><p>在上面的系统中，每个服务之间的耦合性很低，但是又有着很频繁的调用，这就涉及到UI与其之间的频繁流量交互。如何做到其HA，这里引入k8s的Service方法：</p>
+<ul>
+<li>鉴权中心：Oauth2服务</li>
+<li>订单系统：客户端A</li>
+<li>用户管理系统：客户端B</li>
+</ul>
+<p>在上面的系统中，每个服务之间的耦合性很低，但是又有着很频繁的调用，这就涉及到UI与其之间的频繁流量交互。如何做到其HA，这里引入k8s的Service方法：</p>
 <p>在 <a href="https://juejin.cn/post/6974562663833534494" target="_blank" rel="noopener">Spring Cloud Kubernetes之实战服务注册与发现</a>一文中，就讲解了k8s的Service方式创建服务，然后可以部署多个pod，同时结合 <a href="https://juejin.cn/post/6977498328153980959" target="_blank" rel="noopener">Spring Cloud Kubernetes之实战网关Gateway</a> 来实现LB，类似通过域名来解析其服务，并根据所定义的规则进行LB。同样，本文则是Oauth2的基础上，结合这些来实现微服务的LB。同时此处利用了k8s来作主要处理，如果是其他语言(Python、Go、Rust等)的客户端服务，则自身可以通过逻辑来控制其鉴权以及获取流量的。</p>
 <p><code>注意点：由于各微服务与鉴权中心有交互，故鉴权中心需要提供HA服务，即先在启动类加入@EnableDiscoveryClient ，后续在注入bean时，@LoadBalanced来实现LB鉴权中心。</code></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@EnableOAuth2Sso</span><br><span class="line">@Configuration</span><br><span class="line">@EnableAutoConfiguration</span><br><span class="line">@ComponentScan(basePackages &#x3D; &#123;&quot;com.damon&quot;&#125;)</span><br><span class="line">@EnableConfigurationProperties(EnvConfig.class)</span><br><span class="line">@EnableDiscoveryClient #为LB多节点鉴权中心准备</span><br><span class="line">public class AdminApp &#123;</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(AdminApp.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
