@@ -99,8 +99,8 @@
     </header>
      
     <div class="article-meta">
-      <a href="/2021/11/11/oauth2-ha/" class="article-date">
-  <time datetime="2021-11-11T07:10:32.000Z" itemprop="datePublished">2021-11-11</time>
+      <a href="/2021/11/12/oauth2-ha/" class="article-date">
+  <time datetime="2021-11-12T00:10:32.000Z" itemprop="datePublished">2021-11-12</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
@@ -129,7 +129,7 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>前面 (<a href="https://juejin.cn/post/7026257521182539790" target="_blank" rel="noopener">统一认证中心 Oauth2 认证坑</a>) 我们利用<code>user-info-uri</code>来实现消费端的认证信息以及授权获取判断，接下来我们借助 <code>token-info-uri</code> 来实现认证以及授权破。具体配置见：</p>
+  <p>前面 (<a href="https://www.damon8.cn/2021/11/11/oauth2/">统一认证中心 Oauth2 认证坑</a>) 我们利用<code>user-info-uri</code>来实现消费端的认证信息以及授权获取判断，接下来我们借助 <code>token-info-uri</code> 来实现认证以及授权破。具体配置见：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">cas-server-url: http:&#x2F;&#x2F;cas-server</span><br><span class="line"></span><br><span class="line">security:</span><br><span class="line">  path:</span><br><span class="line">    ignores: &#x2F;,&#x2F;index,&#x2F;static&#x2F;**,&#x2F;css&#x2F;**, &#x2F;image&#x2F;**, &#x2F;favicon.ico, &#x2F;js&#x2F;**,&#x2F;plugin&#x2F;**,&#x2F;avue.min.js,&#x2F;img&#x2F;**,&#x2F;fonts&#x2F;**</span><br><span class="line">  oauth2:</span><br><span class="line">    client:</span><br><span class="line">      client-id: rest-service</span><br><span class="line">      client-secret: rest-service-123</span><br><span class="line">      user-authorization-uri: $&#123;cas-server-url&#125;&#x2F;oauth&#x2F;authorize</span><br><span class="line">      access-token-uri: $&#123;cas-server-url&#125;&#x2F;oauth&#x2F;token</span><br><span class="line">    resource:</span><br><span class="line">      loadBalanced: true</span><br><span class="line">      id: rest-service</span><br><span class="line">      prefer-token-info: true</span><br><span class="line">      token-info-uri: $&#123;cas-server-url&#125;&#x2F;oauth&#x2F;check_token</span><br><span class="line">    authorization:</span><br><span class="line">      check-token-access: $&#123;cas-server-url&#125;&#x2F;oauth&#x2F;check_token</span><br></pre></td></tr></table></figure>
 
 <p>这里的<code>/oauth/check_token</code>是 Oauth2 原生自带的，这里不需要封装。接下来，我们启动服务，在拿到 token 后，通过 token 请求消费端：</p>
@@ -230,7 +230,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2021/11/11/oauth2-ha/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2021/11/12/oauth2-ha/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -241,19 +241,10 @@
    
   <nav class="article-nav">
     
+    
       <a href="/2021/11/11/oauth2/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            统一认证中心 Oauth2 认证坑
-          
-        </div>
-      </a>
-    
-    
-      <a href="/2021/11/11/spring-cloud-k8s-note2/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">基于 spring-cloud-k8s 跨NS坑续集</div>
+        <div class="article-nav-title">统一认证中心 Oauth2 认证坑</div>
       </a>
     
   </nav>
