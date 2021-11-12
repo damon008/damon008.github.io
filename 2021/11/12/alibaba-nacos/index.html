@@ -81,7 +81,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-hello-world"
+  id="post-alibaba-nacos"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -92,22 +92,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  ArrayList、LinkedList 你真的了解吗？
+  alibaba-nacos
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2020/07/18/hello-world/" class="article-date">
-  <time datetime="2020-07-18T06:34:34.000Z" itemprop="datePublished">2020-07-18</time>
+      <a href="/2021/11/12/alibaba-nacos/" class="article-date">
+  <time datetime="2021-11-12T01:22:46.000Z" itemprop="datePublished">2021-11-12</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.8k</span>
+            <span class="post-count">1.3k</span>
         </span>
     </span>
 
@@ -116,7 +116,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">7 分钟</span>
+            <span class="post-count">5 分钟</span>
         </span>
     </span>
 </div>
@@ -131,120 +131,95 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <h2 id="1、-前言"><a href="#1、-前言" class="headerlink" title="1、 前言"></a>1、 前言</h2><br>
-<br>
+  <h2 id="Nacos-旧史"><a href="#Nacos-旧史" class="headerlink" title="Nacos 旧史"></a>Nacos 旧史</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2018年11月左右，Springcloud 联合创始人Spencer Gibb在Spring官网的博客页面宣布：阿里巴巴开源 Spring Cloud Alibaba，并发布了首个预览版本。随后，Spring Cloud 官方Twitter也发布了此消息。</span><br></pre></td></tr></table></figure>
 
-<p>经常在面试时，被问到集合的概念，集合 List、Map、Set 等底层设计以及其使用场景与注意细节。但大部分人的回答都是千篇一律，跟网上的答案一模一样，这是致命滴。其实，大家都错了，尤其是网上，更是误导大家，详细原因，且听我来分析。</p>
-<br>
-<br>
-<br>
+<p>随着这一消息发布，外面才知道 Nacos 的诞生。毕竟是大厂的 KPI 产物，我们来尝尝鲜。</p>
+<h3 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备</h3><ul>
+<li><p>Spring Boot: 2.3.12</p>
+</li>
+<li><p>Spring Cloud: Hoxton.SR12</p>
+</li>
+<li><p>Spring Cloud Alibaba: 2.2.6.RELEASE</p>
+</li>
+<li><p>Maven: 3.5.4</p>
+</li>
+<li><p>Java 1.8 +</p>
+</li>
+<li><p>Oauth2 (Spring Security 5.3.9)</p>
+</li>
+</ul>
+<h3 id="安装-Nacos"><a href="#安装-Nacos" class="headerlink" title="安装 Nacos"></a>安装 Nacos</h3><p>下载 Nacos 地址：<a href="https://github.com/alibaba/nacos/releases" target="_blank" rel="noopener">https://github.com/alibaba/nacos/releases</a></p>
+<p>版本：v1.2.1</p>
+<p>执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Linux&#x2F;Unix&#x2F;Mac：sh startup.sh -m standalone</span><br><span class="line"></span><br><span class="line">Windows：cmd startup.cmd -m standalone</span><br></pre></td></tr></table></figure>
 
-<h2 id="2、集合-List"><a href="#2、集合-List" class="headerlink" title="2、集合 List"></a>2、集合 List</h2><br>
-<br>
+<p>启动完成之后，访问：<a href="http://127.0.0.1:8848/nacos/，可以进入Nacos的服务管理页面，具体如下：" target="_blank" rel="noopener">http://127.0.0.1:8848/nacos/，可以进入Nacos的服务管理页面，具体如下：</a></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/93f92dff43ba4fd3a70221218351c619~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"><br>在上面，我们可以看到启动的服务列表信息，同时，我们也可以去配置此服务的相关配置：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/539b4386019d43039abdc819f2f290d9~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>具体的配置如下：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f96658492f3a4aa492c1800812b1533b~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>这里，我们可以设置配置的类型，比如：yaml、properties。默认的是后者，这里我们可以设置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: cas-server</span><br><span class="line">  cloud:</span><br><span class="line">    nacos:</span><br><span class="line">      server-addr: 127.0.0.1:8848</span><br><span class="line">      discovery:</span><br><span class="line">        enabled: true</span><br><span class="line">        namespace: a48cec97-fa0f-48e0-97c7-0aced5c7ecbe #默认public</span><br><span class="line">        #group: mine #$&#123;nacos.runtime-env&#125;</span><br><span class="line">        heart-beat-interval: 10</span><br><span class="line">        heart-beat-timeout: 15</span><br><span class="line"></span><br><span class="line">      config:</span><br><span class="line">        enabled: true</span><br><span class="line">        #namespace: $&#123;nacos.namespace&#125;</span><br><span class="line">        file-extension: yaml #默认properties</span><br><span class="line">        #group: $&#123;spring.application.name&#125;</span><br><span class="line">        shared-configs:</span><br><span class="line">          - data-id: application-mysql.properties</span><br><span class="line">            refresh: false</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-1-大家心中的-List"><a href="#2-1-大家心中的-List" class="headerlink" title="2.1 大家心中的 List"></a>2.1 大家心中的 List</h3><p>在广大的网友心中，List 是一个缓存数据的容器，是 JDK 为开发者提供的一种集合类型。面试时，被问到最常见的就是 ArrayList 和 LinkedList 的区别。</p>
-<br>
+<h3 id="不同-namespace-下的服务互调"><a href="#不同-namespace-下的服务互调" class="headerlink" title="不同 namespace 下的服务互调"></a>不同 namespace 下的服务互调</h3><p>在 Nacos 里，有几个概念，命令空间 namespace、分组 group 等。虽然这里的关键词跟 K8s 类似，但差别还是很大。这就是我今天想说的坑。这里我们默认配置了 properties。</p>
+<p>在 Nacos 中，为了将不同的服务进行划分区域，这也引入了一些概念：namespace、group 我们先来设置一下 namespace，假如我们这里新建一个 namespace：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ba183445d0be48e984fea2fac3faa1c2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"><br>那么在注册服务时，我们把这个服务放在了这个 <code>new-NS</code>下，启动该服务，我们来看信息：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e4b723c5d5b34f22bec5f6c341958a87~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"><br>我们可以看到<code>cas-server</code>服务在 namespace 名称为 new-NS 下。</p>
+<p>下面，我们继续加入一个新服务，把这个新服务放在默认的 namespace 下，假设利用它来调用 cas-server 服务。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/782676157b4541a58a4e0f56c3cb4926~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>接下来，我们通过命令调用服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -H &quot;Accept: application&#x2F;json&quot; -H &quot;Authorization:bearer fbbb08b5-fc9c-4bf9-a676-6a1d5d6a0dda&quot; -X GET http:&#x2F;&#x2F;localhost:2001&#x2F;api&#x2F;user&#x2F;get</span><br></pre></td></tr></table></figure>
 
-<p>相信大部分网友都能回答上：ArrayList 是基于数组实现，LinkedList 是基于链表实现。而在使用场景时，我发现大部分网友的答案都是：在新增、删除操作时，LinkedList 的效率要高于 ArrayList，而在查询、遍历操作的时候，ArrayList 的效率要高于 LinkedList。这个答案是否准确呢？今天就带大家验证一哈。</p>
-<br>
+<p>此时可以看到日志：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b0b64ebb0c254328b57a40e5cdb3436b~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>这里由于被访问的服务是需要鉴权的，所以可以看到：这里的日志是去请求统一认证鉴权中心的<code>check_token</code>接口。由于这两个服务都被注册到 Nacos，这里直接通过域名来请求了。</p>
+<p>但从日志中可以看到，抛出异常：<code>java.lang.IllegalStateException: No instances available for cas-server</code>，这是因为无法解析到这个域名对应的 ip。但从上面，我们可以看到明明有注册信息，为啥不能访问呢？</p>
+<p>这就是 Nacos 现在呈现的第一个坑：<code>无法在跨namespace 下访问其他服务</code>。如果我们把<code>cas-server</code>也放在默认的 namespace 下呢？</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/31dfca23ce094b939851254afbb56155~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>再次，我们通过命令调用服务，会发现可以正常请求了：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3aef7e77d97c4c4db6fc213dccb6b358~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>我们发现正常请求后，返回了信息，只不过返回的是<code>400</code>，这是由于我这个 token 失效了，<code>无效的token，请重新认证访问</code>。</p>
+<h3 id="同-namespace-下不同组的服务互调"><a href="#同-namespace-下不同组的服务互调" class="headerlink" title="同 namespace 下不同组的服务互调"></a>同 namespace 下不同组的服务互调</h3><p>上面说到不同 namespace 下的服务互调的问题，接下来，我们看看同一 namespace 下不同分组的服务互调是咋样的呢？</p>
+<p>同样的，我们假设把 cas-server 分配到一个新的 group：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: cas-server</span><br><span class="line">  cloud:</span><br><span class="line">    nacos:</span><br><span class="line">      server-addr: 127.0.0.1:8848</span><br><span class="line">      discovery:</span><br><span class="line">        enabled: true</span><br><span class="line">        group: mine</span><br><span class="line">        heart-beat-interval: 10</span><br><span class="line">        heart-beat-timeout: 15</span><br></pre></td></tr></table></figure>
 
-<h3 id="2-2-性能比较"><a href="#2-2-性能比较" class="headerlink" title="2.2 性能比较"></a>2.2 性能比较</h3><p>首先，大家都知道 ArrayList、LinkedList 都继承了 AbstractList 抽象类，而 AbstractList 实现了 List 接口。ArrayList 使用数组实现，而 LinkedList 使用了双向链表实现。接下来，我们就详细地分析下 ArrayList 和 LinkedList 的性能。</p>
-<br>
+<p>新服务<code>rest-service</code>还是放在默认分组<code>DEFAULT_GROUP</code>里：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c562f94cb61a4c40940d2801b17e0820~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>接下来，我们通过命令调用服务:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -i -H &quot;Accept: application&#x2F;json&quot; -H &quot;Authorization:bearer fbbb08b5-fc9c-4bf9-a676-6a1d5d6a0dda&quot; -X GET http:&#x2F;&#x2F;localhost:2001&#x2F;api&#x2F;user&#x2F;get</span><br></pre></td></tr></table></figure>
 
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayList</span>&lt;<span class="title">E</span>&gt; <span class="keyword">extends</span> <span class="title">AbstractList</span>&lt;<span class="title">E</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">List</span>&lt;<span class="title">E</span>&gt;, <span class="title">RandomAccess</span>, <span class="title">Cloneable</span>, <span class="title">java</span>.<span class="title">io</span>.<span class="title">Serializable</span></span></span><br></pre></td></tr></table></figure>
-
-<p>在源码中，我们知道 ArrayList 除了实现克隆和序列化，还实现了 RandomAccess 接口。大家可能会对这个接口比较陌生，通过代码我们可以发现，这个接口其实是一个空接口，没有实现逻辑，那么 ArrayList 为什么要实现它呢？原来 RandomAccess 接口是一个标志接口，它标志着只要实现该接口，就能实现快速随机访问。</p>
-<br>
-
-<p>至于 ArrayList、LinkedList 的各种操作方法这里不再说了，大家可以看 <a href="https://mp.weixin.qq.com/s?__biz=MzA5NTE1MjY0NQ==&mid=2648832131&idx=1&sn=27dd4c28a480600cd74f92285a83e781&chksm=8856e7e9bf216effd0c4f78eaab940b2e13ab452e24661df74f4861dadc6cd9161b7f629913b&token=13659584&lang=zh_CN#rd" target="_blank" rel="noopener"></a> 这一篇。</p>
-<br>
-
-<p>接下来，我们看看一些测试数据，以测试 50000 次为例：</p>
-<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWdrci5jbi1iai51ZmlsZW9zLmNvbS8yNDk3OTgzZC01MzY2LTQ2YWItYjM5YS0zZGU3MmRlNDIzOGEucG5n?x-oss-process=image/format,png" alt=""></p>
-<br>
-
-<ol>
-<li>ArrayList、LinkedList 新增测试</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">头部：ArrayList.Time 大于 LinkedList.Time</span><br><span class="line">中间：ArrayList.Time 小于 LinkedList.Time</span><br><span class="line">末尾：ArrayList.Time 小于 LinkedList.Time</span><br></pre></td></tr></table></figure>
-
-<p>通过这测试，我们可以看到 LinkedList 新增元素的未必要快于 ArrayList。</p>
-<p>由于 ArrayList 是数组实现的，而数组是一块连续的内存空间，在新增元素到数组头部的时候，需要对头部以后的数据进行重排，所以效率很低。而 LinkedList 是基于链表实现，在新增元素的时候，首先会通过循环查找到新增元素的位置，如果要新增的位置处于前半段，就从前往后找；若其位置处于后半段，就从后往前找。故 LinkedList 新增元素到头部是非常高效的。</p>
-<p>在中间位置插入时，ArrayList 同样有部分数据需要重排，效率也不是很高，而 LinkedList 将元素新增到中间，耗时最久的，因为靠近中间位置，在新增元素之前的循环查找是遍历元素最多的操作。</p>
-<p>而在尾部操作时，发现在没有扩容的前提下，ArrayList 的效率要高于 LinkedList。这是因为 ArrayList 在新增元素到尾部的时候，不需要复制、重排，效率非常高。而 LinkedList 虽然也不用循环查找元素，但 LinkedList 中多了 new 对象以及变换指针指向对象的逻辑，所以要耗时多于 ArrayList 的操作。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    linkLast(e);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">linkLast</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; l = last;</span><br><span class="line">    <span class="keyword">final</span> Node&lt;E&gt; newNode = <span class="keyword">new</span> Node&lt;&gt;(l, e, <span class="keyword">null</span>);</span><br><span class="line">    last = newNode;</span><br><span class="line">    <span class="keyword">if</span> (l == <span class="keyword">null</span>)</span><br><span class="line">        first = newNode;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        l.next = newNode;</span><br><span class="line">    size++;</span><br><span class="line">    modCount++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<BR>
-
-<ol start="2">
-<li>ArrayList、LinkedList 删除测试</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">头部：ArrayList.Time 大于 LinkedList.Time</span><br><span class="line">中间：ArrayList.Time 小于 LinkedList.Time</span><br><span class="line">末尾：ArrayList.Time 小于 LinkedList.Time</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p>大家会发现 ArrayList 和 LinkedList 删除操作的测试结果和新增的结果很接近，这是一样的道理，我就不赘述了。</p>
-<br>
-
-<ol start="3">
-<li>ArrayList、LinkedList 遍历测试</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for循环：ArrayList.Time 小于 LinkedList.Time</span><br><span class="line">迭代器：ArrayList.Time 几乎等于 LinkedList.Time</span><br></pre></td></tr></table></figure>
-
-<BR>
-
-<p>我们可以看到，LinkedList 的 for 循环遍历比不上 ArrayList 的 for 循环。这是因为 LinkedList 基于链表实现的，在使用 for 循环的时候，每一次 for 循环都会去遍历大半个 List，所以严重影响了遍历的效率。而 ArrayList 是基于数组实现的，并且实现了 RandomAccess 接口标志，意味着 ArrayList 可以实现快速随机访问，所以 for 循环非常快。LinkedList 的迭代遍历和 ArrayList 的迭代性能差不多，也不会太差，所以在遍历 LinkedList 时，我们要使用迭代循环遍历。</p>
-<br>
+<p>我们来看看日志：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3bba2aab02ce4a5a8b3be2ae172664f2~tplv-k3u1fbpfcp-watermark.image?" alt="image.png"></p>
+<p>发现还是跟前面说的那种情况请求后一样，仍然抛出异常：<code>java.lang.IllegalStateException: No instances available for cas-server</code>。</p>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>在 Nacos 较高版本中验证这两种情况，同样得出相同的结论：<code>同一namespace下的不同group的服务无法相互调用，不同namespace下的同group的服务无法相互调用</code>。</p>
+<h3 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h3><p>在这里说出 Nacos 的坑，并不是在指责 Nacos 团队哈，只是希望官方尽快出新的 feature。</p>
 <br>
 <br>
 
-<h2 id="3、常错点"><a href="#3、常错点" class="headerlink" title="3、常错点"></a>3、常错点</h2><br>
-<br>
-
-<h3 id="思考"><a href="#思考" class="headerlink" title="思考"></a>思考</h3><p>在一次 ArrayList 删除操作的过程中，有下面两种写法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static void removeA(ArrayList&lt;String&gt; l) &#123;</span><br><span class="line">  for (String s : l)&#123;</span><br><span class="line">      if (s.equals(&quot;aaa&quot;)) &#123;</span><br><span class="line">        l.remove(s);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static void removeB(ArrayList&lt;String&gt; l) &#123;</span><br><span class="line">    Iterator&lt;String&gt; it &#x3D; l.iterator();</span><br><span class="line">    while (it.hasNext()) &#123;</span><br><span class="line">        String str &#x3D; it.next();</span><br><span class="line">        if (str.equals(&quot;aaa&quot;)) &#123;</span><br><span class="line">            it.remove();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><code>第一种写法错误，第二种是正确的，原因是上面的两种写法都有用到 list 内部迭代器Iterator，即遍历时，ArrayList 内部创建了一个内部迭代器 iterator，在使用 next 方法来取下一个元素时，会使用 ArrayList 里保存的一个用来记录 list 修改次数的变量 modCount，与 iterator 保存了一个叫 expectedModCount 的表示期望的修改次数进行比较，如果不相等则会抛出一个叫 ConcurrentModificationException 的异常。且在 for 循环中调用 list 中的 remove 方法，会走到一个 fastRemove 方法，该方法不是 iterator 中的方法，而是 ArrayList 中的方法，在该方法只做了 modCount++，而没有同步到 expectedModCount。所以不一致就抛出了 ConcurrentModificationException 异常了。</code></p>
-<br>
-
-<p>下面是 ArrayList 自己的remove 方法：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">            <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                fastRemove(index);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                fastRemove(index);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fastRemove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<br>
-
-<p><code>如果有看过阿里 Java 编程规范就知道，在集合中进行 remove 操作时，不要在 foreach 循环里进行元素的 remove/add 操作。remove 元素使用 Iterator 方式，如果并发操作，需要对 Iterator 对象加锁。</code></p>
-<br>
-<br>
 
 <p><span class="suffix" style="display: none;"></span></h6></p>
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码:</p>
 <pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px;"><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; background: #282c34; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; border-radius: 0px; font-size: 12px; -webkit-overflow-scrolling: touch;">https://gitee.com/damon_one/spring-cloud-k8s
 </code></pre>
-
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
-
-
 <br data-tool="mdnice编辑器">
 
 
 <h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">程序猿Damon</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://www.damon8.cn" style="text-decoration: none" title="">Damon | Micro-Service | Containerization | DevOps</a>，欢迎來撩。</em></p>
-
 <br data-tool="mdnice编辑器">
 
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
 
 <p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
 
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly91c2VyLWdvbGQtY2RuLnhpdHUuaW8vMjAyMC80LzIwLzE3MTk1OTEwODYzNTIyMmI?x-oss-process=image/format,png" alt=""></p>
+<br>
 
 <h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
 
@@ -329,7 +304,7 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2020/07/18/hello-world/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://www.damon8.cn/2021/11/12/alibaba-nacos/" alt="微信分享二维码">
     </div>
 </div>
 
@@ -340,19 +315,10 @@
    
   <nav class="article-nav">
     
-      <a href="/2020/07/18/hadoop-deploy/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            基于OpenPAI细化部署 Hadoop 集群
-          
-        </div>
-      </a>
     
-    
-      <a href="/2020/07/14/ci-cd/" class="article-nav-link">
+      <a href="/2021/11/12/oauth2-ha/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">微服务自动化部署CI/CD</div>
+        <div class="article-nav-title">统一认证中心 Oauth2 高可用坑</div>
       </a>
     
   </nav>
