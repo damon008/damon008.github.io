@@ -5,6 +5,10 @@
 
 
 <head>
+  <meta http-equiv="Content-Type" content="text/html;
+charset=gb2312"/>
+  <meta name="sogou_site_verification" content="SgemPigfrE"/>
+
   <meta charset="utf-8" />
   <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
    
@@ -46,7 +50,7 @@
   <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
   Owner Damon | Micro-Service | Containerization | DevOps
   Damon | Micro-Service | Containerization | DevOps
-  Damon | 微服务 | 容器化 | 自动化
+  Damon | ΢���� | ������ | �Զ���
   Damon | Micro-Service | Containerization | DevOps
   </script>-->
 
@@ -131,8 +135,7 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>[TOC]</p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp; 本文只讲 docker + kubernetes 集群的 kubeadm 部署方式，不讲 k8s 各组件工作原理。个人认为在学习 k8s 的过程中，先动手搭建起来一个测试集群，比一味的看书学原理要好得多，一边操作一边学习是比较有效率的。</p>
+  <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp; 本文只讲 docker + kubernetes 集群的 kubeadm 部署方式，不讲 k8s 各组件工作原理。个人认为在学习 k8s 的过程中，先动手搭建起来一个测试集群，比一味的看书学原理要好得多，一边操作一边学习是比较有效率的。</p>
 <p>&emsp;&emsp;使用 yum 安装 docker、 kubelet、 kubeadm 包的方式，会自动部署 service 文件及环境，相比二进制安装更简单一些。<a href="https://note.youdao.com/" target="_blank" rel="noopener">二进制安装</a>更复杂但是也更灵活一些，学习二进制安装有助于用户学习各部件工作原理，以及排错能力。下面先介绍比较简单的 yum 安装的方式。</p>
 <h1 id="Yum-安装包部署k8s-集群流程"><a href="#Yum-安装包部署k8s-集群流程" class="headerlink" title="Yum 安装包部署k8s 集群流程"></a>Yum 安装包部署k8s 集群流程</h1><h2 id="一、准备工作-（所有节点）"><a href="#一、准备工作-（所有节点）" class="headerlink" title="一、准备工作 （所有节点）"></a>一、准备工作 （所有节点）</h2><ol>
 <li><p>配置所有节点互通 ssh 免密（ssh-copy-id）</p>
