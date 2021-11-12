@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>alibaba-nacos</title>
+    <title>记录那些年 Nacos 的坑</title>
     <url>/2021/11/12/alibaba-nacos/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="Nacos-旧史"><a href="#Nacos-旧史" class="headerlink" title="Nacos 旧史"></a>Nacos 旧史</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2018年11月左右，Springcloud 联合创始人Spencer Gibb在Spring官网的博客页面宣布：阿里巴巴开源 Spring Cloud Alibaba，并发布了首个预览版本。随后，Spring Cloud 官方Twitter也发布了此消息。</span><br></pre></td></tr></table></figure>
 
