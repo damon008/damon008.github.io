@@ -1,0 +1,34 @@
+damon008.github.io/2021/12/06/cloud-native-k8s/
+http://damon008.github.io/2021/11/12/kubeadm-install-k8s/ http://damon008.github.io/2021/11/12/kubeadm-install-k8s/
+http://damon008.github.io/2021/11/12/alibaba-nacos/ http://damon008.github.io/2021/11/12/alibaba-nacos/
+http://damon008.github.io/2021/11/12/oauth2-ha/ http://damon008.github.io/2021/11/12/oauth2-ha/
+http://damon008.github.io/2021/11/11/oauth2/ http://damon008.github.io/2021/11/11/oauth2/
+http://damon008.github.io/2021/11/11/spring-cloud-k8s-note2/ http://damon008.github.io/2021/11/11/spring-cloud-k8s-note2/
+http://damon008.github.io/2021/11/11/spring-cloud-k8s-note1/ http://damon008.github.io/2021/11/11/spring-cloud-k8s-note1/
+http://damon008.github.io/2021/10/11/oauth-ha/ http://damon008.github.io/2021/10/11/oauth-ha/
+http://damon008.github.io/2021/07/12/jupyter/ http://damon008.github.io/2021/07/12/jupyter/
+http://damon008.github.io/2021/05/06/micro-cloud-native/ http://damon008.github.io/2021/05/06/micro-cloud-native/
+http://damon008.github.io/2021/02/22/k8s-backup/ http://damon008.github.io/2021/02/22/k8s-backup/
+http://damon008.github.io/2021/02/04/spring-cloud-k8s/ http://damon008.github.io/2021/02/04/spring-cloud-k8s/
+http://damon008.github.io/2020/12/22/microservice-k8s/ http://damon008.github.io/2020/12/22/microservice-k8s/
+http://damon008.github.io/2020/08/19/k8s-image/ http://damon008.github.io/2020/08/19/k8s-image/
+http://damon008.github.io/2020/07/27/mq-01/ http://damon008.github.io/2020/07/27/mq-01/
+http://damon008.github.io/2020/07/24/micro-service01/ http://damon008.github.io/2020/07/24/micro-service01/
+http://damon008.github.io/2020/07/23/spring-cloud-k8s-discovery/ http://damon008.github.io/2020/07/23/spring-cloud-k8s-discovery/
+http://damon008.github.io/2020/07/23/k8s/ http://damon008.github.io/2020/07/23/k8s/
+http://damon008.github.io/2020/07/23/micro-service03/ http://damon008.github.io/2020/07/23/micro-service03/
+http://damon008.github.io/2020/07/23/springcloud-alibaba01/ http://damon008.github.io/2020/07/23/springcloud-alibaba01/
+http://damon008.github.io/2020/07/23/micro-service02/ http://damon008.github.io/2020/07/23/micro-service02/
+http://damon008.github.io/2020/07/23/core-java02/ http://damon008.github.io/2020/07/23/core-java02/
+http://damon008.github.io/2020/07/23/mysql-norm/ http://damon008.github.io/2020/07/23/mysql-norm/
+http://damon008.github.io/2020/07/22/popularize-01/ http://damon008.github.io/2020/07/22/popularize-01/
+http://damon008.github.io/2020/07/18/hadoop-deploy/ http://damon008.github.io/2020/07/18/hadoop-deploy/
+http://damon008.github.io/2020/07/18/hello-world/ http://damon008.github.io/2020/07/18/hello-world/
+http://damon008.github.io/2020/07/14/ci-cd/ http://damon008.github.io/2020/07/14/ci-cd/
+http://damon008.github.io/2020/07/14/nginx/ http://damon008.github.io/2020/07/14/nginx/
+http://damon008.github.io/2020/07/10/springcloud-04/ http://damon008.github.io/2020/07/10/springcloud-04/
+http://damon008.github.io/2020/07/10/springcloud-03/ http://damon008.github.io/2020/07/10/springcloud-03/
+http://damon008.github.io/2020/07/10/core-java01/ http://damon008.github.io/2020/07/10/core-java01/
+http://damon008.github.io/2020/07/10/springcloud-02/ http://damon008.github.io/2020/07/10/springcloud-02/
+http://damon008.github.io/2020/07/10/springcloud-01/ http://damon008.github.io/2020/07/10/springcloud-01/
+http://damon008.github.io/2021/12/06/cloud-native-k8s/

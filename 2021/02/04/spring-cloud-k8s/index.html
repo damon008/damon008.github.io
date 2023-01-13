@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/l3.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-spring-cloud-k8s"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Spring Cloud 与 K8s 在微服务层面的不同
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/02/04/spring-cloud-k8s/" class="article-date">
+  <time datetime="2021-02-04T02:18:16.000Z" itemprop="datePublished">2021-02-04</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">6.2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">29 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h3 id="Spring-Boot-1-x-与-2-x-的区别"><a href="#Spring-Boot-1-x-与-2-x-的区别" class="headerlink" title="Spring Boot 1.x 与 2.x 的区别"></a>Spring Boot 1.x 与 2.x 的区别</h3><p>在《<a href="https://damon008.github.io/2020/07/23/micro-service03/">微服务 Spring Cloud 架构设计</a>》一文中，笔者讲过 Spring Cloud 的架构设计。其实 Spring Boot 在一开始时，运用到的基本就是 Eureka、Config、Zuul、Ribbon、Feign、Hystrix 等。到了 Spring Boot 2.x 的时候，大量的组件开始风云崛起。下面简单列下这两个版本之间的区别如下。</p>
+<p>Spring Boot 1.x 中，session 的超时时间是这样的：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server.session.timeout=3600</span><br></pre></td></tr></tbody></table></figure>
+
+<p>而在 2.x 中：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server.servlet.session.timeout=PT120M</span><br></pre></td></tr></tbody></table></figure>
+
+<p>截然不同的写法，cookie 也是一样的：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">server:</span><br><span class="line">  servlet:</span><br><span class="line">    session:</span><br><span class="line">      timeout: PT120M</span><br><span class="line">      cookie:</span><br><span class="line">        name: ORDER-SERVICE-SESSIONID</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>应用的 ContextPath 配置属性改动，跟上面的 session 一样，加上了一个 servlet。</li>
+<li>Spring Boot 2.x 基于 Spring 5，而 Spring Boot 1.x 基于 Spring 4 或较低。</li>
+<li>统一错误处理的基类 AbstarctErrorController 的改动。</li>
+<li>配置文件的中文可以直接读取，不需要转码。</li>
+<li>Acutator 变化很大，默认情况不再启用所有监控，需要定制化编写监控信息，完全需要重写，HealthIndicator,EndPoint 同理。</li>
+<li>从 Spring Boot 2.x 开始，可以与 K8s 结合来实现服务的配置管理、负载均衡等，这是与 1.x 所不同的。</li>
+</ul>
+<h3 id="K8s-的一些资源的介绍"><a href="#K8s-的一些资源的介绍" class="headerlink" title="K8s 的一些资源的介绍"></a>K8s 的一些资源的介绍</h3><p>上面说到 Spring Boot 2.x 可以结合 K8s 来作为微服务的架构设计，那么就先来说下 K8s 的一些组件吧。</p>
+<p>ConfigMap，看到这个名字可以理解：它是用于保存配置信息的键值对，可以用来保存单个属性，也可以保存配置文件。对于一些非敏感的信息，比如应用的配置信息，则可以使用 ConfigMap。</p>
+<p>创建一个 ConfigMap 有多种方式如下。</p>
+<p><strong>1. key-value 字符串创建</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create configmap test-config --from-literal=baseDir=/usr</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面的命令创建了一个名为 test-config，拥有一条 key 为 baseDir，value 为 “/usr” 的键值对数据。</p>
+<p><strong>2. 根据 yml 描述文件创建</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: ConfigMap</span><br><span class="line">metadata:</span><br><span class="line">  name: test-config</span><br><span class="line">data:</span><br><span class="line">  baseDir: /usr</span><br></pre></td></tr></tbody></table></figure>
+
+<p>也可以这样，创建一个 yml 文件，选择不同的环境配置不同的信息：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">kind: ConfigMap</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server</span><br><span class="line">data:</span><br><span class="line">  application.yaml: |-</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the World</span><br><span class="line">    ---</span><br><span class="line">    spring:</span><br><span class="line">      profiles: dev</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Dev</span><br><span class="line">    spring:</span><br><span class="line">      profiles: test</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Test</span><br><span class="line">    spring:</span><br><span class="line">      profiles: prod</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Prod</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意点：</p>
+<ol>
+<li>ConfigMap 必须在 Pod 使用其之前创建。</li>
+<li>Pod 只能使用同一个命名空间的 ConfigMap。</li>
+</ol>
+<p>当然，还有其他更多用途，具体可以参考官网。</p>
+<p>Service，顾名思义是一个服务，什么样的服务呢？它是定义了一个服务的多种 pod 的逻辑合集以及一种访问 pod 的策略。</p>
+<p>service 的类型有四种：</p>
+<ul>
+<li>ExternalName：创建一个 DNS 别名指向 service name，这样可以防止 service name 发生变化，但需要配合 DNS 插件使用。</li>
+<li>ClusterIP：默认的类型，用于为集群内 Pod 访问时，提供的固定访问地址,默认是自动分配地址,可使用 ClusterIP 关键字指定固定 IP。</li>
+<li>NodePort：基于 ClusterIp，用于为集群外部访问 Service 后面 Pod 提供访问接入端口。</li>
+<li>LoadBalancer：它是基于 NodePort。</li>
+</ul>
+<h3 id="如何使用-K8s-来实现服务注册与发现"><a href="#如何使用-K8s-来实现服务注册与发现" class="headerlink" title="如何使用 K8s 来实现服务注册与发现"></a>如何使用 K8s 来实现服务注册与发现</h3><p>从上面讲的 Service，我们可以看到一种场景：所有的微服务在一个局域网内，或者说在一个 K8s 集群下，那么可以通过 Service 用于集群内 Pod 的访问，这就是 Service 默认的一种类型 ClusterIP，ClusterIP 这种的默认会自动分配地址。</p>
+<p>那么问题来了，既然可以通过上面的 ClusterIp 来实现集群内部的服务访问，那么如何注册服务呢？其实 K8s 并没有引入任何的注册中心，使用的就是 K8s 的 kube-dns 组件。然后 K8s 将 Service 的名称当做域名注册到 kube-dns 中，通过 Service 的名称就可以访问其提供的服务。那么问题又来了，如果一个服务的 pod 对应有多个，那么如何实现 LB？其实，最终通过 kube-proxy，实现负载均衡。</p>
+<p>说到这，我们来看下 Service 的服务发现与负载均衡的策略，Service 负载分发策略有两种：</p>
+<ul>
+<li>RoundRobin：轮询模式，即轮询将请求转发到后端的各个 pod 上，其为默认模式。</li>
+<li>SessionAffinity：基于客户端 IP 地址进行会话保持的模式，类似 IP Hash 的方式，来实现服务的负载均衡。</li>
+</ul>
+<p>其实，K8s 利用其 Service 实现服务的发现，其实说白了，就是通过域名进行层层解析，最后解析到容器内部的 ip 和 port 来找到对应的服务，以完成请求。</p>
+<p>下面写一个很简单的例子：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server-service</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - name: cas-server01</span><br><span class="line">    port: 2000</span><br><span class="line">    targetPort: cas-server01</span><br><span class="line">  selector:</span><br><span class="line">    app: cas-server</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到执行 <code>kubectl apply -f service.yaml</code> 后：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root@ubuntu:~$ kubectl get svc</span><br><span class="line">NAME                          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)              AGE</span><br><span class="line">admin-web-service             ClusterIP   10.16.129.24    &lt;none&gt;        2001/TCP              84d</span><br><span class="line">cas-server-service            ClusterIP   10.16.230.167   &lt;none&gt;        2000/TCP               67d</span><br><span class="line">cloud-admin-service-service   ClusterIP   10.16.25.178    &lt;none&gt;        1001/TCP         190d</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这样，我们可以看到默认的类型是 ClusterIP，用于为集群内 Pod 访问时，可以先通过域名来解析到多个服务地址信息，然后再通过 LB 策略来选择其中一个作为请求的对象。</p>
+<h3 id="K8s-如何来处理微服务中常用的配置"><a href="#K8s-如何来处理微服务中常用的配置" class="headerlink" title="K8s 如何来处理微服务中常用的配置"></a>K8s 如何来处理微服务中常用的配置</h3><p>在上面，我们讲过了几种创建 ConfigMap 的方式，其中有一种在 Java 中常常用到：通过创建 yml 文件来实现配置管理。</p>
+<p>比如：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">kind: ConfigMap</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server</span><br><span class="line">data:</span><br><span class="line">  application.yaml: |-</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the World</span><br><span class="line">    ---</span><br><span class="line">    spring:</span><br><span class="line">      profiles: dev</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Dev</span><br><span class="line">    spring:</span><br><span class="line">      profiles: test</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Test</span><br><span class="line">    spring:</span><br><span class="line">      profiles: prod</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Prod</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面创建了一个 yml 文件，同时，通过 spring.profiles 指定了开发、测试、生产等每种环境的配置。</p>
+<p>具体代码：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server-deployment</span><br><span class="line">  labels:</span><br><span class="line">    app: cas-server</span><br><span class="line">spec:</span><br><span class="line">  replicas: 1</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: cas-server</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: cas-server</span><br><span class="line">    spec:</span><br><span class="line">      nodeSelector:</span><br><span class="line">        cas-server: "true"</span><br><span class="line">      containers:</span><br><span class="line">      - name: cas-server</span><br><span class="line">        image: {{ cluster_cfg['cluster']['docker-registry']['prefix'] }}cas-server</span><br><span class="line">        imagePullPolicy: Always</span><br><span class="line">        ports:</span><br><span class="line">          - name: cas-server01</span><br><span class="line">            containerPort: 2000</span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: /home/cas-server</span><br><span class="line">          name: cas-server-path</span><br><span class="line">        args: ["sh", "-c", "nohup java $JAVA_OPTS -jar -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m -Xms1024m -Xmx1024m -Xmn256m -Xss256k -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC cas-server.jar --spring.profiles.active=dev", "&amp;"]</span><br><span class="line">      hostAliases:</span><br><span class="line">      - ip: "127.0.0.1"</span><br><span class="line">        hostnames:</span><br><span class="line">        - "gemantic.localhost"</span><br><span class="line">      - ip: "0.0.0.0"</span><br><span class="line">        hostnames:</span><br><span class="line">        - "gemantic.all"</span><br><span class="line">      volumes:</span><br><span class="line">      - name: cas-server-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: /var/pai/cas-server</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+<p>这样，当我们启动容器时，通过 <code>--spring.profiles.active=dev</code> 来指定当前容器的活跃环境，即可获取 ConfigMap 中对应的配置。是不是感觉跟 Java 中的 Config 配置多个环境的配置有点类似呢？但是，我们不用那么复杂，这些统统可以交给 K8s 来处理。只需要你启动这一命令即可，是不是很简单？</p>
+<h3 id="Spring-Boot-2-x-的新特性"><a href="#Spring-Boot-2-x-的新特性" class="headerlink" title="Spring Boot 2.x 的新特性"></a>Spring Boot 2.x 的新特性</h3><p>在第一节中，我们就讲到 1.x 与 2.x 的区别，其中最为凸显的是，Spring Boot 2.x 结合了 K8s 来实现微服务的架构设计。其实，在 K8s 中，更新 ConfigMap 后，pod 是不会自动刷新 configMap 中的变更，如果想要获取 ConfigMap 中最新的信息，需要重启 pod。</p>
+<p>但 2.x 提供了自动刷新的功能：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: cas-server</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      config:</span><br><span class="line">        sources:</span><br><span class="line">         - name: ${spring.application.name}</span><br><span class="line">           namespace: default</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br><span class="line">      reload:</span><br><span class="line">        enabled: true</span><br><span class="line">        mode: polling</span><br><span class="line">        period: 500</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如上，我们打开了自动更新配置的开关，并且设置了自动更新的方式为主动拉取，时间间隔为 500ms，同时，还提供了另外一种方式——event 事件通知模式。这样，在 ConfigMap 发生改变时，无需重启 pod 即可获取最新的数据信息。</p>
+<p>同时，Spring Boot 2.x 结合了 K8s 来实现微服务的服务注册与发现：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-cloud-kubernetes-core&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-cloud-kubernetes-discovery&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>开启服务发现功能：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br></pre></td></tr></tbody></table></figure>
+
+<p>开启后，我们在《<a href="https://damon008.github.io/2020/07/23/micro-service03/">微服务 Spring Cloud 架构设计</a>》一文中讲过，其实最终是向 K8s 的 API Server 发起 http 请求，获取 Service 资源的数据列表。然后根据底层的负载均衡策略来实现服务的发现，最终解析到某个 pod 上。那么为了同一服务的多个 pod 存在，我们需要执行：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale --replicas=2 deployment admin-web-deployment</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同时，我们如果通过 HTTP 的 RestTemplate Client 来作服务请求时，可以配置一些请求的策略，RestTemplate 一般与 Ribbon 结合使用：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">client:</span><br><span class="line">  http:</span><br><span class="line">    request:</span><br><span class="line">      connectTimeout: 8000</span><br><span class="line">      readTimeout: 3000</span><br><span class="line"></span><br><span class="line">backend:</span><br><span class="line">  ribbon:</span><br><span class="line">    eureka:</span><br><span class="line">      enabled: false</span><br><span class="line">    client:</span><br><span class="line">      enabled: true</span><br><span class="line">    ServerListRefreshInterval: 5000</span><br><span class="line"></span><br><span class="line">ribbon:</span><br><span class="line">  ConnectTimeout: 8000</span><br><span class="line">  ReadTimeout: 3000</span><br><span class="line">  eager-load:</span><br><span class="line">    enabled: true</span><br><span class="line">    clients: cas-server-service,admin-web-service</span><br><span class="line">  MaxAutoRetries: 1 #对第一次请求的服务的重试次数</span><br><span class="line">  MaxAutoRetriesNextServer: 1 #要重试的下一个服务的最大数量（不包括第一个服务）</span><br><span class="line">  #ServerListRefreshInterval: 2000</span><br><span class="line">  OkToRetryOnAllOperations: true</span><br><span class="line">  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule #com.damon.config.RibbonConfiguration #分布式负载均衡策略</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以配置一些服务列表，自定义一些负载均衡的策略。</p>
+<p>如果你是使用 Feign 来作为 LB，其实与 Ribbon 只有一点点不一样，因为 Feign 本身是基于 Ribbon 来实现的，除了加上注解 @EnableFeignClients 后，还要配置：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">feign:</span><br><span class="line">  client:</span><br><span class="line">    config:</span><br><span class="line">      default: #provider-service</span><br><span class="line">        connectTimeout: 8000 #客户端连接超时时间</span><br><span class="line">        readTimeout: 3000 #客户端读超时设置</span><br><span class="line">        loggerLevel: full</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其他的可以自定义负载均衡策略，这一点是基于 Ribbon 的，所以是一样的。</p>
+<h3 id="实战-Spring-Boot-2-x-结合-K8s-来实现微服务架构设计"><a href="#实战-Spring-Boot-2-x-结合-K8s-来实现微服务架构设计" class="headerlink" title="实战 Spring Boot 2.x 结合 K8s 来实现微服务架构设计"></a>实战 Spring Boot 2.x 结合 K8s 来实现微服务架构设计</h3><p>微服务架构中，主要的就是服务消费者、服务的生产者可以互通，可以发生调用，在这基础上，还可以实现负载均衡，即一个服务调用另一个服务时，在该服务存在多个节点的情况下，可以通过一些策略来找到该服务的一个合适的节点访问。下面主要介绍服务的生产者与消费者。</p>
+<p>先看生产者，引入常用的依赖：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.1.13.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;relativePath/&gt;</span><br><span class="line">    &lt;/parent&gt;</span><br><span class="line"></span><br><span class="line">	&lt;properties&gt;</span><br><span class="line">		&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span><br><span class="line">		&lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;</span><br><span class="line">		&lt;java.version&gt;1.8&lt;/java.version&gt;</span><br><span class="line">		&lt;swagger.version&gt;2.6.1&lt;/swagger.version&gt;</span><br><span class="line">		&lt;xstream.version&gt;1.4.7&lt;/xstream.version&gt;</span><br><span class="line">		&lt;pageHelper.version&gt;4.1.6&lt;/pageHelper.version&gt;</span><br><span class="line">		&lt;fastjson.version&gt;1.2.51&lt;/fastjson.version&gt;</span><br><span class="line">		&lt;springcloud.version&gt;Greenwich.SR3&lt;/springcloud.version&gt;</span><br><span class="line">		&lt;springcloud.kubernetes.version&gt;1.1.1.RELEASE&lt;/springcloud.kubernetes.version&gt;</span><br><span class="line">		&lt;mysql.version&gt;5.1.46&lt;/mysql.version&gt;</span><br><span class="line">	&lt;/properties&gt;</span><br><span class="line"></span><br><span class="line">	&lt;dependencyManagement&gt;</span><br><span class="line">		&lt;dependencies&gt;</span><br><span class="line">			&lt;dependency&gt;</span><br><span class="line">				&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</span><br><span class="line">				&lt;version&gt;${springcloud.version}&lt;/version&gt;</span><br><span class="line">				&lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">				&lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">			&lt;/dependency&gt;</span><br><span class="line">		&lt;/dependencies&gt;</span><br><span class="line">	&lt;/dependencyManagement&gt;</span><br><span class="line"></span><br><span class="line">  &lt;dependencies&gt;</span><br><span class="line">  		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">			&lt;exclusions&gt;</span><br><span class="line">				&lt;exclusion&gt;</span><br><span class="line">					&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">					&lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">				&lt;/exclusion&gt;</span><br><span class="line">			&lt;/exclusions&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-undertow&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 配置加载依赖 --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-actuator&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-actuator-autoconfigure&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-kubernetes-config&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;jjwt&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;0.9.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;cn.hutool&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hutool-all&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.6.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.google.guava&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;guava&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;19.0&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">		    &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;</span><br><span class="line">		    &lt;artifactId&gt;commons-lang3&lt;/artifactId&gt;</span><br><span class="line">		    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		    &lt;groupId&gt;commons-collections&lt;/groupId&gt;</span><br><span class="line">		    &lt;artifactId&gt;commons-collections&lt;/artifactId&gt;</span><br><span class="line">		    &lt;version&gt;3.2.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;io.springfox&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${swagger.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;io.springfox&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;springfox-swagger-ui&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${swagger.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 数据库分页依赖 --&gt;</span><br><span class="line">	    &lt;dependency&gt;</span><br><span class="line">	      &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</span><br><span class="line">	      &lt;artifactId&gt;pagehelper&lt;/artifactId&gt;</span><br><span class="line">	      &lt;version&gt;${pageHelper.version}&lt;/version&gt;</span><br><span class="line">	    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.1&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${mysql.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 数据库驱动 --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;druid&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${fastjson.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		  &lt;groupId&gt;org.jsoup&lt;/groupId&gt;</span><br><span class="line">		  &lt;artifactId&gt;jsoup&lt;/artifactId&gt;</span><br><span class="line">		  &lt;version&gt;1.11.3&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">    &lt;/dependencies&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面我们使用了比较新的版本：Spring Boot 2.1.13，Cloud 版本是 Greenwich.SR3，其次，我们配置了 K8s 的 ConfigMap 所用的依赖，加上了数据库的一些配置，具体其他的，实现过程中，大家可以自行添加。</p>
+<p>接下来，我们看启动时加载的配置文件，这里加了关于 K8s ConfigMap 所管理的配置所在的信息，以及保证服务被发现，开启了所有的 namespace，同时还启动了配置自动刷新的功能，注意的是，该配置需要在 bootstrap 文件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: cas-server</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      config:</span><br><span class="line">        sources:</span><br><span class="line">         - name: ${spring.application.name}</span><br><span class="line">           namespace: default</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true #发现所有的命令空间的服务</span><br><span class="line">      reload:</span><br><span class="line">        enabled: true</span><br><span class="line">        mode: polling #自动刷新模式为拉取模式，也可以是事件模式 event</span><br><span class="line">        period: 500 #拉取模式下的频率</span><br><span class="line"></span><br><span class="line">logging: #日志路径设置</span><br><span class="line">  path: /data/${spring.application.name}/logs</span><br></pre></td></tr></tbody></table></figure>
+
+<p>剩下的一些配置可以在 application 文件中配置：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  profiles:</span><br><span class="line">    active: dev</span><br><span class="line"></span><br><span class="line">server:</span><br><span class="line">  port: 2000</span><br><span class="line">  undertow:</span><br><span class="line">    accesslog:</span><br><span class="line">      enabled: false</span><br><span class="line">      pattern: combined</span><br><span class="line">  servlet:</span><br><span class="line">    session:</span><br><span class="line">      timeout: PT120M #session 超时时间</span><br><span class="line"></span><br><span class="line">client:</span><br><span class="line">  http:</span><br><span class="line">    request:</span><br><span class="line">      connectTimeout: 8000</span><br><span class="line">      readTimeout: 30000</span><br><span class="line"></span><br><span class="line">mybatis: #持久层配置</span><br><span class="line">  mapperLocations: classpath:mapper/*.xml</span><br><span class="line">  typeAliasesPackage: com.damon.*.model</span><br></pre></td></tr></tbody></table></figure>
+
+<p>接下来看下启动类：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> *</span><br><span class="line"> * @author Damon</span><br><span class="line"> * @date 2020 年 1 月 13 日 下午 8:29:42</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">@Configuration</span><br><span class="line">@EnableAutoConfiguration</span><br><span class="line">@ComponentScan(basePackages = {"com.damon"})</span><br><span class="line">//@SpringBootApplication(scanBasePackages = { "com.damon" })</span><br><span class="line">@EnableConfigurationProperties(EnvConfig.class)</span><br><span class="line">public class CasApp {</span><br><span class="line">	public static void main(String[] args) {</span><br><span class="line">		SpringApplication.run(CasApp.class, args);</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里我们没有直接用注解 @SpringBootApplication，因为主要用到的就是几个配置，没必要全部加载。</p>
+<p>我们看到启动类中有一个引入的 EnvConfig.class：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @author Damon</span><br><span class="line"> * @date 2019 年 10 月 25 日 下午 8:54:01</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">@ConfigurationProperties(prefix = "greeting")</span><br><span class="line">public class EnvConfig {</span><br><span class="line"></span><br><span class="line">    private String message = "This is a dummy message";</span><br><span class="line"></span><br><span class="line">    public String getMessage() {</span><br><span class="line">        return this.message;</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    public void setMessage(String message) {</span><br><span class="line">        this.message = message;</span><br><span class="line">    }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这就是配置 ConfigMap 中的属性的类。剩下的可以自己定义一个接口类，来实现服务生产者。</p>
+<p>最后，我们需要在 K8s 下部署的话，需要准备几个脚本。</p>
+<p><strong>1. 创建 ConfigMap</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">kind: ConfigMap</span><br><span class="line">apiVersion: v1</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server</span><br><span class="line">data:</span><br><span class="line">  application.yaml: |-</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the World</span><br><span class="line">    ---</span><br><span class="line">    spring:</span><br><span class="line">      profiles: dev</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Dev</span><br><span class="line">    spring:</span><br><span class="line">      profiles: test</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Test</span><br><span class="line">    spring:</span><br><span class="line">      profiles: prod</span><br><span class="line">    greeting:</span><br><span class="line">      message: Say Hello to the Prod</span><br></pre></td></tr></tbody></table></figure>
+
+<p>设置了不同环境的配置，注意，这里的 namespace 需要与服务部署的 namespace 一致，这里默认的是 default，而且在创建服务之前，先得创建这个。</p>
+<p><strong>2. 创建服务部署脚本</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: apps/v1</span><br><span class="line">kind: Deployment</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server-deployment</span><br><span class="line">  labels:</span><br><span class="line">    app: cas-server</span><br><span class="line">spec:</span><br><span class="line">  replicas: 3</span><br><span class="line">  selector:</span><br><span class="line">    matchLabels:</span><br><span class="line">      app: cas-server</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: cas-server</span><br><span class="line">    spec:</span><br><span class="line">      nodeSelector:</span><br><span class="line">        cas-server: "true"</span><br><span class="line">      containers:</span><br><span class="line">      - name: cas-server</span><br><span class="line">        image: cas-server</span><br><span class="line">        imagePullPolicy: Always</span><br><span class="line">        ports:</span><br><span class="line">          - name: cas-server01</span><br><span class="line">            containerPort: 2000</span><br><span class="line">        volumeMounts:</span><br><span class="line">        - mountPath: /home/cas-server</span><br><span class="line">          name: cas-server-path</span><br><span class="line">        - mountPath: /data/cas-server</span><br><span class="line">          name: cas-server-log-path</span><br><span class="line">        - mountPath: /etc/kubernetes</span><br><span class="line">          name: kube-config-path</span><br><span class="line">        args: ["sh", "-c", "nohup java $JAVA_OPTS -jar -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m -Xms1024m -Xmx1024m -Xmn256m -Xss256k -XX:SurvivorRatio=8 -XX:+UseConcMarkSweepGC cas-server.jar --spring.profiles.active=dev", "&amp;"]</span><br><span class="line">      volumes:</span><br><span class="line">      - name: cas-server-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: /var/pai/cas-server</span><br><span class="line">      - name: cas-server-log-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: /data/cas-server</span><br><span class="line">      - name: kube-config-path</span><br><span class="line">        hostPath:</span><br><span class="line">          path: /etc/kubernetes</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意：这里有个属性 replicas，其作用是当前 pod 所启动的副本数，即我们常说的启动的节点个数，当然，你也可以通过前面讲的脚本来执行生成多个 pod 副本。如果这里没有设置多个的话，也可以通过命令来执行：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl scale --replicas=3 deployment cas-server-deployment</span><br></pre></td></tr></tbody></table></figure>
+<p>这里，我建议使用 Deployment 类型的来创建 pod，因为 Deployment 类型更好的支持弹性伸缩与滚动更新。</p>
+<p>同时，我们通过 <code>--spring.profiles.active=dev</code> 来指定当前 pod 的运行环境。</p>
+<p><strong>3. 创建一个 Service</strong></p>
+<p>最后，如果服务想被发现，需要创建一个 Service：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: cas-server-service</span><br><span class="line">  namespace: default</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - name: cas-server01</span><br><span class="line">    port: 2000</span><br><span class="line">    targetPort: cas-server01</span><br><span class="line">  selector:</span><br><span class="line">    app: cas-server</span><br></pre></td></tr></tbody></table></figure>
+
+<p>注意，这里的 namespace 需要与服务部署的 namespace 一致，这里默认的是 default。</p>
+<p>看看服务的消费者，同样，先看引入常用的依赖：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.1.13.RELEASE&lt;/version&gt;</span><br><span class="line">        &lt;relativePath/&gt;</span><br><span class="line">    &lt;/parent&gt;</span><br><span class="line"></span><br><span class="line">	&lt;properties&gt;</span><br><span class="line">		&lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;</span><br><span class="line">		&lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;</span><br><span class="line">		&lt;java.version&gt;1.8&lt;/java.version&gt;</span><br><span class="line">		&lt;swagger.version&gt;2.6.1&lt;/swagger.version&gt;</span><br><span class="line">		&lt;xstream.version&gt;1.4.7&lt;/xstream.version&gt;</span><br><span class="line">		&lt;pageHelper.version&gt;4.1.6&lt;/pageHelper.version&gt;</span><br><span class="line">		&lt;fastjson.version&gt;1.2.51&lt;/fastjson.version&gt;</span><br><span class="line">		&lt;springcloud.version&gt;Greenwich.SR3&lt;/springcloud.version&gt;</span><br><span class="line">		&lt;!-- &lt;springcloud.version&gt;2.1.8.RELEASE&lt;/springcloud.version&gt; --&gt;</span><br><span class="line">		&lt;springcloud.kubernetes.version&gt;1.1.1.RELEASE&lt;/springcloud.kubernetes.version&gt;</span><br><span class="line">		&lt;mysql.version&gt;5.1.46&lt;/mysql.version&gt;</span><br><span class="line">	&lt;/properties&gt;</span><br><span class="line"></span><br><span class="line">	&lt;dependencyManagement&gt;</span><br><span class="line">		&lt;dependencies&gt;</span><br><span class="line">			&lt;dependency&gt;</span><br><span class="line">				&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</span><br><span class="line">				&lt;version&gt;${springcloud.version}&lt;/version&gt;</span><br><span class="line">				&lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">				&lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">			&lt;/dependency&gt;</span><br><span class="line">		&lt;/dependencies&gt;</span><br><span class="line">	&lt;/dependencyManagement&gt;</span><br><span class="line"></span><br><span class="line">	&lt;dependencies&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</span><br><span class="line">			&lt;exclusions&gt;</span><br><span class="line">				&lt;exclusion&gt;</span><br><span class="line">					&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">					&lt;artifactId&gt;spring-boot-starter-tomcat&lt;/artifactId&gt;</span><br><span class="line">				&lt;/exclusion&gt;</span><br><span class="line">			&lt;/exclusions&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;spring-boot-starter-undertow&lt;/artifactId&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;</span><br><span class="line">            &lt;scope&gt;test&lt;/scope&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">   &lt;!-- 配置加载依赖 --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-actuator&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-actuator-autoconfigure&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-kubernetes-config&lt;/artifactId&gt;</span><br><span class="line">            &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-commons&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 结合 k8s 实现服务发现 --&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-kubernetes-core&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-kubernetes-discovery&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 负载均衡策略 --&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-kubernetes-ribbon&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 熔断机制 --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-cloud-starter-netflix-hystrix&lt;/artifactId&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;cn.hutool&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;hutool-all&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;4.6.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;fastjson&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${fastjson.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		  &lt;groupId&gt;org.jsoup&lt;/groupId&gt;</span><br><span class="line">		  &lt;artifactId&gt;jsoup&lt;/artifactId&gt;</span><br><span class="line">		  &lt;version&gt;1.11.3&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;io.springfox&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;springfox-swagger2&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${swagger.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;io.springfox&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;springfox-swagger-ui&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${swagger.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		    &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;</span><br><span class="line">		    &lt;artifactId&gt;commons-lang3&lt;/artifactId&gt;</span><br><span class="line">		    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;dependency&gt;</span><br><span class="line">		    &lt;groupId&gt;commons-collections&lt;/groupId&gt;</span><br><span class="line">		    &lt;artifactId&gt;commons-collections&lt;/artifactId&gt;</span><br><span class="line">		    &lt;version&gt;3.2.2&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">		&lt;!-- 数据库分页 --&gt;</span><br><span class="line">	    &lt;dependency&gt;</span><br><span class="line">	      &lt;groupId&gt;com.github.pagehelper&lt;/groupId&gt;</span><br><span class="line">	      &lt;artifactId&gt;pagehelper&lt;/artifactId&gt;</span><br><span class="line">	      &lt;version&gt;${pageHelper.version}&lt;/version&gt;</span><br><span class="line">	    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.1&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">			&lt;groupId&gt;mysql&lt;/groupId&gt;</span><br><span class="line">			&lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;</span><br><span class="line">			&lt;version&gt;${mysql.version}&lt;/version&gt;</span><br><span class="line">		&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;!-- 数据库驱动 --&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;/groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;druid&lt;/artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.3&lt;/version&gt;</span><br><span class="line">        &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">	&lt;/dependencies&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里大部分的依赖跟生产者一样，但，需要加入服务发现的依赖，以及所用的负载均衡的策略依赖、服务的熔断机制。</p>
+<p>接下来 bootstrap 文件中的配置跟生产者一样，这里不在说了，唯一不同的是 application 文件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">backend:</span><br><span class="line">  ribbon:</span><br><span class="line">    eureka:</span><br><span class="line">      enabled: false</span><br><span class="line">    client:</span><br><span class="line">      enabled: true</span><br><span class="line">    ServerListRefreshInterval: 5000</span><br><span class="line"></span><br><span class="line">ribbon:</span><br><span class="line">  ConnectTimeout: 3000</span><br><span class="line">  ReadTimeout: 1000</span><br><span class="line">  eager-load:</span><br><span class="line">    enabled: true</span><br><span class="line">    clients: cas-server-service,edge-cas-service,admin-web-service #负载均衡发现的服务列表</span><br><span class="line">  MaxAutoRetries: 1 #对第一次请求的服务的重试次数</span><br><span class="line">  MaxAutoRetriesNextServer: 1 #要重试的下一个服务的最大数量（不包括第一个服务）</span><br><span class="line">  OkToRetryOnAllOperations: true</span><br><span class="line">  NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule #负载均衡策略</span><br><span class="line"></span><br><span class="line">hystrix:</span><br><span class="line">  command:</span><br><span class="line">    BackendCall:</span><br><span class="line">      execution:</span><br><span class="line">        isolation:</span><br><span class="line">          thread:</span><br><span class="line">            timeoutInMilliseconds: 5000 #熔断机制设置的超时时间</span><br><span class="line">  threadpool:</span><br><span class="line">    BackendCallThread:</span><br><span class="line">      coreSize: 5</span><br></pre></td></tr></tbody></table></figure>
+
+<p>引入了负载均衡的机制以及策略（可以自定义策略）。</p>
+<p>接下来看启动类：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * @author Damon</span><br><span class="line"> * @date 2020 年 1 月 13 日 下午 9:23:06</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line"></span><br><span class="line">@Configuration</span><br><span class="line">@EnableAutoConfiguration</span><br><span class="line">@ComponentScan(basePackages = {"com.damon"})</span><br><span class="line">@EnableConfigurationProperties(EnvConfig.class)</span><br><span class="line">@EnableDiscoveryClient</span><br><span class="line">public class AdminApp {</span><br><span class="line"></span><br><span class="line">    public static void main(String[] args) {</span><br><span class="line">        SpringApplication.run(AdminApp.class, args);</span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同样的 EnvConfig 类，这里不再展示了。其他的比如：注解 @EnableDiscoveryClient 是为了服务发现。</p>
+<p>同样，我们新建接口，假如我们生产者有一个接口是：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://cas-server-service/api/getUser</span><br></pre></td></tr></tbody></table></figure>
+
+<p>则，我们在调用它时，可以通过 RestTemplate Client 来直接调用，通过 Ribbon 来实现负载均衡：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@LoadBalanced</span><br><span class="line">	@Bean</span><br><span class="line">	public RestTemplate restTemplate() {</span><br><span class="line">		SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();</span><br><span class="line">		requestFactory.setReadTimeout(env.getProperty("client.http.request.readTimeout", Integer.class, 15000));</span><br><span class="line">		requestFactory.setConnectTimeout(env.getProperty("client.http.request.connectTimeout", Integer.class, 3000));</span><br><span class="line">		RestTemplate rt = new RestTemplate(requestFactory);</span><br><span class="line">		return rt;</span><br><span class="line">	}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>可以看到，这种方式的分布式负载均衡实现起来很简单，直接注入一个初始化 Bean，加上一个注解 @LoadBalanced 即可。</p>
+<p>在实现类中，我们只要直接调用服务生产者：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ResponseEntity&lt;String&gt; forEntity = restTemplate.getForEntity("http://cas-server/api/getUser", String.class);</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中，URL 中 必须要加上 <code>"http://"</code>，这样即可实现服务的发现以及负载均衡，其中，LB 的策略，可以采用 Ribbon 的几种方式，也可以自定义一种。</p>
+<p>最后，可以在实现类上加一个熔断机制：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@HystrixCommand(fallbackMethod = "admin_service_fallBack")</span><br><span class="line">public Response&lt;Object&gt; getUserInfo(HttpServletRequest req, HttpServletResponse res) {</span><br><span class="line"></span><br><span class="line">		ResponseEntity&lt;String&gt; forEntity = restTemplate.getForEntity(envConfig.getCas_server_url() + "/api/getUser", String.class);</span><br><span class="line">        logger.info("test restTemplate.getForEntity(): {}", forEntity);</span><br><span class="line">        if (forEntity.getStatusCodeValue() == 200) {</span><br><span class="line">                logger.info("================================test restTemplate.getForEntity(): {}", JSON.toJSON(forEntity.getBody()));</span><br><span class="line">                logger.info(JSON.toJSONString(forEntity.getBody()));</span><br><span class="line">        }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其中发生熔断时，回调方法：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">private Response&lt;Object&gt; admin_service_fallBack(HttpServletRequest req, HttpServletResponse res) {</span><br><span class="line">		String token = StrUtil.subAfter(req.getHeader("Authorization"), "bearer ", false);</span><br><span class="line">		logger.info("admin_service_fallBack token: {}", token);</span><br><span class="line">		return Response.ok(200, -5, "服务挂啦!", null);</span><br><span class="line">	}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其返回的对象必须与原函数一致，否则可能会报错。具体的可以参考《<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/TcwAONaCexKIeT-63ClGsg">Spring cloud 之熔断机制</a>》。</p>
+<p>最后与生产者一样，需要创建 ConfigMap、Service、服务部署脚本，下面会开源这些代码，这里也就不一一展示了。最后，我们会发现：当请求 认证中心时，认证中心存在的多个 pod，可以被轮训的请求到。这就是基于 Ribbon 的轮训策略来实现分布式的负载均衡，并且基于 Redis 来实现信息共享。</p>
+<h3 id="结束福利"><a href="#结束福利" class="headerlink" title="结束福利"></a>结束福利</h3><p>开源几个微服务的架构设计项目：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/damon008/spring-cloud-oauth2">https://github.com/damon008/spring-cloud-oauth2</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/damon008/spring-cloud-k8s">https://github.com/damon008/spring-cloud-k8s</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitee.com/damon_one/spring-cloud-k8s">https://gitee.com/damon_one/spring-cloud-k8s</a></li>
+<li><a target="_blank" rel="noopener" href="https://gitee.com/damon_one/spring-cloud-oauth2">https://gitee.com/damon_one/spring-cloud-oauth2</a></li>
+</ul>
+<p>欢迎大家 star，多多指教。</p>
+<h3 id="关于作者"><a href="#关于作者" class="headerlink" title="关于作者"></a>关于作者</h3><p>笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号<strong>程序猿 Damon</strong> 发起人。个人微信 <strong>MrNull008</strong>，欢迎來撩。</p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：交个朋友之猿天地"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2021/02/04/spring-cloud-k8s/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/K8s/" rel="tag">K8s</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/02/22/k8s-backup/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            备份Kubernetes的5个最佳实践
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/12/28/volcano-reserve/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Volcano 作业资源预留设计原理解读</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/l3.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

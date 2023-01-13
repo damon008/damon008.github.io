@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/l3.png" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-springcloud-03"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Spring cloud 之多种方式限流（实战）
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/10/springcloud-03/" class="article-date">
+  <time datetime="2020-07-10T06:15:01.000Z" itemprop="datePublished">2020-07-10</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.7k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">12 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <img src="/images/title_img/6.jpg" alt="" style="display: block; margin: 0 auto; max-width: 100%;">
+
+<p>在频繁的网络请求时，服务有时候也会受到很大的压力，尤其是那种网络攻击，非法的。这样的情形有时候需要作一些限制。例如：限制对方的请求，这种限制可以有几个依据：请求IP、用户唯一标识、请求的接口地址等等。</p>
+<p>当前限流的方式也很多：Spring cloud 中在网关本身自带限流的一些功能，基于 redis 来做的。同时，阿里也开源了一款：限流神器 Sentinel。今天我们主要围绕这两块来实战微服务的限流机制。</p>
+<p>首先讲 Spring cloud 原生的限流功能，因为限流可以是对每个服务进行限流，也可以对于网关统一作限流处理。</p>
+<p>一、实战基于 Spring cloud Gateway 的限流</p>
+<p>pom.xml引入依赖：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-data-redis-reactive&lt;/artifactId&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>其基础是基于redis，所以：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: gateway-service</span><br><span class="line">  redis: #redis相关配置</span><br><span class="line">    database: 8</span><br><span class="line">    host: 10.12.15.5</span><br><span class="line">    port: 6379</span><br><span class="line">    password: 123456 #有密码时设置</span><br><span class="line">    jedis:</span><br><span class="line">      pool:</span><br><span class="line">        max-active: 8</span><br><span class="line">        max-idle: 8</span><br><span class="line">        min-idle: 0</span><br><span class="line">    timeout: 10000ms</span><br></pre></td></tr></tbody></table></figure>
+
+<p>接下来需要注入限流策略的 bean：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">@Primary</span><br><span class="line">  @Bean(value = "ipKeyResolver")</span><br><span class="line">  KeyResolver ipKeyResolver() {</span><br><span class="line">      return exchange -&gt; Mono.just(exchange.getRequest().getRemoteAddress().getHostName());</span><br><span class="line">      //return exchange -&gt; Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());</span><br><span class="line">      //return exchange -&gt; Mono.just(exchange.getRequest().getRemoteAddress().getAddress().getHostAddress());</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">   * API限流</span><br><span class="line">   * @return</span><br><span class="line">   * @author Damon</span><br><span class="line">   * @date 2020年3月18日</span><br><span class="line">   *</span><br><span class="line">   */</span><br><span class="line">  @Bean(value = "apiKeyResolver")</span><br><span class="line">  KeyResolver apiKeyResolver() {</span><br><span class="line">    return exchange -&gt; Mono.just(exchange.getRequest().getPath().value());</span><br><span class="line">  }</span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">   * 请求路径中必须携带userId参数</span><br><span class="line">   * 用户限流</span><br><span class="line">   * @return</span><br><span class="line">   * @author Damon</span><br><span class="line">   * @date 2020年3月18日</span><br><span class="line">   *</span><br><span class="line">   */</span><br><span class="line">  @Bean(value = "userKeyResolver")</span><br><span class="line">  KeyResolver userKeyResolver() {</span><br><span class="line">    return exchange -&gt; Mono.just(exchange.getRequest().getQueryParams().getFirst("userId"));</span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+<p>这里引入ipKeyResolver、apiKeyResolver、userKeyResolver三种策略，可以利用注解 @Primary 来决定其中一个被使用。</p>
+<p>注入bean后，需要在配置中备用：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: gateway-service</span><br><span class="line">  redis: #redis相关配置</span><br><span class="line">    database: 8</span><br><span class="line">    host: 10.12.15.5</span><br><span class="line">    port: 6379</span><br><span class="line">    password: 123456 #有密码时设置</span><br><span class="line">    jedis:</span><br><span class="line">      pool:</span><br><span class="line">        max-active: 8</span><br><span class="line">        max-idle: 8</span><br><span class="line">        min-idle: 0</span><br><span class="line">    timeout: 10000ms</span><br><span class="line"></span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br><span class="line">    gateway:</span><br><span class="line">      discovery:</span><br><span class="line">        locator:</span><br><span class="line">          enabled: true</span><br><span class="line">          lowerCaseServiceId: true</span><br><span class="line">      routes: #路由配置:参数为一个List</span><br><span class="line">      - id: cas-server #唯一标识</span><br><span class="line">        uri: lb://cas-server-service #转发的地址,写服务名称</span><br><span class="line">        order: -1</span><br><span class="line">        predicates:</span><br><span class="line">        - Path=/cas-server/** #判断匹配条件,即地址带有/ribbon/**的请求,会转发至lb:cas-server-service</span><br><span class="line">        filters:</span><br><span class="line">        - StripPrefix=1 #去掉Path前缀,参数为1代表去掉/ribbon</span><br><span class="line"></span><br><span class="line">        - name: RequestRateLimiter #基于redis的Gateway的自身限流</span><br><span class="line">          args:</span><br><span class="line">            redis-rate-limiter.replenishRate: 1  # 允许用户每秒处理多少个请求</span><br><span class="line">            redis-rate-limiter.burstCapacity: 3  # 令牌桶的容量，允许在一秒钟内完成的最大请求数</span><br><span class="line">            key-resolver: "#{@ipKeyResolver}" #SPEL表达式取的对应的bean</span><br><span class="line"></span><br><span class="line">      - id: admin-web</span><br><span class="line">        uri: lb://admin-web-service</span><br><span class="line">        order: -1</span><br><span class="line">        predicates:</span><br><span class="line">        - Path=/admin-web/**</span><br><span class="line">        filters:</span><br><span class="line">        - StripPrefix=1</span><br><span class="line"></span><br><span class="line">        - name: RequestRateLimiter</span><br><span class="line">          args:</span><br><span class="line">            redis-rate-limiter.replenishRate: 1  # 允许用户每秒处理多少个请求</span><br><span class="line">            redis-rate-limiter.burstCapacity: 3  # 令牌桶的容量，允许在一秒钟内完成的最大请求数</span><br><span class="line">            key-resolver: "#{@ipKeyResolver}" #SPEL表达式取的对应的bean</span><br><span class="line"></span><br><span class="line">      - id: order-service</span><br><span class="line">        uri: lb://order-service-service</span><br><span class="line">        order: -1</span><br><span class="line">        predicates:</span><br><span class="line">        - Path=/order-service/**</span><br><span class="line">        filters:</span><br><span class="line">        - StripPrefix=1</span><br><span class="line"></span><br><span class="line">        - name: RequestRateLimiter</span><br><span class="line">          args:</span><br><span class="line">            redis-rate-limiter.replenishRate: 1  # 允许用户每秒处理多少个请求</span><br><span class="line">            redis-rate-limiter.burstCapacity: 3  # 令牌桶的容量，允许在一秒钟内完成的最大请求数</span><br><span class="line">            key-resolver: "#{@ipKeyResolver}" #SPEL表达式取的对应的bean</span><br><span class="line"></span><br><span class="line">  http:</span><br><span class="line">    encoding:</span><br><span class="line">      charset: UTF-8</span><br><span class="line">      enabled: true</span><br><span class="line">      force: true</span><br><span class="line">  mvc:</span><br><span class="line">    throw-exception-if-no-handler-found: true</span><br><span class="line">  main:</span><br><span class="line">    allow-bean-definition-overriding: true # 当遇到同样名称时，是否允许覆盖注册</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里是在原有的路由基础上加入 RequestRateLimiter限流过滤器，包括三个参数：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- name: RequestRateLimiter #基于redis的Gateway的自身限流</span><br><span class="line">          args:</span><br><span class="line">            redis-rate-limiter.replenishRate: 3  #允许用户每秒处理多少个请求</span><br><span class="line">            redis-rate-limiter.burstCapacity: 5  #令牌桶的容量，允许在一秒钟内完成的最大请求数</span><br><span class="line">            key-resolver: "#{@ipKeyResolver}" #SPEL表达式取的对应的bean</span><br></pre></td></tr></tbody></table></figure>
+
+<ul>
+<li>其中 replenishRate，其含义表示允许每秒处理请求数；</li>
+<li>burstCapacity 表示允许在一秒内处理的最大请求数；</li>
+<li>key-resolver 这里采用请求 IP 限流，利用SPEL 表达式取对应的 bean</li>
+</ul>
+<p>写一个小脚本来压测一下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for i in $(seq 1 30000); do echo $(expr $i \\* 3 + 1);curl -i -H "Accept: application/json" -H "Authorization:bearer b064d95b-af3f-4053-a980-377c63ab3413" -X GET http://10.10.15.5:5556/order-service/api/order/getUserInfo;done</span><br><span class="line"></span><br><span class="line">for i in $(seq 1 30000); do echo $(expr $i \\* 3 + 1);curl -i -H "Accept: application/json" -H "Authorization:bearer b064d95b-af3f-4053-a980-377c63ab3413" -X GET http://10.10.15.5:5556/admin-web/api/user/getCurrentUser;done</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面两个脚本分别对2个服务进行压测，打印结果：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">transfer-encoding: chunked</span><br><span class="line">X-RateLimit-Remaining: 2</span><br><span class="line">X-RateLimit-Burst-Capacity: 3</span><br><span class="line">X-RateLimit-Replenish-Rate: 1</span><br><span class="line">Expires: 0</span><br><span class="line">Cache-Control: no-cache, no-store, max-age=0, must-revalidate</span><br><span class="line">Set-Cookie: ORDER-SERVICE-SESSIONID=R99Ljit9XvfCapyUJDWL8I0rZqxReoY6HwcQV2n2; path=/</span><br><span class="line">X-XSS-Protection: 1; mode=block</span><br><span class="line">Pragma: no-cache</span><br><span class="line">X-Frame-Options: DENY</span><br><span class="line">Date: Thu, 19 Mar 2020 06:32:27 GMT</span><br><span class="line">X-Content-Type-Options: nosniff</span><br><span class="line">Content-Type: application/json;charset=UTF-8</span><br><span class="line"></span><br><span class="line">{"message":{"status":200,"code":0,"message":"success"},"data":"{\"message\":{\"status\":200,\"code\":0,\"message\":\"get user success\"},\"data\":{\"id\":23,\"isAdmin\":1,\"userId\":\"fbb18810-e980-428c-932f-848f3b9e7c84\",\"userType\":\"super_admin\",\"username\":\"admin\",\"realName\":\"super_admin\",\"password\":\"$2a$10$89AqlYKlnsTpNmWcCMvgluRFQ/6MLK1k/nkBpz.Lw6Exh.WMQFH6W\",\"phone\":null,\"email\":null,\"createBy\":\"admin\",\"createTime\":1573119753172,\"updateBy\":\"admin\",\"updateTime\":1573119753172,\"loginTime\":null,\"expireTime\":null,\"remarks\":\"super_admin\",\"delFlag\":0,\"loginType\":null}}"}ex</span><br><span class="line"></span><br><span class="line">同一秒内多次后：</span><br><span class="line"></span><br><span class="line">HTTP/1.1 429 Too Many Requests</span><br><span class="line">X-RateLimit-Remaining: 0</span><br><span class="line">X-RateLimit-Burst-Capacity: 3</span><br><span class="line">X-RateLimit-Replenish-Rate: 1</span><br><span class="line">content-length: 0</span><br><span class="line"></span><br><span class="line">expr: syntax error</span><br><span class="line"></span><br><span class="line">HTTP/1.1 429 Too Many Requests</span><br><span class="line">X-RateLimit-Remaining: 0</span><br><span class="line">X-RateLimit-Burst-Capacity: 3</span><br><span class="line">X-RateLimit-Replenish-Rate: 1</span><br><span class="line">content-length: 0</span><br><span class="line"></span><br><span class="line">expr: syntax error</span><br></pre></td></tr></tbody></table></figure>
+<p>从上面可以看到，执行后，会出现调用失败的情况，状态变为429 (Too Many Requests) 。</p>
+<p>二、基于阿里开源限流神器：Sentinel</p>
+<p>首先引入依赖：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--基于 阿里的sentinel作限流 --&gt;</span><br><span class="line">    &lt;dependency&gt;</span><br><span class="line">          &lt;groupId&gt;com.alibaba.cloud&lt;/groupId&gt;</span><br><span class="line">          &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;/artifactId&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在配置文件 application.yaml 文件中配置，需要新增2个配置：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: admin-web</span><br><span class="line">  cloud:</span><br><span class="line">    kubernetes:</span><br><span class="line">      discovery:</span><br><span class="line">        all-namespaces: true</span><br><span class="line">    sentinel:</span><br><span class="line">      eager: true #取消Sentinel控制台的懒加载</span><br><span class="line">      transport:</span><br><span class="line">        dashboard: 10.12.15.2:8080 #sentinel的Dashboard地址</span><br><span class="line">        port: 8719 #是sentinel应用端和控制台通信端口</span><br><span class="line">        heartbeat-interval-ms: 500 #心跳时间</span><br><span class="line">      scg:</span><br><span class="line">        fallback: #scg.fallback为sentinel限流后的响应配置</span><br><span class="line">          mode: response</span><br><span class="line">          response-status: 455</span><br><span class="line">          response-body: 已被限流</span><br></pre></td></tr></tbody></table></figure>
+<p>其中，这里面配置了一个服务：spring.cloud.sentinel.transport.dashboard，配置的是 sentinel 的 Dashboard 地址。同时 spring.cloud.sentinel.transport.port 这个端口配置会在应用对应的机器上启动一个Http Server，该 Server 会与 Sentinel 控制台做交互。</p>
+<p>Sentinel 默认为所有的 HTTP 服务提供限流埋点，上面配置完成后自动完成所有埋点，只需要控制配置限流规则即可。</p>
+<p>这里我们讲下通过注解来给指定接口函数加上限流埋点，写一个RestController，在接口函数上加上注解 @SentinelResource：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@GetMapping(value = "/getToken")</span><br><span class="line">@SentinelResource("getToken")</span><br><span class="line">public Response&lt;Object&gt; getToken(Authentication authentication){</span><br><span class="line">    //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span><br><span class="line">    authentication.getCredentials();</span><br><span class="line">    OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails)authentication.getDetails();</span><br><span class="line">    String token = details.getTokenValue();</span><br><span class="line">    return Response.ok(200, 0, "get token success", token);</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以上代码部分完成了，接下来先安装SentinelDashBoard，Sentinel DashBoard下载地址：<a target="_blank" rel="noopener" href="https://github.com/alibaba/Sentinel/releases">https://github.com/alibaba/Sentinel/releases</a> 。</p>
+<p>下载完成后，命令启动：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar sentinel-dashboard-1.6.2.jar</span><br></pre></td></tr></tbody></table></figure>
+
+<p>默认启动端口为8080，访问 IP:8080，就可以显示 Sentinel 的登录界面，用户名与密码均为sentinel。登录 Dashboard 成功后，多次访问接口”/getToken”，可以在 Dashboard 看到相应数据，这里不展示了。接下来可以设置接口的限流功能，在 “+流控” 按钮点击打开设置界面，设置阈值类型为 qps，单机阈值为5。</p>
+<p>浏览器重复请求 <a target="_blank" rel="noopener" href="http://10.10.15.5:5556/admin-web/api/user/getToken">http://10.10.15.5:5556/admin-web/api/user/getToken</a> 如果超过阀值就会出现如下界面信息：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Blocked by Sentinel (flow limiting)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>此时，就看到Sentinel 限流起作用了，可以加上 spring.cloud.sentinel.scg.fallback 为sentinel 限流后的响应配置，亦可自定义限流异常信息：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@GetMapping(value = "/getToken")</span><br><span class="line">@SentinelResource(value = "getToken", blockHandler = "handleSentinelException", blockHandlerClass = {MySentinelException.class}))</span><br><span class="line">public Response&lt;Object&gt; getToken(Authentication authentication){</span><br><span class="line">    //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();</span><br><span class="line">    authentication.getCredentials();</span><br><span class="line">    OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails)authentication.getDetails();</span><br><span class="line">    String token = details.getTokenValue();</span><br><span class="line">    return Response.ok(200, 0, "get token success", token);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">public class MySentinelException {</span><br><span class="line">    public static Response&lt;Object&gt; handleSentinelException(BlockException e) {</span><br><span class="line">        Map&lt;String,Object&gt; map=new HashMap&lt;&gt;();</span><br><span class="line">        logger.info("Oops: " + ex.getClass().getCanonicalName());</span><br><span class="line">        return Response.ok(200, -8, "通过注解 @SentinelResource 配置限流埋点并自定义限流后的处理逻辑", null);</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里讲下注解 @SentinelResource 包含以下属性：</p>
+<ul>
+<li>value：资源名称，必需项；</li>
+<li>entryType：入口类型，可选项（默认为 EntryType.OUT）；</li>
+<li>blockHandler：blockHandlerClass中对应的异常处理方法名，参数类型和返回值必须和原方法一致；</li>
+<li>blockHandlerClass：自定义限流逻辑处理类</li>
+</ul>
+<p>Sentinel 限流逻辑处理完毕了，但每次服务重启后，之前配置的限流规则就会被清空。因为是内存形式的规则对象。所以下面就讲下用 Sentinel 的一个特性 ReadableDataSource 获取文件、数据库或者配置中心设置限流规则，目前支持 Apollo、Nacos、ZK 配置来管理。</p>
+<p>首先回忆一下，一条限流规则主要由下面几个因素组成：</p>
+<ul>
+<li>resource：资源名，即限流规则的作用对象，即为注解 @SentinelResource 的value；</li>
+<li>count：限流阈值；grade：限流阈值类型（QPS 或并发线程数）；</li>
+<li>limitApp：流控针对的调用来源，若为 default 则不区分调用来源；</li>
+<li>strategy：基于调用关系的限流策略；</li>
+<li>controlBehavior：流量控制效果（直接拒绝、排队等待、匀速器模式）</li>
+</ul>
+<p>理解了意思，接下来通过文件来配置：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#通过文件读取限流规则</span><br><span class="line">spring.cloud.sentinel.datasource.ds1.file.file=classpath:flowrule.json</span><br><span class="line">spring.cloud.sentinel.datasource.ds1.file.data-type=json</span><br><span class="line">spring.cloud.sentinel.datasource.ds1.file.rule-type=flow</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在resources新建一个文件，比如 flowrule.json 添加限流规则：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">  {</span><br><span class="line">    "resource": "getToken",</span><br><span class="line">    "count": 1,</span><br><span class="line">    "controlBehavior": 0,</span><br><span class="line">    "grade": 1,</span><br><span class="line">    "limitApp": "default",</span><br><span class="line">    "strategy": 0</span><br><span class="line">  },</span><br><span class="line">  {</span><br><span class="line">    "resource": "resource",</span><br><span class="line">    "count": 1,</span><br><span class="line">    "controlBehavior": 0,</span><br><span class="line">    "grade": 1,</span><br><span class="line">    "limitApp": "default",</span><br><span class="line">    "strategy": 0</span><br><span class="line">  }</span><br><span class="line">]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>重新启动项目，出现如下日志说明成功：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DataSource ds1-sentinel-file-datasource start to loadConfig</span><br><span class="line">DataSource ds1-sentinel-file-datasource load 2 FlowRule</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果采用 Nacos 作为配置获取限流规则，可在文件中加如下配置：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">spring:</span><br><span class="line">  application:</span><br><span class="line">    name: order-service</span><br><span class="line">  cloud:</span><br><span class="line">    nacos:</span><br><span class="line">      config:</span><br><span class="line">        server-addr: 10.10.15.5:8848</span><br><span class="line">      discovery:</span><br><span class="line">        server-addr: 10.10.15.5:8848</span><br><span class="line">    sentinel:</span><br><span class="line">      eager: true</span><br><span class="line">      transport:</span><br><span class="line">        dashboard: 10.10.15.5:8080</span><br><span class="line">      datasource:</span><br><span class="line">        ds1:</span><br><span class="line">          nacos:</span><br><span class="line">            server-addr: 10.10.15.5:8848</span><br><span class="line">            dataId: ${spring.application.name}-flow-rules</span><br><span class="line">            data-type: json</span><br><span class="line">            rule-type: flow</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以上即为限流的两种方式。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://gitee.com/damon_one/spring-cloud-k8s</span><br><span class="line">https://gitee.com/damon_one/spring-cloud-oauth2</span><br><span class="line">https://gitee.com/damon_one/Springcloud-Learning-Dalston</span><br></pre></td></tr></tbody></table></figure>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">交个朋友之猿天地</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://damon008.github.io" style="text-decoration: none" title="">交个朋友之猿天地 | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：交个朋友之猿天地"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2020/07/10/springcloud-03/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/07/10/springcloud-04/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Spring cloud 之熔断机制（实战）
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/07/10/core-java01/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">面试被问finally 和 return，到底谁先执行？</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/l3.png" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>
