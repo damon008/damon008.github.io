@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-k8s-01"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  k8s master机器文件系统故障的一次恢复过程
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/07/23/k8s-01/" class="article-date">
+  <time datetime="2020-07-23T07:23:59.000Z" itemprop="datePublished">2020-07-23</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">5.8k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">34 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>研发反馈他们那边一套集群有台master文件系统损坏无法开机，他们是三台openstack上的虚机，是虚拟化宿主机故障导致的虚机文件系统损坏。三台机器是master+node，指导他修复后开机，修复过程和我之前文章opensuse的一次救援步骤一样</p>
+<p>起来后我上去看，因为做了 HA 的，所以只有这个node有问题，集群没影响</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# kubectl get node -o wide</span><br><span class="line">NAME             STATUS     ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION                CONTAINER-RUNTIME</span><br><span class="line">10.252.146.104   NotReady   &lt;none&gt;   30d   v1.16.9   10.252.146.104   &lt;none&gt;        CentOS Linux 8 (Core)   4.18.0-193.6.3.el8_2.x86_64   docker://19.3.11</span><br><span class="line">10.252.146.105   Ready      &lt;none&gt;   30d   v1.16.9   10.252.146.105   &lt;none&gt;        CentOS Linux 8 (Core)   4.18.0-193.6.3.el8_2.x86_64   docker://19.3.11</span><br><span class="line">10.252.146.106   Ready      &lt;none&gt;   30d   v1.16.9   10.252.146.106   &lt;none&gt;        CentOS Linux 8 (Core)   4.18.0-193.6.3.el8_2.x86_64   docker://19.3.11</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动docker试试</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# systemctl start docker</span><br><span class="line">Job for docker.service canceled.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>无法启动，查看下启动失败的服务</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# systemctl --failed</span><br><span class="line">  UNIT               LOAD   ACTIVE SUB    DESCRIPTION</span><br><span class="line">● containerd.service loaded failed failed containerd container runtime</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看下containerd的日志</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# journalctl -xe -u containerd</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.481459735+08:00" level=info msg="loading plugin "io.containerd.service.v1.snapshots-service"..." type=io.containerd.service.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.481472223+08:00" level=info msg="loading plugin "io.containerd.runtime.v1.linux"..." type=io.containerd.runtime.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.481517630+08:00" level=info msg="loading plugin "io.containerd.runtime.v2.task"..." type=io.containerd.runtime.v2</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.481562176+08:00" level=info msg="loading plugin "io.containerd.monitor.v1.cgroups"..." type=io.containerd.monitor.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.481964349+08:00" level=info msg="loading plugin "io.containerd.service.v1.tasks-service"..." type=io.containerd.service.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.481996158+08:00" level=info msg="loading plugin "io.containerd.internal.v1.restart"..." type=io.containerd.internal.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482048208+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.containers"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482081110+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.content"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482096598+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.diff"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482112263+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.events"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482123307+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.healthcheck"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482133477+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.images"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482142943+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.leases"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482151644+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.namespaces"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482160741+08:00" level=info msg="loading plugin "io.containerd.internal.v1.opt"..." type=io.containerd.internal.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482184201+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.snapshots"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482194643+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.tasks"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482206871+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.version"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482215454+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.introspection"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482365838+08:00" level=info msg=serving... address="/run/containerd/containerd.sock"</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: time="2020-07-23T11:20:11.482404139+08:00" level=info msg="containerd successfully booted in 0.003611s"</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: panic: runtime error: invalid memory address or nil pointer dereference</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: [signal SIGSEGV: segmentation violation code=0x1 addr=0x8 pc=0x5626b983c259]</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: goroutine 55 [running]:</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/vendor/go.etcd.io/bbolt.(*Bucket).Cursor(...)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/vendor/go.etcd.io/bbolt/bucket.go:84</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/vendor/go.etcd.io/bbolt.(*Bucket).Get(0x0, 0x5626bb7e3f10, 0xb, 0xb, 0x0, 0x2, 0x4)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/vendor/go.etcd.io/bbolt/bucket.go:260 +0x39</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.scanRoots.func6(0x7fe557c63020, 0x2, 0x2, 0x0, 0x0, 0x0, 0x0, 0x5626b95eec72)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/gc.go:222 +0xcb</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/vendor/go.etcd.io/bbolt.(*Bucket).ForEach(0xc0003d1780, 0xc00057b640, 0xa, 0xa)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/vendor/go.etcd.io/bbolt/bucket.go:388 +0x100</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.scanRoots(0x5626bacedde0, 0xc0003d1680, 0xc0002ee2a0, 0xc00031a3c0, 0xc000527a60, 0x7fe586a43fff)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/gc.go:216 +0x4df</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.(*DB).getMarked.func1(0xc0002ee2a0, 0x0, 0x0)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/db.go:359 +0x165</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/vendor/go.etcd.io/bbolt.(*DB).View(0xc00000c1e0, 0xc00008b860, 0x0, 0x0)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/vendor/go.etcd.io/bbolt/db.go:701 +0x92</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.(*DB).getMarked(0xc0000a0a80, 0x5626bacede20, 0xc0000d6010, 0x203000, 0x203000, 0x400)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/db.go:342 +0x7e</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.(*DB).GarbageCollect(0xc0000a0a80, 0x5626bacede20, 0xc0000d6010, 0x0, 0x1, 0x0, 0x0)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/db.go:257 +0xa3</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/gc/scheduler.(*gcScheduler).run(0xc0000a0b40, 0x5626bacede20, 0xc0000d6010)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/gc/scheduler/scheduler.go:310 +0x511</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: created by github.com/containerd/containerd/gc/scheduler.init.0.func1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/gc/scheduler/scheduler.go:132 +0x462</span><br><span class="line">Jul 23 11:20:11 k8s-m1 systemd[1]: containerd.service: Main process exited, code=exited, status=2/INVALIDARGUMENT</span><br><span class="line">Jul 23 11:20:11 k8s-m1 systemd[1]: containerd.service: Failed with result 'exit-code'.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个问题从panic抛出的堆栈信息看和我之前文章docker启动panic很类似，都是 boltdb 文件出错，找下 git 信息去看看代码路径在哪</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# systemctl cat containerd | grep ExecStart</span><br><span class="line">ExecStartPre=-/sbin/modprobe overlay</span><br><span class="line">ExecStart=/usr/bin/containerd</span><br><span class="line"></span><br><span class="line">[root@k8s-m1 ~]# /usr/bin/containerd --version</span><br><span class="line">containerd containerd.io 1.2.13 7ad184331fa3e55e52b890ea95e65ba581ae3429</span><br></pre></td></tr></tbody></table></figure>
+
+<p>按照这个blob去用github的url访问是404，只有去按照tag版本查看了，根据相关代码找到了 boltdb 的文件名是meta.db</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/containerd/containerd/blob/v1.2.13/metadata/db.go#L257</span><br><span class="line">https://github.com/containerd/containerd/blob/v1.2.13/metadata/db.go#L79</span><br><span class="line">https://github.com/containerd/containerd/blob/v1.2.13/services/server/server.go#L261-L268</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查找下ic.Root路径是多少</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# /usr/bin/containerd --help | grep config</span><br><span class="line">     config    information on the containerd config</span><br><span class="line">   --config value, -c value     path to the configuration file (default: "/etc/containerd/config.toml")</span><br><span class="line"></span><br><span class="line">[root@k8s-m1 ~]# grep root /etc/containerd/config.toml</span><br><span class="line">#root = "/var/lib/containerd"</span><br><span class="line">[root@k8s-m1 ~]]# find /var/lib/containerd -type f -name meta.db</span><br><span class="line">/var/lib/containerd/io.containerd.metadata.v1.bolt/meta.db</span><br></pre></td></tr></tbody></table></figure>
+
+<p>找到boltdb文件，改名启动</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]]# mv /var/lib/containerd/io.containerd.metadata.v1.bolt/meta.db{,.bak}</span><br><span class="line">[root@k8s-m1 ~]# systemctl status containerd.service</span><br><span class="line">● containerd.service - containerd container runtime</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/containerd.service; disabled; vendor preset: disabled)</span><br><span class="line">   Active: failed (Result: exit-code) since Thu 2020-07-23 11:20:11 CST; 17min ago</span><br><span class="line">     Docs: https://containerd.io</span><br><span class="line">  Process: 9186 ExecStart=/usr/bin/containerd (code=exited, status=2)</span><br><span class="line">  Process: 9182 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 9186 (code=exited, status=2)</span><br><span class="line"></span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.(*DB).getMarked(0xc0000a0a80, 0x5626bacede20, 0xc0000d6010, 0x203000, 0x203000, 0x400)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/db.go:342 +0x7e</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/metadata.(*DB).GarbageCollect(0xc0000a0a80, 0x5626bacede20, 0xc0000d6010, 0x0, 0x1, 0x0, 0x0)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/metadata/db.go:257 +0xa3</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: github.com/containerd/containerd/gc/scheduler.(*gcScheduler).run(0xc0000a0b40, 0x5626bacede20, 0xc0000d6010)</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/gc/scheduler/scheduler.go:310 +0x511</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]: created by github.com/containerd/containerd/gc/scheduler.init.0.func1</span><br><span class="line">Jul 23 11:20:11 k8s-m1 containerd[9186]:         /go/src/github.com/containerd/containerd/gc/scheduler/scheduler.go:132 +0x462</span><br><span class="line">Jul 23 11:20:11 k8s-m1 systemd[1]: containerd.service: Main process exited, code=exited, status=2/INVALIDARGUMENT</span><br><span class="line">Jul 23 11:20:11 k8s-m1 systemd[1]: containerd.service: Failed with result 'exit-code'.</span><br><span class="line">[root@k8s-m1 ~]# systemctl restart containerd.service</span><br><span class="line">[root@k8s-m1 ~]# systemctl status containerd.service</span><br><span class="line">● containerd.service - containerd container runtime</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/containerd.service; disabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Thu 2020-07-23 11:25:37 CST; 1s ago</span><br><span class="line">     Docs: https://containerd.io</span><br><span class="line">  Process: 15661 ExecStartPre=/sbin/modprobe overlay (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 15663 (containerd)</span><br><span class="line">    Tasks: 16</span><br><span class="line">   Memory: 28.6M</span><br><span class="line">   CGroup: /system.slice/containerd.service</span><br><span class="line">           └─15663 /usr/bin/containerd</span><br><span class="line"></span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496725460+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.images"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496734129+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.leases"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496742793+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.namespaces"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496751740+08:00" level=info msg="loading plugin "io.containerd.internal.v1.opt"..." type=io.containerd.internal.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496775185+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.snapshots"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496785498+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.tasks"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496794873+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.version"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496803178+08:00" level=info msg="loading plugin "io.containerd.grpc.v1.introspection"..." type=io.containerd.grpc.v1</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496944458+08:00" level=info msg=serving... address="/run/containerd/containerd.sock"</span><br><span class="line">Jul 23 11:25:37 k8s-m1 containerd[15663]: time="2020-07-23T11:25:37.496958031+08:00" level=info msg="containerd successfully booted in 0.003994s"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>containerd 起来后，启动下 docker</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# systemctl status docker</span><br><span class="line">● docker.service - Docker Application Container Engine</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)</span><br><span class="line">  Drop-In: /etc/systemd/system/docker.service.d</span><br><span class="line">           └─10-docker.conf</span><br><span class="line">   Active: inactive (dead) since Thu 2020-07-23 11:20:13 CST; 18min ago</span><br><span class="line">     Docs: https://docs.docker.com</span><br><span class="line">  Process: 9398 ExecStopPost=/bin/bash -c /sbin/iptables -D FORWARD -s 0.0.0.0/0 -j ACCEPT &amp;&gt; /dev/null || : (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 9187 ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 9187 (code=exited, status=0/SUCCESS)</span><br><span class="line"></span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.956503485+08:00" level=error msg="Stop container error: Failed to stop container 68860c8d16b9ce7e74e8efd9db00e70a57eef1b752c2e6c703073c0bce5517d3 with error: Cannot kill c&gt;</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.954347116+08:00" level=error msg="Stop container error: Failed to stop container 5ec9922beed1276989f1866c3fd911f37cc26aae4e4b27c7ce78183a9a4725cc with error: Cannot kill c&gt;</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.953615411+08:00" level=info msg="Container failed to stop after sending signal 15 to the process, force killing"</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.956557179+08:00" level=error msg="Stop container error: Failed to stop container 6d0096fbcd4055f8bafb6b38f502a0186cd1dfca34219e9dd6050f512971aef5 with error: Cannot kill c&gt;</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.954601191+08:00" level=info msg="Container failed to stop after sending signal 15 to the process, force killing"</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.956600790+08:00" level=error msg="Stop container error: Failed to stop container 6d1175ba6c55cb05ad89f4134ba8e9d3495c5acb5f07938dc16339b7cca013bf with error: Cannot kill c&gt;</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.957188989+08:00" level=info msg="Daemon shutdown complete"</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.957212655+08:00" level=info msg="stopping event stream following graceful shutdown" error="context canceled" module=libcontainerd namespace=plugins.moby</span><br><span class="line">Jul 23 11:20:13 k8s-m1 dockerd[9187]: time="2020-07-23T11:20:13.957209679+08:00" level=info msg="stopping event stream following graceful shutdown" error="context canceled" module=libcontainerd namespace=moby</span><br><span class="line">Jul 23 11:20:13 k8s-m1 systemd[1]: Stopped Docker Application Container Engine.</span><br><span class="line">[root@k8s-m1 ~]# systemctl start docker</span><br><span class="line">[root@k8s-m1 ~]# systemctl status docker</span><br><span class="line">● docker.service - Docker Application Container Engine</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)</span><br><span class="line">  Drop-In: /etc/systemd/system/docker.service.d</span><br><span class="line">           └─10-docker.conf</span><br><span class="line">   Active: active (running) since Thu 2020-07-23 11:26:11 CST; 1s ago</span><br><span class="line">     Docs: https://docs.docker.com</span><br><span class="line">  Process: 9398 ExecStopPost=/bin/bash -c /sbin/iptables -D FORWARD -s 0.0.0.0/0 -j ACCEPT &amp;&gt; /dev/null || : (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 16156 ExecStartPost=/sbin/iptables -I FORWARD -s 0.0.0.0/0 -j ACCEPT (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 15974 (dockerd)</span><br><span class="line">    Tasks: 62</span><br><span class="line">   Memory: 89.1M</span><br><span class="line">   CGroup: /system.slice/docker.service</span><br><span class="line">           └─15974 /usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock</span><br><span class="line"></span><br><span class="line">Jul 23 11:26:10 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:10.851106564+08:00" level=error msg="cb4e16249cd8eac48ed734c71237195f04d63c56c55c0199b3cdf3d49461903d cleanup: failed to delete container from containerd: no such container"</span><br><span class="line">Jul 23 11:26:10 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:10.860456898+08:00" level=error msg="d9bbcab186ccb59f96c95fc886ec1b66a52aa96e45b117cf7d12e3ff9b95db9f cleanup: failed to delete container from containerd: no such container"</span><br><span class="line">Jul 23 11:26:10 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:10.872405757+08:00" level=error msg="07eb7a09bc8589abcb4d79af4b46798327bfb00624a7b9ceea457de392ad8f3d cleanup: failed to delete container from containerd: no such container"</span><br><span class="line">Jul 23 11:26:10 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:10.877896618+08:00" level=error msg="f5867657025bd7c3951cbd3e08ad97338cf69df2a97967a419e0e78eda869b73 cleanup: failed to delete container from containerd: no such container"</span><br><span class="line">Jul 23 11:26:11 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:11.143661583+08:00" level=info msg="Default bridge (docker0) is assigned with an IP address 172.17.0.0/16. Daemon option --bip can be used to set a preferred IP address"</span><br><span class="line">Jul 23 11:26:11 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:11.198200760+08:00" level=info msg="Loading containers: done."</span><br><span class="line">Jul 23 11:26:11 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:11.219959208+08:00" level=info msg="Docker daemon" commit=42e35e61f3 graphdriver(s)=overlay2 version=19.03.11</span><br><span class="line">Jul 23 11:26:11 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:11.220049865+08:00" level=info msg="Daemon has completed initialization"</span><br><span class="line">Jul 23 11:26:11 k8s-m1 dockerd[15974]: time="2020-07-23T11:26:11.232373131+08:00" level=info msg="API listen on /var/run/docker.sock"</span><br><span class="line">Jul 23 11:26:11 k8s-m1 systemd[1]: Started Docker Application Container Engine.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>etcd启动也失败，journal 查看下 etcd 状态</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# journalctl -xe -u etcd</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: Loading server configuration from "/etc/etcd/etcd.config.yml"</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: etcd Version: 3.3.20</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: Git SHA: 9fd7e2b80</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: Go Version: go1.12.17</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: Go OS/Arch: linux/amd64</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: setting maximum number of CPUs to 16, total number of available CPUs is 16</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: found invalid file/dir wal under data dir /var/lib/etcd (Ignore this if you are upgrading etcd)</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: the server is already initialized as member before, starting as etcd member...</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: ignoring peer auto TLS since certs given</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: peerTLS: cert = /etc/kubernetes/pki/etcd/peer.crt, key = /etc/kubernetes/pki/etcd/peer.key, ca = /etc/kubernetes/pki/etcd/ca.crt, trusted-ca = /etc/kubernetes/pki/etcd/ca.crt, client-cert-auth = fals&gt;</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: listening for peers on https://10.252.146.104:2380</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: ignoring client auto TLS since certs given</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: pprof is enabled under /debug/pprof</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: The scheme of client url http://127.0.0.1:2379 is HTTP while peer key/cert files are presented. Ignored key/cert files.</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: The scheme of client url http://127.0.0.1:2379 is HTTP while client cert auth (--client-cert-auth) is enabled. Ignored client cert auth for this url.</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: listening for client requests on 127.0.0.1:2379</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: listening for client requests on 10.252.146.104:2379</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: skipped unexpected non snapshot file 000000000000002e-000000000052f2be.snap.broken</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: recovered store from snapshot at index 5426092</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: restore compact to 3967425</span><br><span class="line">Jul 23 11:26:15 k8s-m1 etcd[18129]: cannot unmarshal event: proto: KeyValue: illegal tag 0 (wire type 0)</span><br><span class="line">Jul 23 11:26:15 k8s-m1 systemd[1]: etcd.service: Main process exited, code=exited, status=1/FAILURE</span><br><span class="line">Jul 23 11:26:15 k8s-m1 systemd[1]: etcd.service: Failed with result 'exit-code'.</span><br><span class="line">Jul 23 11:26:15 k8s-m1 systemd[1]: Failed to start Etcd Service.</span><br><span class="line">[root@k8s-m1 ~]# ll /var/lib/etcd/member/snap/</span><br><span class="line">total 8560</span><br><span class="line">-rw-r--r-- 1 root root   13499 Jul 20 13:36 000000000000002e-000000000052cbac.snap</span><br><span class="line">-rw-r--r-- 2 root root  128360 Jul 20 13:01 000000000000002e-000000000052f2be.snap.broken</span><br><span class="line">-rw------- 1 root root 8617984 Jul 23 11:26 db</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这套集群是使用我的ansible部署，求star的，自带了备份脚本，但是是三天前坏的</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# ll /opt/etcd_bak/</span><br><span class="line">total 41524</span><br><span class="line">-rw-r--r-- 1 root root 8618016 Jul 17 02:00 etcd-2020-07-17-02:00:01.db</span><br><span class="line">-rw-r--r-- 1 root root 8618016 Jul 18 02:00 etcd-2020-07-18-02:00:01.db</span><br><span class="line">-rw-r--r-- 1 root root 8323104 Jul 19 02:00 etcd-2020-07-19-02:00:01.db</span><br><span class="line">-rw-r--r-- 1 root root 8618016 Jul 20 02:00 etcd-2020-07-20-02:00:01.db</span><br></pre></td></tr></tbody></table></figure>
+
+<p>有恢复剧本，但是前提是etcd的v2和v3不能共存，否则无法恢复备份，我们线上都是把v2的存储关闭了的。主要是这个tasks里的26到42行步骤，这里复制了其他机器master上的 07/23 号的etcd备份文件，然后改了下host跑了下</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 ~]# cd Kubernetes-ansible</span><br><span class="line">[root@k8s-m1 Kubernetes-ansible]# ansible-playbook restoreETCD.yml -e 'db=/opt/etcd_bak/etcd-bak.db'</span><br><span class="line"></span><br><span class="line">PLAY [10.252.146.104] **********************************************************************************************************************************************************************************************************************</span><br><span class="line"></span><br><span class="line">TASK [Gathering Facts] *********************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : fail] ******************************************************************************************************************************************************************************************************************</span><br><span class="line">skipping: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : 检测备份文件存在否] *************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : fail] ******************************************************************************************************************************************************************************************************************</span><br><span class="line">skipping: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : set_fact] **************************************************************************************************************************************************************************************************************</span><br><span class="line">skipping: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : set_fact] **************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : 停止etcd] ****************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : 删除etcd数据目录] ************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [10.252.146.104] =&gt; (item=/var/lib/etcd)</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : 分发备份文件] ****************************************************************************************************************************************************************************************************************</span><br><span class="line">ok: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : 恢复备份] ******************************************************************************************************************************************************************************************************************</span><br><span class="line">changed: [10.252.146.104]</span><br><span class="line"></span><br><span class="line">TASK [restoreETCD : 启动etcd] ****************************************************************************************************************************************************************************************************************</span><br><span class="line">fatal: [10.252.146.104]: FAILED! =&gt; {"changed": false, "msg": "Unable to start service etcd: Job for etcd.service failed because the control process exited with error code.\nSee \"systemctl status etcd.service\" and \"journalctl -xe\" for details.\n"}</span><br><span class="line"></span><br><span class="line">PLAY RECAP *********************************************************************************************************************************************************************************************************************************</span><br><span class="line">10.252.146.104             : ok=7    changed=1    unreachable=0    failed=1    skipped=3    rescued=0    ignored=0</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看下日志</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 Kubernetes-ansible]# journalctl -xe -u etcd</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: Loading server configuration from "/etc/etcd/etcd.config.yml"</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: etcd Version: 3.3.20</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: Git SHA: 9fd7e2b80</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: Go Version: go1.12.17</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: Go OS/Arch: linux/amd64</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: setting maximum number of CPUs to 16, total number of available CPUs is 16</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: the server is already initialized as member before, starting as etcd member...</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: ignoring peer auto TLS since certs given</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: peerTLS: cert = /etc/kubernetes/pki/etcd/peer.crt, key = /etc/kubernetes/pki/etcd/peer.key, ca = /etc/kubernetes/pki/etcd/ca.crt, trusted-ca = /etc/kubernetes/pki/etcd/ca.crt, client-cert-auth = fals&gt;</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: listening for peers on https://10.252.146.104:2380</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: ignoring client auto TLS since certs given</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: pprof is enabled under /debug/pprof</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: The scheme of client url http://127.0.0.1:2379 is HTTP while peer key/cert files are presented. Ignored key/cert files.</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: The scheme of client url http://127.0.0.1:2379 is HTTP while client cert auth (--client-cert-auth) is enabled. Ignored client cert auth for this url.</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: listening for client requests on 127.0.0.1:2379</span><br><span class="line">Jul 23 11:27:46 k8s-m1 etcd[58954]: listening for client requests on 10.252.146.104:2379</span><br><span class="line">Jul 23 11:27:47 k8s-m1 etcd[58954]: member ac2dcf6aed12e8f1 has already been bootstrapped</span><br><span class="line">Jul 23 11:27:47 k8s-m1 systemd[1]: etcd.service: Main process exited, code=exited, status=1/FAILURE</span><br><span class="line">Jul 23 11:27:47 k8s-m1 systemd[1]: etcd.service: Failed with result 'exit-code'.</span><br><span class="line">Jul 23 11:27:47 k8s-m1 systemd[1]: Failed to start Etcd Service.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个member xxxx has already been bootstrapped解决办法就是把配置文件的下面修改，后面启动完记得改回来</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">initial-cluster-state: 'new' 改成 initial-cluster-state: 'existing'</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后成功启动</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 Kubernetes-ansible]# systemctl start etcd</span><br><span class="line">[root@k8s-m1 Kubernetes-ansible]# journalctl -xe -u etcd</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: Loading server configuration from "/etc/etcd/etcd.config.yml"</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: etcd Version: 3.3.20</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: Git SHA: 9fd7e2b80</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: Go Version: go1.12.17</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: Go OS/Arch: linux/amd64</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: setting maximum number of CPUs to 16, total number of available CPUs is 16</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: found invalid file/dir wal under data dir /var/lib/etcd (Ignore this if you are upgrading etcd)</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: the server is already initialized as member before, starting as etcd member...</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: ignoring peer auto TLS since certs given</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: peerTLS: cert = /etc/kubernetes/pki/etcd/peer.crt, key = /etc/kubernetes/pki/etcd/peer.key, ca = /etc/kubernetes/pki/etcd/ca.crt, trusted-ca = /etc/kubernetes/pki/etcd/ca.crt, client-cert-auth = fals&gt;</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: listening for peers on https://10.252.146.104:2380</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: ignoring client auto TLS since certs given</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: pprof is enabled under /debug/pprof</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: The scheme of client url http://127.0.0.1:2379 is HTTP while peer key/cert files are presented. Ignored key/cert files.</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: The scheme of client url http://127.0.0.1:2379 is HTTP while client cert auth (--client-cert-auth) is enabled. Ignored client cert auth for this url.</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: listening for client requests on 127.0.0.1:2379</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: listening for client requests on 10.252.146.104:2379</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: recovered store from snapshot at index 5952463</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: restore compact to 4369703</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: name = etcd-001</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: data dir = /var/lib/etcd</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: member dir = /var/lib/etcd/member</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: dedicated WAL dir = /var/lib/etcd/wal</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: heartbeat = 100ms</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: election = 1000ms</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: snapshot count = 5000</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: advertise client URLs = https://10.252.146.104:2379</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: restarting member ac2dcf6aed12e8f1 in cluster 367e2aebc6430cbe at commit index 5952491</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: ac2dcf6aed12e8f1 became follower at term 47</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: newRaft ac2dcf6aed12e8f1 [peers: [1e713be314744d53,8b1621b475555fd9,ac2dcf6aed12e8f1], term: 47, commit: 5952491, applied: 5952463, lastindex: 5952491, lastterm: 47]</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: enabled capabilities for version 3.3</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: added member 1e713be314744d53 [https://10.252.146.105:2380] to cluster 367e2aebc6430cbe from store</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: added member 8b1621b475555fd9 [https://10.252.146.106:2380] to cluster 367e2aebc6430cbe from store</span><br><span class="line">Jul 23 11:27:55 k8s-m1 etcd[59889]: added member ac2dcf6aed12e8f1 [https://10.252.146.104:2380] to cluster 367e2aebc6430cbe from store</span><br></pre></td></tr></tbody></table></figure>
+
+<p>查看集群状态</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 Kubernetes-ansible]# etcd-ha</span><br><span class="line">+-----------------------------+------------------+---------+---------+-----------+-----------+------------+</span><br><span class="line">|          ENDPOINT           |        ID        | VERSION | DB SIZE | IS LEADER | RAFT TERM | RAFT INDEX |</span><br><span class="line">+-----------------------------+------------------+---------+---------+-----------+-----------+------------+</span><br><span class="line">| https://10.252.146.104:2379 | ac2dcf6aed12e8f1 |  3.3.20 |  8.3 MB |     false |        47 |    5953557 |</span><br><span class="line">| https://10.252.146.105:2379 | 1e713be314744d53 |  3.3.20 |  8.6 MB |     false |        47 |    5953557 |</span><br><span class="line">| https://10.252.146.106:2379 | 8b1621b475555fd9 |  3.3.20 |  8.3 MB |      true |        47 |    5953557 |</span><br><span class="line">+-----------------------------+------------------+---------+---------+-----------+-----------+------------+</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+<p>然后给kube-apiserver三个组件和kubelet起来后</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-m1 Kubernetes-ansible]# kubectl get node -o wide</span><br><span class="line">NAME             STATUS   ROLES    AGE   VERSION   INTERNAL-IP      EXTERNAL-IP   OS-IMAGE                KERNEL-VERSION                CONTAINER-RUNTIME</span><br><span class="line">10.252.146.104   Ready    &lt;none&gt;   30d   v1.16.9   10.252.146.104   &lt;none&gt;        CentOS Linux 8 (Core)   4.18.0-193.6.3.el8_2.x86_64   docker://19.3.11</span><br><span class="line">10.252.146.105   Ready    &lt;none&gt;   30d   v1.16.9   10.252.146.105   &lt;none&gt;        CentOS Linux 8 (Core)   4.18.0-193.6.3.el8_2.x86_64   docker://19.3.11</span><br><span class="line">10.252.146.106   Ready    &lt;none&gt;   30d   v1.16.9   10.252.146.106   &lt;none&gt;        CentOS Linux 8 (Core)   4.18.0-193.6.3.el8_2.x86_64   docker://19.3.11</span><br></pre></td></tr></tbody></table></figure>
+
+<p>pod也在慢慢自愈了</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">https://gitee.com/damon_one/spring-cloud-k8s</span><br><span class="line">https://gitee.com/damon_one/spring-cloud-oauth2</span><br><span class="line">https://gitee.com/damon_one/Springcloud-Learning-Dalston</span><br></pre></td></tr></tbody></table></figure>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">交个朋友之猿天地</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://damon008.github.io" style="text-decoration: none" title="">交个朋友之猿天地 | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：交个朋友之猿天地"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+
+<code style="font-size: 20px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: red">
+特别声明 <br>
+原文作者：Zhangguanzhang <br>
+本文原链：http://zhangguanzhang.github.io/2020/07/23/fs-error-fix-k8s-master/ <br>
+本文转载如有侵权，请联系站长删除，谢谢 <br>
+</code>
+
+<br>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2020/07/23/k8s-01/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/K8s/" rel="tag">K8s</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2020/07/24/micro-service01/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            浅谈微服务安全架构设计
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/07/23/spring-cloud-k8s-discovery/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Spring Cloud Kubernetes之实战服务注册与发现</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

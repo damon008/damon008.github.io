@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-core-java"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Java基础
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/08/09/core-java/" class="article-date">
+  <time datetime="2022-08-09T07:27:14.000Z" itemprop="datePublished">2022-08-09</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">6.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">22 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h2><h3 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h3><h4 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h4><p>加载-&gt;验证(符合jvm规范)-&gt;准备(分配内存空间)-&gt;解析(符号引用替换为直接引用)-&gt;初始化(赋值的代码初始化时执行)-&gt;使用-&gt;卸载</p>
+<ol>
+<li>啥时候去加载一个类？当代码中使用到这个类的时候</li>
+<li>JVM进程启动后被加载</li>
+<li>双亲委派机制：先找父亲去加载，没找到的话，就下推到给儿子，在其负责的目录中的类中找。启动类加载器-扩展类加载器-应用程序类加载器-自定义类加载器</li>
+</ol>
+<h3 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h3><p>双亲委派机制定义：当一个类加载器收到了类加载的请求的时候，他不会直接去加载指定的类，而是把这个请求委托给自己的父加载器去加载。只有父加载器无法加载这个类的时候，才会由当前这个加载器来负责类的加载。</p>
+<p>简单说下实现流程：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">1. 首先判断该类是否已经被加载</span><br><span class="line"></span><br><span class="line">2.该类未被加载，如果父类不为空，交给父类加载</span><br><span class="line"></span><br><span class="line">3.如果父类为空，交给bootstrap classloader 加载</span><br><span class="line"></span><br><span class="line">4.如果类还是无法被加载到，则触发findclass,抛出classNotFoundException(findclass这个方法当前只有一个语句，就是抛出classNotFoundException），如果想自己实现类加载器的话，可以继承classLoader后重写findclass方法，加载对应的类）</span><br></pre></td></tr></tbody></table></figure>
+
+<p>启动JVM进程后，自带一个垃圾回收的后台线程</p>
+<h2 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a>Tomcat</h2><p>Tomcat自定义了Common、Catalina、Shared等类加载器，其实为了加载其自身的核心基础类库。然后tomcat为每个部署在里面的Web应用都用一个对应的WebApp类加载器，负责加载我们部署的应用的类。</p>
+<p>每个WebApp负责加载自己对应的那个web应用的class文件，不会传导给上层类加载器去加载。</p>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><h3 id="String类型"><a href="#String类型" class="headerlink" title="String类型"></a>String类型</h3><p>String 是引用类型，最为显著的一个特点就是它具有恒定不变性，但是值传递，传递的是地址的值，所有的变量都可以说是值传递，就看是什么类型，引用类型，传递的值是地址的值，值类型传递的是变量的赋值。string是引用类型，只是编译器对其做了特殊处理。</p>
+<h4 id="字符串拼接"><a href="#字符串拼接" class="headerlink" title="字符串拼接"></a>字符串拼接</h4><p>即使使用 + 号作为字符串的拼接，也一样可以被编译器优化成 StringBuilder 的方式。但再细致些，你会发现在编译器优化的代码中，每次循环都会生成一个新的 StringBuilder 实例，同样也会降低系统的性能。</p>
+<p>所以平时做字符串拼接的时候，我建议你还是要显示地使用 String Builder 来提升系统性能。</p>
+<p>如果在多线程编程中，String 对象的拼接涉及到线程安全，你可以使用 StringBuffer。但是要注意，由于 StringBuffer 是线程安全的，涉及到锁竞争，所以从性能上来说，要比 StringBuilder 差一些。</p>
+<h4 id="如何使用-String-intern-节省内存"><a href="#如何使用-String-intern-节省内存" class="headerlink" title="如何使用 String.intern 节省内存"></a>如何使用 String.intern 节省内存</h4><p>使用 String.intern 来节省内存空间，从而优化 String 对象的存储。</p>
+<p>具体做法就是，在每次赋值的时候使用 String 的 intern 方法，如果常量池中有相同值，就会重复使用该对象，返回对象引用，这样一开始的对象就可以被回收掉。这种方式可以使重复性非常高的地址信息存储大小从 20G 降到几百兆。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">SharedLocation sharedLocation = new SharedLocation();</span><br><span class="line"></span><br><span class="line">sharedLocation.setCity(messageInfo.getCity().intern());    sharedLocation.setCountryCode(messageInfo.getRegion().intern());</span><br><span class="line">sharedLocation.setRegion(messageInfo.getCountryCode().intern());</span><br><span class="line"></span><br><span class="line">Location location = new Location();</span><br><span class="line">location.set(sharedLocation);</span><br><span class="line">location.set(messageInfo.getLongitude());</span><br><span class="line">location.set(messageInfo.getLatitude());</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在字符串常量中，默认会将对象放入常量池；在字符串变量中，对象是会创建在堆内存中，同时也会在常量池中创建一个字符串对象，String 对象中的 char 数组将会引用常量池中的 char 数组，并返回堆内存对象引用。</p>
+<p>如果调用 intern 方法，会去查看字符串常量池中是否有等于该对象的字符串的引用，如果没有，在 JDK1.6 版本中会复制堆中的字符串到常量池中，并返回该字符串引用，堆内存中原有的字符串由于没有引用指向它，将会通过垃圾回收器回收。</p>
+<p>在 JDK1.7 版本以后，由于常量池已经合并到了堆中，所以不会再复制具体字符串了，只是会把首次遇到的字符串的引用添加到常量池中；如果有，就返回常量池中的字符串引用。</p>
+<p>在一开始字符串”abc”会在加载类时，在常量池中创建一个字符串对象。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">String a =new String("abc").intern();</span><br><span class="line">String b = new String("abc").intern();</span><br><span class="line"></span><br><span class="line">if(a==b) {//true</span><br><span class="line">    System.out.print("a==b");</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>创建 a 变量时，调用 new Sting() 会在堆内存中创建一个 String 对象，String 对象中的 char 数组将会引用常量池中字符串。在调用 intern 方法之后，会去常量池中查找是否有等于该字符串对象的引用，有就返回引用。</p>
+<p>创建 b 变量时，调用 new Sting() 会在堆内存中创建一个 String 对象，String 对象中的 char 数组将会引用常量池中字符串。在调用 intern 方法之后，会去常量池中查找是否有等于该字符串对象的引用，有就返回引用。</p>
+<p>而在堆内存中的两个对象，由于没有引用指向它，将会被垃圾回收。所以 a 和 b 引用的是同一个对象。</p>
+<p>而在堆内存中的两个对象，由于没有引用指向它，将会被垃圾回收。所以 a 和 b 引用的是同一个对象。</p>
+<p>如果在运行时，创建字符串对象，将会直接在堆内存中创建，不会在常量池中创建。所以动态创建的字符串对象，调用 intern 方法，在 JDK1.6 版本中会去常量池中创建运行时常量以及返回字符串引用，在 JDK1.7 版本之后，会将堆中的字符串常量的引用放入到常量池中，当其它堆中的字符串对象通过 intern 方法获取字符串对象引用时，则会去常量池中判断是否有相同值的字符串的引用，此时有，则返回该常量池中字符串引用，跟之前的字符串指向同一地址的字符串对象。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ee6ea4c448a84982a08d594909cb7727~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>使用 intern 方法需要注意的一点是，一定要结合实际场景。因为常量池的实现是类似于一个 HashTable 的实现方式，HashTable 存储的数据越大，遍历的时间复杂度就会增加。如果数据过大，会增加整个字符串常量池的负担。</p>
+<h4 id="如何使用字符串的分割方法"><a href="#如何使用字符串的分割方法" class="headerlink" title="如何使用字符串的分割方法"></a>如何使用字符串的分割方法</h4><p>最后我想跟你聊聊字符串的分割，这种方法在编码中也很最常见。Split() 方法使用了正则表达式实现了其强大的分割功能，而正则表达式的性能是非常不稳定的，使用不恰当会引起回溯问题，很可能导致 CPU 居高不下。</p>
+<p>所以我们应该慎重使用 Split() 方法，我们可以用 String.indexOf() 方法代替 Split() 方法完成字符串的分割。如果实在无法满足需求，你就在使用 Split() 方法时，对回溯问题加以重视就可以了。</p>
+<h2 id="Stream如何提高遍历集合效率"><a href="#Stream如何提高遍历集合效率" class="headerlink" title="Stream如何提高遍历集合效率"></a>Stream如何提高遍历集合效率</h2><p>List 集合类，那我想你一定也知道集合的顶端接口 Collection。在 Java8 中，Collection 新增了两个流方法，分别是 Stream() 和 parallelStream()</p>
+<h3 id="Stream"><a href="#Stream" class="headerlink" title="Stream"></a>Stream</h3><p>在 Java8 之前，我们通常是通过 for 循环或者 Iterator 迭代来重新排序合并数据，又或者通过重新定义 Collections.sorts 的 Comparator 方法来实现，这两种方式对于大数据量系统来说，效率并不是很理想。</p>
+<p>Java8 中添加了一个新的接口类 Stream，他和我们之前接触的字节流概念不太一样，Java8 集合中的 Stream 相当于高级版的 Iterator，他可以通过 Lambda 表达式对集合进行各种非常便利、高效的聚合操作（Aggregate Operation），或者大批量数据操作 (Bulk Data Operation)。</p>
+<p>Stream 的聚合操作与数据库 SQL 的聚合操作 sorted、filter、map 等类似。我们在应用层就可以高效地实现类似数据库 SQL 的聚合操作了，而在数据操作方面，Stream 不仅可以通过串行的方式实现数据操作，还可以通过并行的方式处理大批量数据，提高数据的处理效率。</p>
+<p>替换for循环或迭代循环的实现，Stream API 进行实现：</p>
+<p>串行实现:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, List&lt;Student&gt;&gt; stuMap = stuList.stream().filter((Student s) -&gt; s.getHeight() &gt; 160) .collect(Collectors.groupingBy(Student ::getSex));</span><br></pre></td></tr></tbody></table></figure>
+
+<p>并行实现：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, List&lt;Student&gt;&gt; stuMap = stuList.parallelStream().filter((Student s) -&gt; s.getHeight() &gt; 160) .collect(Collectors.groupingBy(Student ::getSex));</span><br></pre></td></tr></tbody></table></figure>
+
+<p>通过上面两个简单的例子，我们可以发现，Stream 结合 Lambda 表达式实现遍历筛选功能非常得简洁和便捷。</p>
+<h3 id="Stream-是如何优化遍历的"><a href="#Stream-是如何优化遍历的" class="headerlink" title="Stream 是如何优化遍历的"></a>Stream 是如何优化遍历的</h3><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7af109a843054f67a488c6e79ba2abfc~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>我们通常还会将中间操作称为懒操作，也正是由这种懒操作结合终结操作、数据源构成的处理管道（Pipeline），实现了 Stream 的高效。</p>
+<h2 id="深入浅出HashMap的设计与优化"><a href="#深入浅出HashMap的设计与优化" class="headerlink" title="深入浅出HashMap的设计与优化"></a>深入浅出HashMap的设计与优化</h2><h3 id="常用的数据结构"><a href="#常用的数据结构" class="headerlink" title="常用的数据结构"></a>常用的数据结构</h3><ul>
+<li>数组：采用一段连续的存储单元来存储数据。对于指定下标的查找，时间复杂度为 O(1)，但在数组中间以及头部插入数据时，需要复制移动后面的元素。</li>
+<li>链表：一种在物理存储单元上非连续、非顺序的存储结构，数据元素的逻辑顺序是通过链表中的指针链接次序实现的。链表由一系列结点（链表中每一个元素）组成，结点可以在运行时动态生成。每个结点都包含“存储数据单元的数据域”和“存储下一个结点地址的指针域”这两个部分。由于链表不用必须按顺序存储，所以链表在插入的时候可以达到 O(1) 的复杂度，但查找一个结点或者访问特定编号的结点需要 O(n) 的时间。</li>
+<li>哈希表：根据关键码值（Key value）直接进行访问的数据结构。通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做哈希函数，存放记录的数组就叫做哈希表。</li>
+<li>树：由 n（n≥1）个有限结点组成的一个具有层次关系的集合，就像是一棵倒挂的树。</li>
+</ul>
+<h3 id="HashMap-的实现结构"><a href="#HashMap-的实现结构" class="headerlink" title="HashMap 的实现结构"></a>HashMap 的实现结构</h3><p>作为最常用的 Map 类，它是基于哈希表实现的，继承了 AbstractMap 并且实现了 Map 接口。</p>
+<p>哈希表将键的 Hash 值映射到内存地址，即根据键获取对应的值，并将其存储到内存地址。也就是说 HashMap 是根据键的 Hash 值来决定对应值的存储位置。通过这种索引方式，HashMap 获取数据的速度会非常快。</p>
+<p>但也会有新的问题。如果再来一个 (y，“bb”)，哈希函数 f(y) 的哈希值跟之前 f(x) 是一样的，这样两个对象的存储地址就冲突了，这种现象就被称为哈希冲突。那么哈希表是怎么解决的呢？方式有很多，比如，开放定址法、再哈希函数法和链地址法。</p>
+<p>开放定址法很简单，当发生哈希冲突时，如果哈希表未被装满，说明在哈希表中必然还有空位置，那么可以把 key 存放到冲突位置后面的空位置上去。这种方法存在着很多缺点，例如，查找、扩容等，所以我不建议你作为解决哈希冲突的首选。</p>
+<p>再哈希法顾名思义就是在同义词产生地址冲突时再计算另一个哈希函数地址，直到冲突不再发生，这种方法不易产生“聚集”，但却增加了计算时间。如果我们不考虑添加元素的时间成本，且对查询元素的要求极高，就可以考虑使用这种算法设计。</p>
+<p>HashMap 则是综合考虑了所有因素，采用链地址法解决哈希冲突问题。这种方法是采用了数组（哈希表）+ 链表的数据结构，当发生哈希冲突时，就用一个链表结构存储相同 Hash 值的数据。</p>
+<h3 id="HashMap-添加元素优化"><a href="#HashMap-添加元素优化" class="headerlink" title="HashMap 添加元素优化"></a>HashMap 添加元素优化</h3><p>在 JDK1.8 中，HashMap 引入了红黑树数据结构来提升链表的查询效率。</p>
+<p>这是因为链表的长度超过 8 后，红黑树的查询效率要比链表高，所以当链表超过 8 时，HashMap 就会将链表转换为红黑树，这里值得注意的一点是，这时的新增由于存在左旋、右旋效率会降低。讲到这里，我前面我提到的“因链表过长而导致的查询时间复杂度高”的问题，也就迎刃而解了。</p>
+<h3 id="HashMap-获取元素优化"><a href="#HashMap-获取元素优化" class="headerlink" title="HashMap 获取元素优化"></a>HashMap 获取元素优化</h3><p>当 HashMap 中只存在数组，而数组中没有 Node 链表时，是 HashMap 查询数据性能最好的时候。一旦发生大量的哈希冲突，就会产生 Node 链表，这个时候每次查询元素都可能遍历 Node 链表，从而降低查询数据的性能。</p>
+<p>特别是在链表长度过长的情况下，性能将明显降低，红黑树的使用很好地解决了这个问题，使得查询的平均复杂度降低到了 O(log(n))，链表越长，使用黑红树替换后的查询效率提升就越明显。</p>
+<p><strong>我们在编码中也可以优化 HashMap 的性能，例如，重写 key 值的 hashCode() 方法，降低哈希冲突，从而减少链表的产生，高效利用哈希表，达到提高性能的效果。</strong></p>
+<h3 id="HashMap-扩容优化"><a href="#HashMap-扩容优化" class="headerlink" title="HashMap 扩容优化"></a>HashMap 扩容优化</h3><p>HashMap 也是数组类型的数据结构，所以一样存在扩容的情况。</p>
+<p>在 JDK1.7 中，HashMap 整个扩容过程就是分别取出数组元素，一般该元素是最后一个放入链表中的元素，然后遍历以该元素为头的单向链表元素，依据每个被遍历元素的 hash 值计算其在新数组中的下标，然后进行交换。这样的扩容方式会将原来哈希冲突的单向链表尾部变成扩容后单向链表的头部。</p>
+<p>而在 JDK 1.8 中，HashMap 对扩容操作做了优化。由于扩容数组的长度是 2 倍关系，所以对于假设初始 tableSize = 4 要扩容到 8 来说就是 0100 到 1000 的变化（左移一位就是 2 倍），在扩容中只用判断原来的 hash 值和左移动的一位（newtable 的值）按位与操作是 0 或 1 就行，0 的话索引不变，1 的话索引变成原索引加上扩容前数组。</p>
+<p>之所以能通过这种“与运算“来重新分配索引，是因为 hash 值本来就是随机的，而 hash 按位与上 newTable 得到的 0（扩容前的索引位置）和 1（扩容前索引位置加上扩容前数组长度的数值索引处）就是随机的，所以扩容的过程就能把之前哈希冲突的元素再随机分布到不同的索引中去。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>HashMap 通过哈希表数据结构的形式来存储键值对，这种设计的好处就是查询键值对的效率高。</p>
+<p>我们在使用 HashMap 时，可以结合自己的场景来设置初始容量和加载因子两个参数。当查询操作较为频繁时，我们可以适当地减少加载因子；如果对内存利用率要求比较高，我可以适当的增加加载因子。</p>
+<p>我们还可以在预知存储数据量的情况下，提前设置初始容量（初始容量 = 预知数据量 / 加载因子）。这样做的好处是可以减少 resize() 操作，提高 HashMap 的效率。</p>
+<p>HashMap 还使用了数组 + 链表这两种数据结构相结合的方式实现了链地址法，当有哈希值冲突时，就可以将冲突的键值对链成一个链表。</p>
+<p>但这种方式又存在一个性能问题，如果链表过长，查询数据的时间复杂度就会增加。HashMap 就在 Java8 中使用了红黑树来解决链表过长导致的查询性能下降问题。以下是 HashMap 的数据结构图：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9a540e3052d24eb7966eaaf04b86f0e9~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>实际应用中，我们设置初始容量，一般得是 2 的整数次幂。你知道原因吗？</p>
+<p>2的幂次方减1后每一位都是1，让数组每一个位置都能添加到元素。<br>例如十进制8，对应二进制1000，减1是0111，这样在&amp;hash值使数组每个位置都是可以添加到元素的，如果有一个位置为0，那么无论hash值是多少那一位总是0，例如0101，&amp;hash后第二位总是0，也就是说数组中下标为2的位置总是空的。<br>如果初始化大小设置的不是2的幂次方，hashmap也会调整到比初始化值大且最近的一个2的幂作为capacity。</p>
+<ul>
+<li><p>1）通过将 Key 的 hash 值与 length-1 进行 &amp; 运算，实现了当前 Key 的定位，2 的幂次方可以减少冲突（碰撞）的次数，提高 HashMap 查询效率；</p>
+</li>
+<li><p>2）如果 length 为 2 的次幂，则 length-1  转化为二进制必定是 11111…… 的形式，在于 h 的二进制与操作效率会非常的快，而且空间不浪费；如果 length 不是 2 的次幂，比如 length 为 15，则 length-1 为 14，对应的二进制为 1110，在于 h 与操作，最后一位都为 0，而 0001，0011，0101，1001，1011，0111，1101 这几个位置永远都不能存放元素了，空间浪费相当大，更糟的是这种情况中，数组可以使用的位置比数组长度小了很多，这意味着进一步增加了碰撞的几率，减慢了查询的效率！这样就会造成空间的浪费。</p>
+</li>
+</ul>
+<h2 id="网络通信优化之I-x2F-O模型：如何解决高并发下I-x2F-O瓶颈"><a href="#网络通信优化之I-x2F-O模型：如何解决高并发下I-x2F-O瓶颈" class="headerlink" title="网络通信优化之I/O模型：如何解决高并发下I/O瓶颈"></a>网络通信优化之I/O模型：如何解决高并发下I/O瓶颈</h2><p>在计算机中，流是一种信息的转换。流是有序的，因此相对于某一机器或者应用程序而言，我们通常把机器或者应用程序接收外界的信息称为输入流（InputStream），从机器或者应用程序向外输出的信息称为输出流（OutputStream），合称为输入 / 输出流（I/O Streams）。</p>
+<p><strong>不管是文件读写还是网络发送接收，信息的最小存储单元都是字节，那为什么 I/O 流操作要分为字节流操作和字符流操作呢？</strong></p>
+<p>我们知道字符到字节必须经过转码，这个过程非常耗时，如果我们不知道编码类型就很容易出现乱码问题。所以 I/O 流提供了一个直接操作字符的接口，方便我们平时对字符进行流操作。</p>
+<h3 id="传统-I-x2F-O-的性能问题"><a href="#传统-I-x2F-O-的性能问题" class="headerlink" title="传统 I/O 的性能问题"></a>传统 I/O 的性能问题</h3><h4 id="1-多次内存复制"><a href="#1-多次内存复制" class="headerlink" title="1. 多次内存复制"></a>1. 多次内存复制</h4><p>在传统 I/O 中，我们可以通过 InputStream 从源数据中读取数据流输入到缓冲区里，通过 OutputStream 将数据输出到外部设备（包括磁盘、网络）。</p>
+<ul>
+<li>JVM 会发出 read() 系统调用，并通过 read 系统调用向内核发起读请求；</li>
+<li>内核向硬件发送读指令，并等待读就绪；</li>
+<li>内核把将要读取的数据复制到指向的内核缓存中；</li>
+<li>操作系统内核将数据复制到用户空间缓冲区，然后 read 系统调用返回。</li>
+</ul>
+<p>在这个过程中，数据先从外部设备复制到内核空间，再从内核空间复制到用户空间，这就发生了两次内存复制操作。这种操作会导致不必要的数据拷贝和上下文切换，从而降低 I/O 的性能。</p>
+<h4 id="2-阻塞"><a href="#2-阻塞" class="headerlink" title="2. 阻塞"></a>2. 阻塞</h4><p>在传统 I/O 中，InputStream 的 read() 是一个 while 循环操作，它会一直等待数据读取，直到数据就绪才会返回。这就意味着如果没有数据就绪，这个读取操作将会一直被挂起，用户线程将会处于阻塞状态。</p>
+<p>在少量连接请求的情况下，使用这种方式没有问题，响应速度也很高。但在发生大量连接请求时，就需要创建大量监听线程，这时如果线程没有数据就绪就会被挂起，然后进入阻塞状态。一旦发生线程阻塞，这些线程将会不断地抢夺 CPU 资源，从而导致大量的 CPU 上下文切换，增加系统的性能开销。</p>
+<h5 id="如何优化-I-x2F-O-操作"><a href="#如何优化-I-x2F-O-操作" class="headerlink" title="如何优化 I/O 操作"></a>如何优化 I/O 操作</h5><ol>
+<li>使用缓冲区优化读写流操作</li>
+</ol>
+<p>NIO 与传统 I/O 不同，它是基于块（Block）的，它以块为基本单位处理数据。在 NIO 中，最为重要的两个组件是缓冲区（Buffer）和通道（Channel）。Buffer 是一块连续的内存块，是 NIO 读写数据的中转地。Channel 表示缓冲数据的源头或者目的地，它用于读取缓冲或者写入数据，是访问缓冲的接口。</p>
+<p>传统 I/O 和 NIO 的最大区别就是传统 I/O 是面向流，NIO 是面向 Buffer。Buffer 可以将文件一次性读入内存再做后续处理，而传统的方式是边读文件边处理数据。虽然传统 I/O 后面也使用了缓冲块，例如 BufferedInputStream，但仍然不能和 NIO 相媲美。使用 NIO 替代传统 I/O 操作，可以提升系统的整体性能，效果立竿见影。</p>
+<ol start="2">
+<li>使用 DirectBuffer 减少内存复制</li>
+</ol>
+<p>NIO 的 Buffer 除了做了缓冲块优化之外，还提供了一个可以直接访问物理内存的类 DirectBuffer。普通的 Buffer 分配的是 JVM 堆内存，而 DirectBuffer 是直接分配物理内存 (非堆内存)。</p>
+<p>DirectBuffer 则是直接将步骤简化为数据直接保存到非堆内存，从而减少了一次数据拷贝。</p>
+<p>由于 DirectBuffer 申请的是非 JVM 的物理内存，所以创建和销毁的代价很高。DirectBuffer 申请的内存并不是直接由 JVM 负责垃圾回收，但在 DirectBuffer 包装类被回收时，会通过 Java Reference 机制来释放该内存块。</p>
+<p><strong>DirectBuffer 只优化了用户空间内部的拷贝，而之前我们是说优化用户空间和内核空间的拷贝，那 Java 的 NIO 中是否能做到减少用户空间和内核空间的拷贝优化呢？<br>答案是可以的，DirectBuffer 是通过 unsafe.allocateMemory(size) 方法分配内存，也就是基于本地类 Unsafe 类调用 native 方法进行内存分配的。而在 NIO 中，还存在另外一个 Buffer 类：MappedByteBuffer，跟 DirectBuffer 不同的是，MappedByteBuffer 是通过本地类调用 mmap 进行文件内存映射的，map() 系统调用方法会直接将文件从硬盘拷贝到用户空间，只进行一次数据拷贝，从而减少了传统的 read() 方法从硬盘拷贝到内核空间这一步。</strong></p>
+<ol start="3">
+<li>避免阻塞，优化 I/O 操作</li>
+</ol>
+<p>NIO 发布后，通道和多路复用器这两个基本组件实现了 NIO 的非阻塞。</p>
+<ul>
+<li><p>通道（Channel）：Channel 有自己的处理器，可以完成内核空间和磁盘之间的 I/O 操作。在 NIO 中，我们读取和写入数据都要通过 Channel，由于 Channel 是双向的，所以读、写可以同时进行。</p>
+</li>
+<li><p>多路复用器（Selector）：Selector 是 Java NIO 编程的基础。用于检查一个或多个 NIO Channel 的状态是否处于可读、可写。</p>
+</li>
+</ul>
+<p>Selector 是基于事件驱动实现的，我们可以在 Selector 中注册 accpet、read 监听事件，Selector 会不断轮询注册在其上的 Channel，如果某个 Channel 上面发生监听事件，这个 Channel 就处于就绪状态，然后进行 I/O 操作。</p>
+<p>一个线程使用一个 Selector，通过轮询的方式，可以监听多个 Channel 上的事件。我们可以在注册 Channel 时设置该通道为非阻塞，当 Channel 上没有 I/O 操作时，该线程就不会一直等待了，而是会不断轮询所有 Channel，从而避免发生阻塞。</p>
+<p>目前操作系统的 I/O 多路复用机制都使用了 epoll，相比传统的 select 机制，epoll 没有最大连接句柄 1024 的限制。所以 Selector 在理论上可以轮询成千上万的客户端。</p>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2022/08/09/core-java/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/08/09/k8s-affinity/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            K8s亲和性问题
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/08/09/linux-03/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Linux 文件系统是怎么工作的</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

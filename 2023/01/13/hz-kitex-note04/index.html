@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-hz-kitex-note04"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Kitex 泛化调用案例：基于 API 网关的支付开放平台
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/01/13/hz-kitex-note04/" class="article-date">
+  <time datetime="2023-01-13T11:18:35.000Z" itemprop="datePublished">2023-01-13</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="泛化调用"><a href="#泛化调用" class="headerlink" title="泛化调用"></a>泛化调用</h2><p>泛化调用是不需要依赖生成代码即可对 RPC 服务发起调用的一种特性。通常用于不需要生成代码的中台服务，场景如流量中转、API 网关等。</p>
+<h3 id="调用方式"><a href="#调用方式" class="headerlink" title="调用方式"></a>调用方式</h3><p>Kitex 泛化调用目前仅支持 Thrift 协议，调用方式如下：</p>
+<ul>
+<li><ol>
+<li>二进制泛化调用</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>HTTP 映射泛化调用</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>Map 映射泛化调用</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>JSON 映射泛化调用</li>
+</ol>
+</li>
+</ul>
+<p>其中 HTTP 映射泛化对 IDL 编写规范有专门文章介绍《Thrift-HTTP 映射的 IDL 规范》，里面详细介绍了泛化调用解析 Thrift IDL 文件整体规范、约定和已支持的注解。</p>
+<h3 id="IDLProvider"><a href="#IDLProvider" class="headerlink" title="IDLProvider"></a>IDLProvider</h3><p>HTTP/Map/JSON 映射的泛化调用虽然不需要生成代码，但需要使用者提供 IDL，来定义入参位置和映射关系。</p>
+<p>目前 Kitex 有两种 IDLProvider 实现，使用者可以选择指定 IDL 路径，也可以选择传入 IDL 内容。当然也可以根据需求自行扩展 generci.DescriptorProvider。如果有 IDL 管理平台，最好与平台打通，可以及时更新 IDL。</p>
+<h2 id="支付开放平台"><a href="#支付开放平台" class="headerlink" title="支付开放平台"></a>支付开放平台</h2><p>支付开放平台通常是开放给服务商或商户提供收款记账等能力的服务入口，常见于支付宝、微信、银联等第三方或第四方支付渠道商，特别是前几年发展起来的聚合支付方向。</p>
+<p>该演示项目规划要点如下：</p>
+<ol>
+<li>对外暴露的是 HTTP 接口，可以用 Hertz 来做网关入口，根据 HTTP 请求使用 Kitex 泛化调用对请求分发到具体的 RPC 服务；</li>
+<li>需要加签、验签，可以演示 Hertz 自定义 middleware；</li>
+<li>业务服务通常有商户、支付、对账、安全等模块，业务边界清晰，为了演示仅做支付服务；</li>
+<li>关注工程化，如 ORM、分包、代码分层、错误的统一定义及优雅处理等；</li>
+</ol>
+<h3 id="工程目录"><a href="#工程目录" class="headerlink" title="工程目录"></a>工程目录</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">├── Makefile</span><br><span class="line">├── README.md</span><br><span class="line">├── cmd</span><br><span class="line">│   └── payment</span><br><span class="line">│       ├── main.go</span><br><span class="line">│       ├── wire.go</span><br><span class="line">│       └── wire_gen.go</span><br><span class="line">├── configs</span><br><span class="line">│   └── sql</span><br><span class="line">│       └── payment.sql</span><br><span class="line">├── docker-compose.yaml</span><br><span class="line">├── docs</span><br><span class="line">│   └── open-payment-platform.png</span><br><span class="line">├── go.mod</span><br><span class="line">├── go.sum</span><br><span class="line">├── hertz-gateway</span><br><span class="line">│   ├── README.md</span><br><span class="line">│   ├── biz</span><br><span class="line">│   │   ├── errors</span><br><span class="line">│   │   │   └── errors.go</span><br><span class="line">│   │   ├── handler</span><br><span class="line">│   │   │   └── gateway.go</span><br><span class="line">│   │   ├── middleware</span><br><span class="line">│   │   │   └── gateway_auth.go</span><br><span class="line">│   │   ├── router</span><br><span class="line">│   │   │   └── register.go</span><br><span class="line">│   │   └── types</span><br><span class="line">│   │       └── response.go</span><br><span class="line">│   ├── main.go</span><br><span class="line">│   ├── router.go</span><br><span class="line">│   └── router_gen.go</span><br><span class="line">├── idl</span><br><span class="line">│   ├── common.thrift</span><br><span class="line">│   └── payment.thrift</span><br><span class="line">├── internal</span><br><span class="line">│   ├── README.md</span><br><span class="line">│   └── payment</span><br><span class="line">├── kitex_gen</span><br><span class="line">└── pkg</span><br><span class="line">    └── auth</span><br><span class="line">        └── auth.go</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="泛化调用的最简单实现"><a href="#泛化调用的最简单实现" class="headerlink" title="泛化调用的最简单实现"></a>泛化调用的最简单实现</h3><h6 id="解析IDL"><a href="#解析IDL" class="headerlink" title="解析IDL"></a>解析IDL</h6><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">provider, err := generic.NewThriftFileProvider(entry.Name(), idlPath)</span><br></pre></td></tr></tbody></table></figure>
+
+<h6 id="构建泛化策略"><a href="#构建泛化策略" class="headerlink" title="构建泛化策略"></a>构建泛化策略</h6><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//将上面解析到的 IDL 内容，根据场景需要构建 HTTP 的泛化策略</span><br><span class="line">g, err := generic.HTTPThriftGeneric(provider)</span><br></pre></td></tr></tbody></table></figure>
+
+<h6 id="生成泛化调用客户端"><a href="#生成泛化调用客户端" class="headerlink" title="生成泛化调用客户端"></a>生成泛化调用客户端</h6><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cli, err := genericclient.NewClient(</span><br><span class="line">  svcName,</span><br><span class="line">  g,</span><br><span class="line">  client.WithResolver(nacosResolver),</span><br><span class="line">  client.WithTransportProtocol(transport.TTHeader),</span><br><span class="line">  client.WithMetaHandler(transmeta.ClientTTHeaderHandler),</span><br><span class="line">)</span><br><span class="line">if err != nil {</span><br><span class="line">  hlog.Fatal(err)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// 保存映射关系</span><br><span class="line">handler.SvcMap[svcName] = cli</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h3><h4 id="网关参数"><a href="#网关参数" class="headerlink" title="网关参数"></a>网关参数</h4><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">    "sign":"xxx", // 必填，签名</span><br><span class="line">    "sign_type":"RSA", // 必填，加签方法</span><br><span class="line">    "nonce_str":"J84FJIUH93NFSUH894NJOF", // 必填，随机字符串</span><br><span class="line">    "merchant_id":"xxxx", // 必填，用于签名验证</span><br><span class="line">    "method":"svc-function-name", // 必填，RPC 调用的具体方法</span><br><span class="line">    "biz_params":"{'key':'value'}" // 必填，RPC 业务参数</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="路由规则"><a href="#路由规则" class="headerlink" title="路由规则"></a>路由规则</h4><p>将上述的三步构建泛化调用客户端的代码放在了 Hertz 启动服务注册路由时的实现，服务的路由规则是 /gateway/:svc，即构建 gateway 的路由组，使用参数路由知道要泛化调用 RPC 服务的具体服务名。</p>
+<p>这部分实现可参看 route.go 文件中 registerGateway 。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">func registerGateway(r *server.Hertz) {</span><br><span class="line">	group := r.Group("/gateway").Use(middleware.GatewayAuth()...)</span><br><span class="line"></span><br><span class="line">	if handler.SvcMap == nil {</span><br><span class="line">		handler.SvcMap = make(map[string]genericclient.Client)</span><br><span class="line">	}</span><br><span class="line">	idlPath := "./idl/"</span><br><span class="line">	c, err := os.ReadDir(idlPath)</span><br><span class="line">	if err != nil {</span><br><span class="line">		hlog.Fatalf("new thrift file provider failed: %v", err)</span><br><span class="line">	}</span><br><span class="line">	nacosResolver, err := resolver.NewDefaultNacosResolver()</span><br><span class="line">	if err != nil {</span><br><span class="line">		hlog.Fatalf("err:%v", err)</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	for _, entry := range c {</span><br><span class="line">		if entry.IsDir() || entry.Name() == "common.thrift" {</span><br><span class="line">			continue</span><br><span class="line">		}</span><br><span class="line">		svcName := strings.ReplaceAll(entry.Name(), ".thrift", "")</span><br><span class="line"></span><br><span class="line">		provider, err := generic.NewThriftFileProvider(entry.Name(), idlPath)</span><br><span class="line">		if err != nil {</span><br><span class="line">			hlog.Fatalf("new thrift file provider failed: %v", err)</span><br><span class="line">			break</span><br><span class="line">		}</span><br><span class="line">		//generic.JSONThriftGeneric()</span><br><span class="line">		//将上面解析到的 IDL 内容，根据场景需要构建 HTTP 的泛化策略</span><br><span class="line">		g, err := generic.HTTPThriftGeneric(provider)</span><br><span class="line">		if err != nil {</span><br><span class="line">			hlog.Fatal(err)</span><br><span class="line">		}</span><br><span class="line">		cli, err := genericclient.NewClient(</span><br><span class="line">			svcName,</span><br><span class="line">			g,</span><br><span class="line">			client.WithResolver(nacosResolver),</span><br><span class="line">			client.WithTransportProtocol(transport.TTHeader),</span><br><span class="line">			client.WithMetaHandler(transmeta.ClientTTHeaderHandler),</span><br><span class="line">		)</span><br><span class="line">		if err != nil {</span><br><span class="line">			hlog.Fatal(err)</span><br><span class="line">		}</span><br><span class="line"></span><br><span class="line">		// 保存映射关系</span><br><span class="line">		handler.SvcMap[svcName] = cli</span><br><span class="line"></span><br><span class="line">    //路由到处理函数</span><br><span class="line">		group.POST("/:svc", handler.Gateway)</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="发起泛化调用"><a href="#发起泛化调用" class="headerlink" title="发起泛化调用"></a>发起泛化调用</h4><p>路由匹配成功之后，走到绑定的 handler.Gateway 处理函数即是发起泛化调用的关键点。</p>
+<p>首先根据 handler.SvcMap，获取泛化调用客户端 genericclient.Client，然后根据路由参数 :svc 和 POST 参数 biz_params 、method 拼凑相关参数，进行泛化调用。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">svcName := c.Param("svc")</span><br><span class="line">	cli, ok := SvcMap[svcName]</span><br><span class="line">	if !ok {</span><br><span class="line">		c.JSON(http.StatusOK, errors.New(common.Err_BadRequest))</span><br><span class="line">		return</span><br><span class="line">	}</span><br><span class="line">	var params requiredParams</span><br><span class="line">	if err := c.BindAndValidate(&amp;params); err != nil {</span><br><span class="line">		hlog.Error(err)</span><br><span class="line">		c.JSON(http.StatusOK, errors.New(common.Err_ServerMethodNotFound))</span><br><span class="line">		return</span><br><span class="line">	}</span><br><span class="line"></span><br><span class="line">	req, err := http.NewRequest(http.MethodPost, "", bytes.NewBuffer([]byte(params.BizParams)))</span><br><span class="line">	if err != nil {</span><br><span class="line">		hlog.Warnf("new http request failed: %v", err)</span><br><span class="line">		c.JSON(http.StatusOK, errors.New(common.Err_RequestServerFail))</span><br><span class="line">		return</span><br><span class="line">	}</span><br><span class="line">	// 这里要留意 IDL 相关注解</span><br><span class="line">	req.URL.Path = fmt.Sprintf("/%s/%s", svcName, params.Method)</span><br><span class="line"></span><br><span class="line">	customReq, err := generic.FromHTTPRequest(req)</span><br><span class="line">	if err != nil {</span><br><span class="line">		hlog.Errorf("convert request failed: %v", err)</span><br><span class="line">		c.JSON(http.StatusOK, errors.New(common.Err_ServerHandleFail))</span><br><span class="line">		return</span><br><span class="line">	}</span><br><span class="line">	resp, err := cli.GenericCall(ctx, "", customReq)</span><br><span class="line">	respMap := make(map[string]interface{})</span><br><span class="line">	if err != nil {</span><br><span class="line">		hlog.Errorf("GenericCall err:%v", err)</span><br><span class="line">		bizErr, ok := kerrors.FromBizStatusError(err)</span><br><span class="line">		if !ok {</span><br><span class="line">			c.JSON(http.StatusOK, errors.New(common.Err_ServerHandleFail))</span><br><span class="line">			return</span><br><span class="line">		}</span><br><span class="line">		respMap[types.ResponseErrCode] = bizErr.BizStatusCode()</span><br><span class="line">		respMap[types.ResponseErrMessage] = bizErr.BizMessage()</span><br><span class="line">		c.JSON(http.StatusOK, respMap)</span><br><span class="line">		return</span><br><span class="line">	}</span><br><span class="line">	realResp, ok := resp.(*generic.HTTPResponse)</span><br><span class="line">	if !ok {</span><br><span class="line">		c.JSON(http.StatusOK, errors.New(common.Err_ServerHandleFail))</span><br><span class="line">		return</span><br><span class="line">	}</span><br><span class="line">	realResp.Body[types.ResponseErrCode] = 0</span><br><span class="line">	realResp.Body[types.ResponseErrMessage] = "ok"</span><br><span class="line">	c.JSON(http.StatusOK, realResp.Body)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>为了更好的演示支付网关，这里做了签名验证和返回参数加签的代码。</p>
+<h4 id="签名"><a href="#签名" class="headerlink" title="签名"></a>签名</h4><p>首先在路由组注册时，给 /gateway 路由组注册了一个 GatewayAuth 的中间件</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">func registerGateway(r *server.Hertz) {</span><br><span class="line">   group := r.Group("/gateway").Use(middleware.GatewayAuth()...)</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">type AuthParam struct {</span><br><span class="line">   Sign       string `form:"sign,required" json:"sign"`</span><br><span class="line">   SignType   string `form:"sign_type,required" json:"sign_type"`</span><br><span class="line">   MerchantId string `form:"merchant_id,required" json:"merchant_id"`</span><br><span class="line">   NonceStr   string `form:"nonce_str,required" json:"nonce_str"`</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">func GatewayAuth() []app.HandlerFunc {</span><br><span class="line">   return []app.HandlerFunc{func(ctx context.Context, c *app.RequestContext) {</span><br><span class="line">      var authParam AuthParam</span><br><span class="line"></span><br><span class="line">// TODO 签名相关的 key 或私钥应该根据商户号正确获取，这里仅做展示，没有做商户相关逻辑</span><br><span class="line">      key := "123"</span><br><span class="line">      p, err := auth.NewSignProvider(authParam.SignType, key)</span><br><span class="line">      if err != nil {</span><br><span class="line">         hlog.Error(err)</span><br><span class="line">         c.JSON(http.StatusOK, errors.New(common.Err_Unauthorized))</span><br><span class="line">         c.Abort()</span><br><span class="line">         return</span><br><span class="line">      }</span><br><span class="line">      // 验签关键点</span><br><span class="line">      if !p.Verify(authParam.Sign, authParam) {</span><br><span class="line">         hlog.Error(err)</span><br><span class="line">         c.JSON(http.StatusOK, errors.New(common.Err_Unauthorized))</span><br><span class="line">         c.Abort()</span><br><span class="line">         return</span><br><span class="line">      }</span><br><span class="line"></span><br><span class="line">      c.Next(ctx)</span><br><span class="line"></span><br><span class="line">      // 响应之后加签回去</span><br><span class="line">      data := make(utils.H)</span><br><span class="line">      if err = json.Unmarshal(c.Response.Body(), &amp;data); err != nil {</span><br><span class="line">         dataJson, _ := json.Marshal(errors.New(common.Err_RequestServerFail))</span><br><span class="line">         c.Response.SetBody(dataJson)</span><br><span class="line">         return</span><br><span class="line">      }</span><br><span class="line">      data[types.ResponseNonceStr] = authParam.NonceStr</span><br><span class="line">      data[types.ResponseSignType] = authParam.SignType</span><br><span class="line">      data[types.ResponseSign] = p.Sign(data)</span><br><span class="line">      dataJson, _ := json.Marshal(data)</span><br><span class="line">      c.Response.SetBody(dataJson)</span><br><span class="line">   }}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="项目优化"><a href="#项目优化" class="headerlink" title="项目优化"></a>项目优化</h2><h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><p>在网关和 RPC 服务都要演示错误处理，可能数量比较多。为了规范实现，把错误定义收拢到 IDL 公共协议中去，根据生成的代码返回特定的错误，便于判断和管理。</p>
+<h5 id="错误定义"><a href="#错误定义" class="headerlink" title="错误定义"></a>错误定义</h5><p>在 idl 目录中新增了 common.thrift 文件，把错误码都枚举出来，并约定不同的服务或地方使用不同的错误码段。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">namespace go common</span><br><span class="line"></span><br><span class="line">enum Err</span><br><span class="line">{</span><br><span class="line">   // gateway 10001- 19999</span><br><span class="line">   BadRequest            = 10001,</span><br><span class="line">   Unauthorized          = 10002,</span><br><span class="line">   ServerNotFound        = 10003,</span><br><span class="line">   ServerMethodNotFound  = 10004,</span><br><span class="line">   RequestServerFail     = 10005,</span><br><span class="line">   ServerHandleFail      = 10006,</span><br><span class="line">   ResponseUnableParse   = 10007,</span><br><span class="line"></span><br><span class="line">   // payment 20001- 29999</span><br><span class="line">   DuplicateOutOrderNo = 20001,</span><br><span class="line"></span><br><span class="line">   // other 30001- 93999</span><br><span class="line">   Errxxx = 30001,</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>在网关处的错误进行了简单的封装，方便使用：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">type Err struct {</span><br><span class="line">	ErrCode int64  `json:"err_code"`</span><br><span class="line">	ErrMsg  string `json:"err_msg"`</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">// New Error, the error_code must be defined in IDL.</span><br><span class="line">func New(errCode common.Err) Err {</span><br><span class="line">	return Err{</span><br><span class="line">		ErrCode: int64(errCode),</span><br><span class="line">		ErrMsg:  errCode.String(),</span><br><span class="line">	}</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">func (e Err) Error() string {</span><br><span class="line">	return e.ErrMsg</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>用例：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import (</span><br><span class="line">    "github.com/cloudwego/biz-demo/open-payment-platform/hertz-gateway/biz/errors"</span><br><span class="line">    "github.com/cloudwego/biz-demo/open-payment-platform/kitex_gen/common"</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">c.JSON(http.StatusOK, errors.New(common.Err_RequestServerFail))</span><br></pre></td></tr></tbody></table></figure>
+<p>RPC 服务使用 Kitex 业务异常 的特性支持，只需要在泛化调用客户端和 RPC 服务端制定好相关配置即可。</p>
+<p>具体用法如：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">import (</span><br><span class="line">   "github.com/cloudwego/biz-demo/open-payment-platform/kitex_gen/common"</span><br><span class="line">)</span><br><span class="line">// 这里类型转换较为繁琐，亦可考虑如何简化优化封装</span><br><span class="line">// 比如一个思路是如果想业务异常也想不依赖某个框架用法，如何做</span><br><span class="line">return nil, kerrors.NewBizStatusError(int32(common.Err_DuplicateOutOrderNo), common.Err_DuplicateOutOrderNo.String())</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="遗留问题"><a href="#遗留问题" class="headerlink" title="遗留问题"></a>遗留问题</h2><ol>
+<li>该项目没有演示配置相关的使用，所以注册中心和数据库配置仅是硬编码；</li>
+<li>签名处理如何获取商户私钥或 key ，需要实际业务考虑；</li>
+<li>错误处理可继续优化；</li>
+<li>泛化调用注解示例较为简单，可根据实际入参和映射关系进行灵活配置；</li>
+<li>整洁架构在业务膨胀之后是否会遇到新的问题；</li>
+</ol>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2023/01/13/hz-kitex-note04/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Go/" rel="tag">Go</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KiteX/" rel="tag">KiteX</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2023/02/02/linux-cmd/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Linux 常用命令
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/11/07/hz-kitex-note03/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">KiteX 基于 K8s 的服务注册与发现</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

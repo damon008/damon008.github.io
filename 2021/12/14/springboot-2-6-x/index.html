@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-springboot-2-6-x"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Springboot 升级到 2.6.1 的坑
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/12/14/springboot-2-6-x/" class="article-date">
+  <time datetime="2021-12-14T07:46:48.000Z" itemprop="datePublished">2021-12-14</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">10 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="SpringBoot-2-6-0-重磅发布"><a href="#SpringBoot-2-6-0-重磅发布" class="headerlink" title="SpringBoot 2.6.0 重磅发布"></a>SpringBoot 2.6.0 重磅发布</h2><h3 id="重要特性"><a href="#重要特性" class="headerlink" title="重要特性"></a>重要特性</h3><h4 id="1-Servlet-应用支持在-Cookie-中配置-SameSite-属性"><a href="#1-Servlet-应用支持在-Cookie-中配置-SameSite-属性" class="headerlink" title="1. Servlet 应用支持在 Cookie 中配置 SameSite 属性"></a>1. Servlet 应用支持在 Cookie 中配置 SameSite 属性</h4><p>该属性可通过 server.session.cookie.same-site 属性来配置，共有三个可选值：</p>
+<ul>
+<li>Strict 严格模式，必须同站请求才能发送 cookie</li>
+<li>Lax 宽松模式，安全的跨站请求可以发送 cookie</li>
+<li>None 禁止 SameSite 限制，必须配合 Secure 一起使用</li>
+</ul>
+<h4 id="2-支持为主应用端口和管理端口配置健康组"><a href="#2-支持为主应用端口和管理端口配置健康组" class="headerlink" title="2. 支持为主应用端口和管理端口配置健康组"></a>2. 支持为主应用端口和管理端口配置健康组</h4><p>这在 Kubernetes 等云服务环境中很有用。在这种环境下，出于安全目的，为执行器端点使用单独的管理端口是很常见的。拥有单独的端口可能会导致不可靠的健康检查，因为即使健康检查成功，主应用程序也可能无法正常工作。</p>
+<p>以往传统的配置会将所有 Actuator 端点都放在一个单独的端口上，并将用于检测应用状态的健康组放在主端口的附加路径下。</p>
+<h4 id="3-增强-x2F-info-端点，加入-Java-Runtime-信息"><a href="#3-增强-x2F-info-端点，加入-Java-Runtime-信息" class="headerlink" title="3. 增强/info 端点，加入 Java Runtime 信息"></a>3. 增强/info 端点，加入 Java Runtime 信息</h4><p>增强后的例子：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">{</span><br><span class="line">  "java": {</span><br><span class="line">    "vendor": "BellSoft",</span><br><span class="line">    "version": "17",</span><br><span class="line">    "runtime": {</span><br><span class="line">      "name": "OpenJDK Runtime Environment",</span><br><span class="line">      "version": "17+35-LTS"</span><br><span class="line">    },</span><br><span class="line">    "jvm": {</span><br><span class="line">      "name": "OpenJDK 64-Bit Server VM",</span><br><span class="line">      "vendor": "BellSoft",</span><br><span class="line">      "version": "17+35-LTS"</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>该信息可以通过这个属性开启或关闭：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">management.info.java.enabled=true</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="4-支持使用-WebTestClient-来测试-Spring-MVC"><a href="#4-支持使用-WebTestClient-来测试-Spring-MVC" class="headerlink" title="4. 支持使用 WebTestClient 来测试 Spring MVC"></a>4. 支持使用 WebTestClient 来测试 Spring MVC</h4><p>开发人员可以使用 WebTestClient 在模拟环境中测试 WebFlux 应用程序，或针对实时服务器测试任何 Spring Web 应用程序。</p>
+<p>这次增强后，开发者可以在 Mock 环境中使用 @AutoConfigureMockMvc 注释的类，就可以轻松注入 WebTestClient。 这样编写测试就比之前容易多了。</p>
+<h4 id="5-增加-spring-rabbit-stream-的自动化配置"><a href="#5-增加-spring-rabbit-stream-的自动化配置" class="headerlink" title="5. 增加 spring-rabbit-stream 的自动化配置"></a>5. 增加 spring-rabbit-stream 的自动化配置</h4><p>这次更新添加了 Spring AMQP 的新 spring-rabbit-stream 模块的自动配置。</p>
+<p>当 spring.rabbitmq.listener.type 属性设置为 stream 时， StreamListenerContainer 是自动配置的。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.rabbitmq.stream.*属性可用于配置对broker的访问，spring.rabbitmq.listener.stream.native-listener 可用于启用native listener</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="6-支持-x2F-env-端点和-configprops-配置属性的自定义脱敏"><a href="#6-支持-x2F-env-端点和-configprops-配置属性的自定义脱敏" class="headerlink" title="6. 支持/env 端点和 configprops 配置属性的自定义脱敏"></a>6. 支持/env 端点和 configprops 配置属性的自定义脱敏</h4><p>虽然 Spring Boot 之前已经可以处理 /env 和 /configprops 端点中存在的敏感值，只需要可以通过配置属性来控制即可。但还有一种情况，用户可能希望根据属性源自哪个 PropertySource 来应用清理。</p>
+<p>例如，Spring Cloud Vault 使用 Vault 来存储加密值并将它们加载到 Spring 环境中。由于所有值都是加密的，因此将整个属性源中的每个键的值脱敏是有意义的。可以通过添加类型为 SanitizingFunction 的 @Bean 来配置此类自定义脱敏规则。</p>
+<p>顺手推荐一下我一直在连载的免费教程：Spring Boot 教程可以点击直达！。</p>
+<p>跟很多其他教程不同。这个教程不光兼顾了 1.x 和 2.x 版本。同时，对于每次的更新，都会选择一些相关内容修补 Tips，所以对各种不同阶段的读者长期都会有一些收获。如果你觉得不错，记得转发支持一下！</p>
+<p>同时，如果你对哪方面还有疑惑，或希望 DD 多做些什么例子到教程里，也欢迎留言催更，或点赞支持别人的催更内容！</p>
+<h4 id="其他变更"><a href="#其他变更" class="headerlink" title="其他变更"></a>其他变更</h4><h5 id="1-Reactive-Session-个性化"><a href="#1-Reactive-Session-个性化" class="headerlink" title="1. Reactive Session 个性化"></a>1. Reactive Session 个性化</h5><p>当前版本可以动态配置 reactive session 的有效期</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server.reactive.session.timeout=30</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="2-Redis-链接自动配置链接池"><a href="#2-Redis-链接自动配置链接池" class="headerlink" title="2. Redis 链接自动配置链接池"></a>2. Redis 链接自动配置链接池</h5><p>当应用依赖中包含 commons-pool2.jar 会自动配置 redis 链接池 （Jedis Lettuce 都支持）。如果你想关闭则通过如下属性：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">spring.redis.jedis.pool.enabled=false</span><br><span class="line"></span><br><span class="line">spring.redis.lettuce.pool.enabled=false</span><br></pre></td></tr></tbody></table></figure>
+
+<h6 id="3-构建信息个性化"><a href="#3-构建信息个性化" class="headerlink" title="3. 构建信息个性化"></a>3. 构建信息个性化</h6><p>通过 spring-boot-maven-plugin 支持自动生成此次构建信息的 build-info.properties</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">  &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">  &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">  &lt;configuration&gt;</span><br><span class="line">       &lt;excludeInfoProperties&gt;</span><br><span class="line">        &lt;excludeInfoProperty&gt;version&lt;/excludeInfoProperty&gt;</span><br><span class="line">     &lt;/excludeInfoProperties&gt;</span><br><span class="line">  &lt;/configuration&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="4-Metrics-新增指标"><a href="#4-Metrics-新增指标" class="headerlink" title="4. Metrics 新增指标"></a>4. Metrics 新增指标</h5><p>应用启动的两个新指标：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">application.started.time: 启动应用程序所需的时间</span><br><span class="line"></span><br><span class="line">application.ready.time:  启动应用到对外提供服务所需时间</span><br></pre></td></tr></tbody></table></figure>
+
+<p>磁盘空间的两个指标：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">disk.free： 磁盘空闲空间</span><br><span class="line"></span><br><span class="line">disk.total： 磁盘总空间</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="5-Docker-镜像的构建"><a href="#5-Docker-镜像的构建" class="headerlink" title="5. Docker 镜像的构建"></a>5. Docker 镜像的构建</h5><p>增强 docker-maven-plugin 插件的功能：</p>
+<ul>
+<li>为自定义镜像设置 tags 标签</li>
+<li>网络配置参数，可用于 Cloud Native Buildpacks 的构建过程</li>
+<li>支持使用 buildCache 和 launchCache 配置参数自定义用于缓存层的名称，这些层由构建包提供给构建的镜像</li>
+</ul>
+<h6 id="6-移除-2-4-版本中的过期属性"><a href="#6-移除-2-4-版本中的过期属性" class="headerlink" title="6. 移除 2.4 版本中的过期属性"></a>6. 移除 2.4 版本中的过期属性</h6><p>由于 2.4 版本完成历史使命，因此有大量过期属性被移除，最近要升级的小伙伴一定要关注一下这部分内容，因为你原来的配置会失效！</p>
+<p>因为内容较多，这里就不完全贴出来了，有兴趣的可以看看文末参考资料中的官方信息。</p>
+<h5 id="7-默认情况完全禁止-Bean-的循环引用"><a href="#7-默认情况完全禁止-Bean-的循环引用" class="headerlink" title="7. 默认情况完全禁止 Bean 的循环引用"></a>7. 默认情况完全禁止 Bean 的循环引用</h5><p>在 2.6.0 之后，默认禁止了循环引用，如果你的项目出现循环引用，会进行报错：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">The dependencies of some of the beans in the application context form a cycle:</span><br><span class="line"></span><br><span class="line">   authorizationServerConfig (field private org.springframework.security.crypto.password.PasswordEncoder com.leinao.config.AuthorizationServerConfig.passwordEncoder)</span><br><span class="line">      ↓</span><br><span class="line">   securityConfig</span><br><span class="line">      ↓</span><br><span class="line">   org.springframework.web.servlet.config.annotation.DelegatingWebMvcConfiguration</span><br><span class="line">┌─────┐</span><br><span class="line">|  com.alibaba.cloud.sentinel.SentinelWebAutoConfiguration (field private java.util.Optional com.alibaba.cloud.sentinel.SentinelWebAutoConfiguration.sentinelWebInterceptorOptional)</span><br><span class="line">└─────┘</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Action:</span><br><span class="line"></span><br><span class="line">Relying upon circular references is discouraged and they are prohibited by default. Update your application to remove the dependency cycle between beans. As a last resort, it may be possible to break the cycle automatically by setting spring.main.allow-circular-references to true.</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里对阿里巴巴的 Sentinel 进行了循环引用，导致出现错误。</p>
+<p>当然，可能这样的要求对于开发者会很痛苦。所以，你也可以通过下面的配置，放开不允许循环依赖的要求：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.main.allow-circular-references=true</span><br></pre></td></tr></tbody></table></figure>
+
+<h5 id="8-SpringMVC-默认路径匹配策略"><a href="#8-SpringMVC-默认路径匹配策略" class="headerlink" title="8. SpringMVC 默认路径匹配策略"></a>8. SpringMVC 默认路径匹配策略</h5><p>Spring MVC 处理程序映射匹配请求路径的默认策略已从 AntPathMatcher 更改为 PathPatternParser。</p>
+<p>Actuator 端点现在也使用基于 PathPattern 的 URL 匹配。需要注意的是，Actuator 端点的路径匹配策略无法通过配置属性进行配置。</p>
+<p>如果需要将默认切换回 AntPathMatcher，可以将 spring.mvc.pathmatch.matching-strategy 设置为 ant-path-matcher，比如下面这样：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring.mvc.pathmatch.matching-strategy=ant-path-matcher</span><br></pre></td></tr></tbody></table></figure>
+
+<h2 id="springboot-2-6-1"><a href="#springboot-2-6-1" class="headerlink" title="springboot 2.6.1"></a>springboot 2.6.1</h2><p>11 月 29 日 Spring Boot 2.6.1 正式发布，主要是为了支持本周即将发布的 Spring Cloud 2021，此版本包括 11 个错误修复和文档改进。</p>
+<h3 id="Bug-修复"><a href="#Bug-修复" class="headerlink" title="Bug 修复"></a>Bug 修复</h3><ul>
+<li>模式分析 PatternParseException 的操作消息中的 matching-strategy 属性的名称不正确#28839</li>
+<li>修复 ErrorPageSecurityFilter 部署到 Servlet 3.1 的兼容问题#28790</li>
+<li>QuartzDataSourceScriptDatabaseInitiializer 不提供 MariaDB #28779 的映射</li>
+<li>“test” 和 “Inlined Test Properties” 属性源顺序不正确#28776</li>
+<li>在没有 spring-security-web 的 Servlet 应用程序中使用 Spring Security 时出现 ArrayStoreException #28774</li>
+<li>DefaultClientResources 在将 Lettuce 与 Actuator 一起使用时未正确关闭是发出警告 #28767</li>
+<li>具有 permitAll 的页面无法再通过自动配置的 MockMvc #28759</li>
+<li>依赖管理 org.elasticsearch.distribution.integ-test-zip:elasticsearch 应将其类型声明为 zip #28746</li>
+</ul>
+<h3 id="修复文档"><a href="#修复文档" class="headerlink" title="修复文档"></a>修复文档</h3><ul>
+<li>修复文档 “External Application Properties” 部分中的拼写错误 #28834</li>
+<li>修复参考文档 #28833 中 “spring –version” 的输出。</li>
+<li>org.springframework.boot.actuate.metrics.data 包添加描述 #28761。</li>
+</ul>
+<h2 id="升级-spring-cloud-k8s"><a href="#升级-spring-cloud-k8s" class="headerlink" title="升级 spring-cloud-k8s"></a>升级 spring-cloud-k8s</h2><h3 id="服务提供者（SSO）"><a href="#服务提供者（SSO）" class="headerlink" title="服务提供者（SSO）"></a>服务提供者（SSO）</h3><p>首先引入高版本：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;parent&gt;</span><br><span class="line">      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">      &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</span><br><span class="line">      &lt;version&gt;2.6.1&lt;/version&gt;</span><br><span class="line">      &lt;relativePath/&gt;</span><br><span class="line">  &lt;/parent&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>接下来，我们看看 cloud 如何接入 k8s，这里已经发生重大改变：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependencyManagement&gt;</span><br><span class="line">		&lt;dependencies&gt;</span><br><span class="line">			&lt;dependency&gt;</span><br><span class="line">				&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">				&lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</span><br><span class="line">				&lt;version&gt;2021.0.0&lt;/version&gt;</span><br><span class="line">				&lt;type&gt;pom&lt;/type&gt;</span><br><span class="line">				&lt;scope&gt;import&lt;/scope&gt;</span><br><span class="line">			&lt;/dependency&gt;</span><br><span class="line">		&lt;/dependencies&gt;</span><br><span class="line">	&lt;/dependencyManagement&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>cloud 我们引入最新版本 2021.0.0，接下来，我们看看 k8s 部分依赖：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">  &lt;dependency&gt;</span><br><span class="line">     &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">     &lt;artifactId&gt;spring-cloud-starter-kubernetes-fabric8-config&lt;/artifactId&gt;</span><br><span class="line">  &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-cloud-commons&lt;/artifactId&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-cloud-kubernetes-fabric8-discovery&lt;/artifactId&gt;</span><br><span class="line">    &lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">  &lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;spring-cloud-starter-kubernetes-fabric8-loadbalancer&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">	&lt;groupId&gt;com.squareup.okhttp3&lt;/groupId&gt;</span><br><span class="line">	&lt;artifactId&gt;okhttp&lt;/artifactId&gt;</span><br><span class="line">	&lt;version&gt;${okhttp.version}&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里发生改变的是，之前引入的是直接对 k8s 的，这里是关于 fabric8 第三方的注入。</p>
+<p>引入完这些后，我们接下来看关于 Oauth2 的使用，之前引入的是：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-cloud-starter-oauth2&lt;/artifactId&gt;</span><br><span class="line">     &lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这种通过注解方式来处理，但在 spring cloud2021 版本中，已经摒弃了这种方式，统一归纳到 spring-cloud-common，这里为了解决这种问题使用以下依赖：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">		&lt;groupId&gt;org.springframework.security.oauth.boot&lt;/groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;spring-security-oauth2-autoconfigure&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>服务提供者目前未出现任何严重问题，我们打包部署下：</p>
+<p><img src="https://gitee.com/damon_one/picture/raw/master/2021-12-14/1639465751944-1639465743(1).png"></p>
+<p>看到上面的日志，表明已经部署成功。</p>
+<h3 id="服务消费者"><a href="#服务消费者" class="headerlink" title="服务消费者"></a>服务消费者</h3><p>同样引入你那些版本依赖，如上面的服务提供者一样，同时，也需要引入：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">		&lt;groupId&gt;org.springframework.security.oauth.boot&lt;/groupId&gt;</span><br><span class="line">		&lt;artifactId&gt;spring-security-oauth2-autoconfigure&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></tbody></table></figure>
+
+<p>以实现 SSO，目前看到未出现任何问题，接下来，我们需要去部署：</p>
+<p><img src="https://gitee.com/damon_one/picture/raw/master/2021-12-14/1639465970572-image.png"></p>
+<p>部署完后，发现报以上的错，经过各种尝试发现是与 swagger 的兼容，这里直接尝试：修复方法：注解 <code>EnableSwagger2</code> 改为 <code>EnableWebMvc</code>:</p>
+<p><img src="https://gitee.com/damon_one/picture/raw/master/2021-12-14/1639466191890-image.png"></p>
+<p>同时，我们发现下面的红色部分会出现问题，因为是改变了函数参数，修改为红色部分即可。</p>
+<p>最后，我们再次启动，发现完美开启，升级成功。</p>
+<p>PS：springboot高版本结合alibaba，目前发现一些问题，暂时不提供升级。待后续。。。</p>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2021/12/14/springboot-2-6-x/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/06/11/cloudnative-microservice/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            云原生时代微服务架构设计实践
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/12/10/log4j2/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Log4j 史诗级漏洞来袭，已引起大规模入侵</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

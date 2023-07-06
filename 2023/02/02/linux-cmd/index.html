@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-linux-cmd"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Linux 常用命令
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/02/02/linux-cmd/" class="article-date">
+  <time datetime="2023-02-02T11:34:14.000Z" itemprop="datePublished">2023-02-02</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.5k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>查系统空间：<br>df -h<br>查时间：<br>kubectl get events<br>redis监听：<br>ps -ef | grep 6379<br>netstat -lntp | grep 6379<br>sudo netstat -apn | grep 6379<br>redis目录：/usr/local/redis/bin<br>/usr/local/redis/etc：配置conf<br>进入redis：redis-cli -h localhost -p 6379 -a 密码</p>
+<p>CONFIG GET maxclients<br>CONFIG set maxclients 10000</p>
+<p>测试时间：<br>curl -o /dev/null -s -w ‘%{time_connect}:%{time_starttransfer}:%{time_total}\n’ ‘<a target="_blank" rel="noopener" href="http://10.10.1.8:9086/v1/Frameworks'">http://10.10.1.8:9086/v1/Frameworks'</a></p>
+<p>一、文件和目录</p>
+<ol>
+<li><p>cd命令<br>（它用于切换当前目录，它的参数是要切换到的目录的路径，可以是绝对路径，也可以是相对路径）<br>cd /home &nbsp; &nbsp;进入 ‘/ home’ 目录<br>cd .. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;返回上一级目录&nbsp;<br>cd ../.. &nbsp; &nbsp; &nbsp; &nbsp; 返回上两级目录&nbsp;<br>cd &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 进入个人的主目录&nbsp;<br>cd ~user1 &nbsp; 进入个人的主目录&nbsp;<br>cd - &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 返回上次所在的目录</p>
+</li>
+<li><p>pwd命令<br>pwd 显示工作路径</p>
+</li>
+<li><p>ls命令<br>查看文件与目录的命令，list之意）<br>ls 查看目录中的文件&nbsp;<br>ls -l 显示文件和目录的详细资料&nbsp;<br>ls -a 列出全部文件，包含隐藏文件<br>ls -R 连同子目录的内容一起列出（递归列出），等于该目录下的所有文件都会显示出来 &nbsp;<br>ls&nbsp;[0-9]&nbsp;显示包含数字的文件名和目录名</p>
+</li>
+<li><p>cp命令<br>（用于复制文件，copy之意，它还可以把多个文件一次性地复制到一个目录下）</p>
+</li>
+</ol>
+<p>-a ：将文件的特性一起复制<br>-p ：连同文件的属性一起复制，而非使用默认方式，与-a相似，常用于备份<br>-i ：若目标文件已经存在时，在覆盖时会先询问操作的进行<br>-r ：递归持续复制，用于目录的复制行为<br>-u ：目标文件与源文件有差异时才会复制<br>5. mv命令<br>（用于移动文件、目录或更名，move之意）<br>-f ：force强制的意思，如果目标文件已经存在，不会询问而直接覆盖<br>-i ：若目标文件已经存在，就会询问是否覆盖<br>-u ：若目标文件已经存在，且比目标文件新，才会更新<br>6. rm命令<br>（用于删除文件或目录，remove之意）<br>-f ：就是force的意思，忽略不存在的文件，不会出现警告消息<br>-i ：互动模式，在删除前会询问用户是否操作<br>-r ：递归删除，最常用于目录删除，它是一个非常危险的参数</p>
+<p>二、查看文件内容</p>
+<ol start="7">
+<li>cat命令<br>（用于查看文本文件的内容，后接要查看的文件名，通常可用管道与more和less一起使用）<br>cat file1 从第一个字节开始正向查看文件的内容&nbsp;<br>tac file1 从最后一行开始反向查看一个文件的内容&nbsp;<br>cat -n file1 标示文件的行数&nbsp;<br>more file1 查看一个长文件的内容&nbsp;<br>head -n 2 file1 查看一个文件的前两行&nbsp;<br>tail -n 2 file1 查看一个文件的最后两行&nbsp;<br>tail -n +1000 file1 &nbsp;从1000行开始显示，显示1000行以后的<br>cat filename | head -n 3000 | tail -n +1000 &nbsp;显示1000行到3000行<br>cat filename | tail -n +3000 | head -n 1000 &nbsp;从第3000行开始，显示1000(即显示3000~3999行)</li>
+</ol>
+<p>三、文件搜索</p>
+<ol start="8">
+<li>find命令<br>find / -name file1 从 ‘/‘ 开始进入根文件系统搜索文件和目录&nbsp;<br>find / -user user1 搜索属于用户 ‘user1’ 的文件和目录&nbsp;<br>find /usr/bin -type f -atime +100 搜索在过去100天内未被使用过的执行文件&nbsp;<br>find /usr/bin -type f -mtime -10 搜索在10天内被创建或者修改过的文件&nbsp;<br>whereis halt 显示一个二进制文件、源码或man的位置&nbsp;<br>which halt 显示一个二进制文件或可执行文件的完整路径<br>删除大于50M的文件：<br>find /var/mail/ -size +50M -exec rm {} ＼;</li>
+</ol>
+<p>四、文件的权限 - 使用 “+” 设置权限，使用 “-“ 用于取消</p>
+<ol start="9">
+<li>chmod命令<br>ls -lh 显示权限&nbsp;<br>chmod ugo+rwx directory1 设置目录的所有人(u)、群组(g)以及其他人(o)以读（r，4 ）、写(w，2)和执行(x，1)的权限&nbsp;<br>chmod go-rwx directory1 &nbsp;删除群组(g)与其他人(o)对目录的读写执行权限</li>
+<li>chown命令<br>（改变文件的所有者）<br>chown user1 file1 改变一个文件的所有人属性&nbsp;<br>chown -R user1 directory1 改变一个目录的所有人属性并同时改变改目录下所有文件的属性&nbsp;<br>chown user1:group1 file1 改变一个文件的所有人和群组属性</li>
+</ol>
+<p>11.chgrp命令<br>（改变文件所属用户组）<br>chgrp group1 file1 改变文件的群组</p>
+<p>五、文本处理</p>
+<ol start="12">
+<li>grep命令<br>（分析一行的信息，若当中有我们所需要的信息，就将该行显示出来，该命令通常与管道命令一起使用，用于对一些命令的输出进行筛选加工等等）<br>grep Aug /var/log/messages &nbsp;在文件 ‘/var/log/messages’中查找关键词”Aug”&nbsp;<br>grep ^Aug /var/log/messages 在文件 ‘/var/log/messages’中查找以”Aug”开始的词汇&nbsp;<br>grep [0-9] &nbsp;/var/log/messages 选择 ‘/var/log/messages’ 文件中所有包含数字的行&nbsp;<br>grep Aug -R /var/log/* 在目录 ‘/var/log’ 及随后的目录中搜索字符串”Aug”&nbsp;<br>sed ‘s/stringa1/stringa2/g’ example.txt 将example.txt文件中的 “string1” 替换成 “string2”&nbsp;<br>sed ‘/^$/d’ example.txt 从example.txt文件中删除所有空白行</li>
+<li>paste命令<br>paste file1 file2 合并两个文件或两栏的内容&nbsp;<br>paste -d ‘+’ file1 file2 合并两个文件或两栏的内容，中间用”+”区分</li>
+<li>sort命令<br>sort file1 file2 排序两个文件的内容&nbsp;<br>sort file1 file2 | uniq 取出两个文件的并集(重复的行只保留一份)&nbsp;<br>sort file1 file2 | uniq -u 删除交集，留下其他的行&nbsp;<br>sort file1 file2 | uniq -d 取出两个文件的交集(只留下同时存在于两个文件中的文件)</li>
+<li>comm命令<br>comm -1 file1 file2 比较两个文件的内容只删除 ‘file1’ 所包含的内容&nbsp;<br>comm -2 file1 file2 比较两个文件的内容只删除 ‘file2’ 所包含的内容&nbsp;<br>comm -3 file1 file2 比较两个文件的内容只删除两个文件共有的部分<br>六、打包和压缩文件</li>
+<li>tar命令<br>（对文件进行打包，默认情况并不会压缩，如果指定了相应的参数，它还会调用相应的压缩程序（如gzip和bzip等）进行压缩和解压）</li>
+</ol>
+<p>-c ：新建打包文件<br>-t ：查看打包文件的内容含有哪些文件名<br>-x ：解打包或解压缩的功能，可以搭配-C（大写）指定解压的目录，注意-c,-t,-x不能同时出现在同一条命令中<br>-j ：通过bzip2的支持进行压缩/解压缩<br>-z ：通过gzip的支持进行压缩/解压缩<br>-v ：在压缩/解压缩过程中，将正在处理的文件名显示出来<br>-f filename ：filename为要处理的文件<br>-C dir ：指定压缩/解压缩的目录dir<br>压缩：tar -jcv -f filename.tar.bz2 要被处理的文件或目录名称<br>查询：tar -jtv -f filename.tar.bz2<br>解压：tar -jxv -f filename.tar.bz2 -C 欲解压缩的目录<br>bunzip2 file1.bz2 解压一个叫做 ‘file1.bz2’的文件&nbsp;<br>bzip2 file1 压缩一个叫做 ‘file1’ 的文件&nbsp;<br>gunzip file1.gz 解压一个叫做 ‘file1.gz’的文件&nbsp;<br>gzip file1 压缩一个叫做 ‘file1’的文件&nbsp;<br>gzip -9 file1 最大程度压缩&nbsp;<br>rar a file1.rar test_file 创建一个叫做 ‘file1.rar’ 的包&nbsp;<br>rar a file1.rar file1 file2 dir1 同时压缩 ‘file1’, ‘file2’ 以及目录 ‘dir1’&nbsp;<br>rar x file1.rar 解压rar包<br>zip file1.zip file1 创建一个zip格式的压缩包&nbsp;<br>unzip file1.zip 解压一个zip格式压缩包&nbsp;<br>zip -r file1.zip file1 file2 dir1 将几个文件和目录同时压缩成一个zip格式的压缩包<br>七、系统和关机（关机、重启和登出）</p>
+<p>shutdown -h now 关闭系统(1)&nbsp;<br>init 0 关闭系统(2)&nbsp;<br>telinit 0 关闭系统(3)&nbsp;<br>shutdown -h hours:minutes &amp; 按预定时间关闭系统&nbsp;<br>shutdown -c 取消按预定时间关闭系统&nbsp;<br>shutdown -r now 重启(1)&nbsp;<br>reboot 重启(2)&nbsp;<br>logout 注销&nbsp;<br>time 测算一个命令（即程序）的执行时间<br>八、进程相关的命令<br>17. jps命令<br>（显示当前系统的java进程情况，及其id号）<br>jps(Java Virtual Machine Process Status Tool)是JDK 1.5提供的一个显示当前所有java进程pid的命令，简单实用，非常适合在linux/unix平台上简单察看当前java进程的一些简单情况。<br>18. ps命令<br>（用于将某个时间点的进程运行情况选取下来并输出，process之意）<br>-A ：所有的进程均显示出来<br>-a ：不与terminal有关的所有进程<br>-u ：有效用户的相关进程<br>-x ：一般与a参数一起使用，可列出较完整的信息<br>-l ：较长，较详细地将PID的信息列出<br>ps aux # 查看系统所有的进程数据<br>ps ax # 查看不与terminal有关的所有进程<br>ps -lA # 查看系统所有的进程数据<br>ps axjf # 查看连同一部分进程树状态<br>19. kill命令<br>（用于向某个工作（%jobnumber）或者是某个PID（数字）传送一个信号，它通常与ps和jobs命令一起使用）<br>20. killall命令<br>（向一个命令启动的进程发送一个信号）<br>21. top命令<br>是Linux下常用的性能分析工具，能够实时显示系统中各个进程的资源占用状况，类似于Windows的任务管理器。<br>如何杀死进程：<br>（1）图形化界面的方式<br>（2）kill -9 pid &nbsp;（-9表示强制关闭）<br>（3）killall -9 程序的名字<br>（4）pkill 程序的名字<br>查看进程端口号：<br>netstat -tunlp|grep 端口号</p>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2023/02/02/linux-cmd/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/01/13/hz-kitex-note04/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Kitex 泛化调用案例：基于 API 网关的支付开放平台</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-linux-01"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Linux优化
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/08/09/linux-01/" class="article-date">
+  <time datetime="2022-08-09T07:19:12.000Z" itemprop="datePublished">2022-08-09</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">10.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">38 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="java系统优化参数查看"><a href="#java系统优化参数查看" class="headerlink" title="java系统优化参数查看"></a>java系统优化参数查看</h2><p>jps</p>
+<p>jstat -gcutil pid  100（滚动时间）</p>
+<p>jstack -l pid</p>
+<p>#堆信息<br>jmap -histo:live pid</p>
+<p>jmap -heap pid</p>
+<p>jcmd pid help</p>
+<p>jcmd pid VM.version</p>
+<p>jcmd pid GC.run</p>
+<p>Arthas jvm调优工具</p>
+<h3 id="Linux系统资源"><a href="#Linux系统资源" class="headerlink" title="Linux系统资源"></a>Linux系统资源</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ps aux --sort -%mem | head -n 7</span><br><span class="line"></span><br><span class="line">ps aux --sort -%cpu | head -n 7</span><br><span class="line"></span><br><span class="line">df -h</span><br><span class="line"></span><br><span class="line">du -h</span><br><span class="line"></span><br><span class="line">查看每个目录大小</span><br><span class="line">sudo du -sh *</span><br><span class="line"></span><br><span class="line">统计目录多少</span><br><span class="line">du -sm * | sort -n</span><br><span class="line"></span><br><span class="line">free -h</span><br><span class="line"></span><br><span class="line">free -m</span><br><span class="line"></span><br><span class="line">free -g</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="进程实时情况："><a href="#进程实时情况：" class="headerlink" title="进程实时情况："></a>进程实时情况：</h4><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">watch -n 1 free -h</span><br></pre></td></tr></tbody></table></figure>
+
+<h4 id="堆栈信息："><a href="#堆栈信息：" class="headerlink" title="堆栈信息："></a>堆栈信息：</h4><figure class="highlight c++"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">sudo vi gstack</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#!/bin/sh</span><br><span class="line"><span class="keyword">if</span> test $# -ne <span class="number">1</span>; then</span><br><span class="line">    echo <span class="string">"Usage: `basename $0 .sh` &lt;process-id&gt;"</span> <span class="number">1</span>&gt;&amp;<span class="number">2</span></span><br><span class="line">    exit <span class="number">1</span></span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> test ! -r /proc/$<span class="number">1</span>; then</span><br><span class="line">    echo <span class="string">"Process $1 not found."</span> <span class="number">1</span>&gt;&amp;<span class="number">2</span></span><br><span class="line">    exit <span class="number">1</span></span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># GDB doesn<span class="number">'</span>t allow <span class="string">"thread apply all bt"</span> when the process isn<span class="number">'</span>t</span><br><span class="line"><span class="meta"># threaded; need to peek at the process to determine <span class="meta-keyword">if</span> that or the</span></span><br><span class="line"><span class="meta"># simpler <span class="meta-string">"bt"</span> should be used.</span></span><br><span class="line"></span><br><span class="line">backtrace=<span class="string">"bt"</span></span><br><span class="line"><span class="keyword">if</span> test -d /proc/$<span class="number">1</span>/task ; then</span><br><span class="line">    # Newer kernel; has a task/ directory.</span><br><span class="line">    <span class="keyword">if</span> test `/bin/ls /proc/$<span class="number">1</span>/task | /usr/bin/wc -l` -gt <span class="number">1</span> <span class="number">2</span>&gt;/dev/null ; then</span><br><span class="line">	backtrace=<span class="string">"thread apply all bt"</span></span><br><span class="line">    fi</span><br><span class="line">elif test -f /proc/$<span class="number">1</span>/maps ; then</span><br><span class="line">    # Older kernel; go by it loading libpthread.</span><br><span class="line">    <span class="keyword">if</span> /bin/grep -e libpthread /proc/$<span class="number">1</span>/maps &gt; /dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span> ; then</span><br><span class="line">	backtrace=<span class="string">"thread apply all bt"</span></span><br><span class="line">    fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">GDB=${GDB:-/usr/bin/gdb}</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> $GDB -nx --quiet --batch --readnever &gt; /dev/null <span class="number">2</span>&gt;&amp;<span class="number">1</span>; then</span><br><span class="line">    readnever=--readnever</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    readnever=</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"># Run GDB, strip out unwanted noise.</span><br><span class="line">$GDB --quiet $readnever -nx /proc/$<span class="number">1</span>/exe $<span class="number">1</span> &lt;&lt;EOF <span class="number">2</span>&gt;&amp;<span class="number">1</span> |</span><br><span class="line">set width <span class="number">0</span></span><br><span class="line">set height <span class="number">0</span></span><br><span class="line">set pagination no</span><br><span class="line">$backtrace</span><br><span class="line">EOF</span><br><span class="line">/bin/sed -n \</span><br><span class="line">    -e <span class="string">'s/^\((gdb) \)*//'</span> \</span><br><span class="line">    -e <span class="string">'/^#/p'</span> \</span><br><span class="line">    -e <span class="string">'/^Thread/p'</span></span><br><span class="line"><span class="meta">#end</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo chmod <span class="number">777</span> gstack</span><br><span class="line">sudo cp gstack  /usr/bin/</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">堆栈信息：sudo gstack pid</span><br><span class="line"></span><br><span class="line">线程：top -Hp pid</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="内核"><a href="#内核" class="headerlink" title="内核"></a>内核</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://www.kernel.org/doc/html/v4.10/dev-tools/kmemleak.html</span><br></pre></td></tr></tbody></table></figure>
+
+
+<h4 id="查看内存占用最多的进程："><a href="#查看内存占用最多的进程：" class="headerlink" title="查看内存占用最多的进程："></a>查看内存占用最多的进程：</h4><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -aux | sort -k4nr | head -n 5</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="内存使用"><a href="#内存使用" class="headerlink" title="内存使用"></a>内存使用</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line">cat /proc/meminfo</span><br><span class="line">cat /proc/zoneinfo</span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="树状以及块存储结构"><a href="#树状以及块存储结构" class="headerlink" title="树状以及块存储结构"></a>树状以及块存储结构</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pstree -h</span><br><span class="line">sudo dumpe2fs /dev/sda1</span><br><span class="line">dumpe2fs /dev/sda1 | grep -i "block size"</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="句柄查看"><a href="#句柄查看" class="headerlink" title="句柄查看"></a>句柄查看</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">sudo su</span><br><span class="line"></span><br><span class="line">总文件句柄数</span><br><span class="line">cat /proc/sys/fs/file-max</span><br><span class="line"></span><br><span class="line">修改总：sysctl -w fs.file-max=（成倍增加）</span><br><span class="line">当前文件句柄数</span><br><span class="line">cat /proc/sys/fs/file-nr</span><br><span class="line"></span><br><span class="line">pmap ${pid}</span><br><span class="line"></span><br><span class="line">ulimit -n</span><br><span class="line"></span><br><span class="line">ulimit -HSn 2048</span><br><span class="line"></span><br><span class="line">lsof -n|awk '{print $2}'|sort|uniq -c|sort -nr|more</span><br><span class="line"></span><br><span class="line">lsof |grep -i deleted</span><br><span class="line"></span><br><span class="line">sudo lsof -p 9268</span><br><span class="line"></span><br><span class="line">cd /proc/9268/fd</span><br><span class="line"></span><br><span class="line">ls | wc -l</span><br><span class="line"></span><br><span class="line">ls -al /proc/9689/fd/ | wc -l</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="更新本地软件库"><a href="#更新本地软件库" class="headerlink" title="更新本地软件库"></a>更新本地软件库</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">更新本地软件列表</span><br><span class="line">sudo apt update</span><br><span class="line">sudo apt search 名称</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="查看IO、CPU利用率"><a href="#查看IO、CPU利用率" class="headerlink" title="查看IO、CPU利用率"></a>查看IO、CPU利用率</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">top -Hp pid</span><br><span class="line">vmstat 2 10000</span><br></pre></td></tr></tbody></table></figure>
+
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">虽然同是写数据，写磁盘跟写文件的现象还是不同的。写磁盘时（也就是 bo 大于  0 时），Buffer 和 Cache 都在增长，但显然 Buffer 的增长快得多。</span><br><span class="line"></span><br><span class="line">这说明，写磁盘用到了大量的Buffer，这跟我们在文档中查到的定义是一样的。</span><br><span class="line"></span><br><span class="line">对比两个案例，我们发现，写文件时会用到 Cache 缓存数据，而写磁盘则会用到 Buffer来缓存数据。所以，回到刚刚的问题，虽然文档上只提到，Cache是文件读的缓存，但实际上，Cache 也会缓存写文件时的数据。</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="swap"><a href="#swap" class="headerlink" title="swap"></a>swap</h3><p>Swap分区（也称交换分区）是硬盘上的一个区域，被指定为操作系统可以临时存储数据的地方，这些数据不能再保存在RAM中。 基本上，这使您能够增加服务器在工作“内存”中保留的信息量，但有一些注意事项，主要是当RAM中没有足够的空间容纳正在使用的应用程序数据时，将使用硬盘驱动器上的交换空间。 写入磁盘的信息将比保存在RAM中的信息慢得多，但是操作系统更愿意将应用程序数据保存在内存中，并使用交换旧数据。 总的来说，当系统的RAM耗尽时，将交换空间作为回落空间可能是一个很好的安全网，可防止非SSD存储系统出现内存不足的情况。</p>
+<p>内存不够用？在Linux上使用swapfile配置交换空间</p>
+<p>查看系统是否有交换分区：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo swapon --show</span><br></pre></td></tr></tbody></table></figure>
+
+<p>临时修改方法如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo fallocate -l 4G /swapfile</span><br><span class="line">sudo chmod 600 /swapfile</span><br><span class="line">sudo mkswap -f /swapfile</span><br><span class="line">sudo swapon /swapfile</span><br></pre></td></tr></tbody></table></figure>
+
+<p>经过测试，OpenSuSE系统要使用以下命令才能成功创建swapfile</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo dd if=/dev/zero of=/swapfile count=4096 bs=1MiB</span><br></pre></td></tr></tbody></table></figure>
+
+<p>使用以下命令查看是否正确创建。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -lh /swapfile</span><br></pre></td></tr></tbody></table></figure>
+<p>结果应该类似下面这样：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rw-r--r-- 1 root root 4.0G Apr 26 17:04 /swapfile</span><br></pre></td></tr></tbody></table></figure>
+<p>修改swapfile权限</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 600 /swapfile</span><br></pre></td></tr></tbody></table></figure>
+<p>查看效果</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -lh /swapfile</span><br></pre></td></tr></tbody></table></figure>
+<p>结果应该类似下面这样：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-rw------- 1 root root 8.0G Apr 26 17:04 /swapfile</span><br></pre></td></tr></tbody></table></figure>
+<p>激活交换空间</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkswap /swapfile</span><br><span class="line">sudo swapon /swapfile</span><br></pre></td></tr></tbody></table></figure>
+<p>之后使用以下命令查看使用成功开启交换空间：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo swapon --show</span><br></pre></td></tr></tbody></table></figure>
+<p>结果类似下面这样：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">NAME      TYPE SIZE USED PRIO</span><br><span class="line">/swapfile file   8G   0B   -1</span><br></pre></td></tr></tbody></table></figure>
+
+<p>添加到fstab</p>
+<p>这样每次开机系统就会自动吧swapfile挂载为交换空间。 首先请自行备份fstab文件。 然后把以下配置添加到fstab文件末尾。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/swapfile none swap sw 0 0</span><br></pre></td></tr></tbody></table></figure>
+<p>或者直接使用以下命令：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/fstab /etc/fstab.bak</span><br><span class="line"></span><br><span class="line">echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab</span><br><span class="line"></span><br><span class="line">#关闭swapfile区</span><br><span class="line">sudo swapoff /swapfile</span><br><span class="line"></span><br><span class="line">sudo rm /swapfile</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="缓存释放"><a href="#缓存释放" class="headerlink" title="缓存释放"></a>缓存释放</h3><p>如果你使用过 drop_cache 来释放 inode 的话，应该会清楚它有几个控制选项，我们可以通过写入不同的数值来释放不同类型的 cache（用户数据 Page Cache，内核数据 Slab，或者二者都释放），这些选项你可以去看Kernel Documentation(<a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt">https://www.kernel.org/doc/Documentation/sysctl/vm.txt</a>) 的描述。</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/518d48aa9bf64ff091bbb66451e1d615~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>于是这样就引入了一个容易被我们忽略的问题：当我们执行 echo 2 来 drop slab 的时候，它也会把 Page Cache 给 drop 掉，很多运维人员都会忽视掉这一点。</p>
+<p>在系统内存紧张的时候，运维人员或者开发人员会想要通过 drop_caches 的方式来释放一些内存，但是由于他们清楚 Page Cache 被释放掉会影响业务性能，所以就期望只去 drop slab 而不去 drop pagecache。于是很多人这个时候就运行 echo 2 &gt; /proc/sys/vm/drop_caches，但是结果却出乎了他们的意料：Page Cache 也被释放掉了，业务性能产生了明显的下降。</p>
+<p>由于 drop_caches 是一种内存事件，内核会在 /proc/vmstat 中来记录这一事件，所以我们可以通过 /proc/vmstat 来判断是否有执行过 drop_caches。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ grep drop /proc/vmstat</span><br><span class="line">drop_pagecache 3</span><br><span class="line">drop_slab 2</span><br></pre></td></tr></tbody></table></figure>
+<p>如上所示，它们分别意味着 pagecache 被 drop 了 3 次（通过 echo 1 或者 echo 3），slab 被 drop 了 2 次（通过 echo 2 或者 echo 3）。如果这两个值在问题发生前后没有变化，那就可以排除是有人执行了 drop_caches；否则可以认为是因为 drop_caches 引起的 Page Cache 被回收。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">#清理文件页、目录项、Inodes等各种缓存</span><br><span class="line">echo 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line"></span><br><span class="line">#然后运行dd命令随机读取设备，向磁盘分区/dev/sdb1写入2G数据</span><br><span class="line">dd if=/dev/urandom of=/dev/sdb1 bs=1M count=2048</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sudo su</span><br><span class="line"></span><br><span class="line">vi /root/cache.sh</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#! /bin/bash</span><br><span class="line">#v1.0</span><br><span class="line">sync</span><br><span class="line">echo 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">swapoff -a &amp;&amp; swapon -a</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">crontab -e</span><br><span class="line">*/2 * * * * /root/cache.sh</span><br></pre></td></tr></tbody></table></figure>
+
+
+
+<h3 id="内存泄露排查"><a href="#内存泄露排查" class="headerlink" title="内存泄露排查"></a>内存泄露排查</h3><figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">占用线程的内存文件</span><br><span class="line">cat /proc/31108/smaps</span><br><span class="line">sudo su</span><br><span class="line">cat /proc/meminfo</span><br><span class="line"></span><br><span class="line">其中 vmalloc 申请的内存会体现在 VmallocUsed 这一项中，即已使用的 Vmalloc 区大小；而 kmalloc 申请的内存则是体现在 Slab 这一项中，它又分为两部分，其中 SReclaimable 是指在内存紧张的时候可以被回收的内存，而 SUnreclaim 则是不可以被回收只能主动释放的内存。</span><br><span class="line"></span><br><span class="line">如果 /proc/meminfo 中内核内存（比如 VmallocUsed 和 SUnreclaim）太大，那很有可能发生了内核内存泄漏；</span><br><span class="line"></span><br><span class="line">另外，你也可以周期性地观察 VmallocUsed 和 SUnreclaim 的变化，如果它们持续增长而不下降，也可能是发生了内核内存泄漏。</span><br><span class="line"></span><br><span class="line">这也可以通过 /proc 来查看，所以再次强调一遍，当你不清楚该如何去分析时，你可以试着去查看 /proc 目录下的文件。以上面的程序为例，安装 kmem_test 这个内核模块后，我们可以通过 /proc/vmallocinfo 来看到该模块的内存使用情况：</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">$ cat /proc/vmallocinfo | grep appName</span><br><span class="line"></span><br><span class="line">vmstat 2 10000中看free的变化速度(迅速下降，但buffer、cache没发生变化，存在泄露)</span><br><span class="line"></span><br><span class="line">strace -t -f -p 31108 -o 31108.strace</span><br><span class="line"></span><br><span class="line">cat 31108.strace | grep 10489856</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff1fac1f6a804b8a92c74ca38681e3ef~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<h3 id="内存回收"><a href="#内存回收" class="headerlink" title="内存回收"></a>内存回收</h3><p>（1）代码区——–主要存储程序代码指令，define定义的常量。</p>
+<p>（2）全局数据区——主要存储全局变量（常量），静态变量（常量），常量字符串。</p>
+<p>（3）栈区——–主要存储局部变量，栈区上的内容只在函数范围内存在，当函数运行结束，这些内容也会自动被销毁。其特点是效率高，但内存大小有限。</p>
+<p>（4）堆区——–由malloc,calloc分配的内存区域，其生命周期由free决定。堆的内存大小是由程序员分配的，理论上可以占据系统中的所有内存。</p>
+<p>当发生了内存泄漏时，或者运行了大内存的应用程序，导致系统的内存资源紧张时，系统又会如何应对呢？</p>
+<p>这其实会导致两种可能结果，内存回收和OOM杀死进程。我们先来看后一个可能结果，内存资源紧张导致的 OOM（Out OfMemory），相对容易理解，指的是系统杀死占用大量内存的进程，释放这些内存，再分配给其他更需要的进程。</p>
+<p>这一点我们前面详细讲过，这里就不再重复了。接下来再看第一个可能的结果，内存回收，也就是系统释放掉可以回收的内存，比如我前面讲过的缓存和缓冲区，就属于可回收内存。它们在内存管理中，通常被叫做文件页（File-backed Page）。</p>
+<p>大部分文件页，都可以直接回收，以后有需要时，再从磁盘重新读取就可以了。而那些被应用程序修改过，并且暂时还没写入磁盘的数据（也就是脏页），就得先写入磁盘，然后才能进行内存释放。</p>
+<p><strong>这些脏页，一般可以通过两种方式写入磁盘。</strong></p>
+<ul>
+<li>可以在应用程序中，通过系统调用 fsync  ，把脏页同步到磁盘中；</li>
+<li>也可以交给系统，由内核线程 pdflush 负责这些脏页的刷新。<strong>（内核使用pdflush线程刷新脏页到磁盘，pdflush线程个数在2和8之间，可以通过/proc/sys/vm/nr_pdflush_threads文件直接查看，具体策略机制参看源码函数__pdflush。）</strong></li>
+</ul>
+<p>kbdirty 就是系统中的脏页大小，它同样也是对 /proc/vmstat 中 nr_dirty 的解析。你可以通过调小如下设置来将系统脏页个数控制在一个合理范围:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vm.dirty_background_bytes=0</span><br><span class="line">vm.dirty_background_ratio=10</span><br><span class="line">vm.dirty_bytes=0</span><br><span class="line">vm.dirty_expire_centisecs=3000</span><br><span class="line">vm.dirty_ratio=20</span><br></pre></td></tr></tbody></table></figure>
+
+<p>调整这些配置项有利有弊，调大这些值会导致脏页的积压，但是同时也可能减少了 I/O 的次数，从而提升单次刷盘的效率；调小这些值可以减少脏页的积压，但是同时也增加了 I/O 的次数，降低了 I/O 的效率。</p>
+<p><strong>至于这些值调整大多少比较合适，也是因系统和业务的不同而异，我的建议也是一边调整一边观察，将这些值调整到业务可以容忍的程度就可以了，即在调整后需要观察业务的服务质量 (SLA)，要确保 SLA 在可接受范围内。调整的效果你可以通过 /proc/vmstat 来查看：</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">grep "nr_dirty_" /proc/vmstat</span><br><span class="line">nr_dirty_threshold 366998</span><br><span class="line">nr_dirty_background_threshold 183275</span><br></pre></td></tr></tbody></table></figure>
+
+<p>你可以观察一下调整前后这两项的变化。这里我要给你一个避免踩坑的提示，解决该方案中的设置项如果设置不妥会触发一个内核 Bug，这是我在 2017 年进行性能调优时发现的一个内核 Bug，我给社区提交了一个 patch 将它 fix 掉了，具体的 commit 见 <a target="_blank" rel="noopener" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=94af584692091347baea4d810b9fc6e0f5483d42">writeback: schedule periodic writeback with sysctl</a>  , commit log 清晰地描述了该问题，我建议你有时间看一看。</p>
+<h4 id="Page-Cache是怎样产生和释放的"><a href="#Page-Cache是怎样产生和释放的" class="headerlink" title="Page Cache是怎样产生和释放的"></a>Page Cache是怎样产生和释放的</h4><p>Page Cache 的产生有两种不同的方式：</p>
+<ul>
+<li>Buffered I/O（标准 I/O）；</li>
+<li>Memory-Mapped I/O（存储映射 I/O）。</li>
+</ul>
+<p>标准 I/O 是写的 (write(2)) 用户缓冲区 (Userpace Page 对应的内存)，然后再将用户缓冲区里的数据拷贝到内核缓冲区 (Pagecache Page 对应的内存)；如果是读的 (read(2)) 话则是先从内核缓冲区拷贝到用户缓冲区，再从用户缓冲区读数据，也就是 buffer 和文件内容不存在任何映射关系。</p>
+<p>对于存储映射 I/O 而言，则是直接将 Pagecache Page 给映射到用户地址空间，用户直接读写 Pagecache Page 中内容。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/vmstat | egrep "dirty|writeback"</span><br><span class="line"></span><br><span class="line">nr_dirty 40</span><br><span class="line">nr_writeback 2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如上所示，nr_dirty 表示当前系统中积压了多少脏页，nr_writeback 则表示有多少脏页正在回写到磁盘中，他们两个的单位都是 Page(4KB)。</p>
+<h5 id="释放"><a href="#释放" class="headerlink" title="释放"></a>释放</h5><p>free 命令中的 buff/cache 中的这些就是“活着”的 Page Cache，那它们什么时候会“死亡”（被回收）呢？我们来看一张图：</p>
+<p><img src="https://files.mdnice.com/user/7503/74c74bcd-a59e-477b-8f58-7117087f1b83.png"></p>
+<p>应用在申请内存的时候，即使没有 free 内存，只要还有足够可回收的 Page Cache，就可以通过回收 Page Cache 的方式来申请到内存，回收的方式主要是两种：<strong>直接回收和后台回收</strong>。</p>
+<p>那它是具体怎么回收的呢？你要怎么观察呢？其实在我看来，观察 Page Cache 直接回收和后台回收最简单方便的方式是使用 sar：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">$ sar -r 1</span><br><span class="line"></span><br><span class="line">$ sar -B 1</span><br><span class="line">02:14:01 PM  pgpgin/s pgpgout/s   fault/s  majflt/s  pgfree/s pgscank/s pgscand/s pgsteal/s    %vmeff</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">02:14:01 PM      0.14    841.53 106745.40      0.00  41936.13      0.00      0.00      0.00      0.00</span><br><span class="line">02:15:01 PM      5.84    840.97  86713.56      0.00  43612.15    717.81      0.00    717.66     99.98</span><br><span class="line">02:16:01 PM     95.02    816.53 100707.84      0.13  46525.81   3557.90      0.00   3556.14     99.95</span><br><span class="line">02:17:01 PM     10.56    901.38 122726.31      0.27  54936.13   8791.40      0.00   8790.17     99.99</span><br><span class="line">02:18:01 PM    108.14    306.69  96519.75      1.15  67410.50  14315.98     31.48  14319.38     99.80</span><br><span class="line">02:19:01 PM      5.97    489.67  88026.03      0.18  48526.07   1061.53      0.00   1061.42     99.99</span><br></pre></td></tr></tbody></table></figure>
+<p>借助上面这些指标，你可以更加明确地观察内存回收行为，下面是这些指标的具体含义：</p>
+<ul>
+<li>pgscank/s : kswapd(后台回收线程) 每秒扫描的 page 个数。</li>
+<li>pgscand/s: Application 在内存申请过程中每秒直接扫描的 page 个数。</li>
+<li>pgsteal/s: 扫描的 page 中每秒被回收的个数。</li>
+<li>%vmeff: pgsteal/(pgscank+pgscand), 回收效率，越接近 100 说明系统越安全，越接近 0 说明系统内存压力越大。</li>
+</ul>
+<p>**<br>进程运行所需要的内存类型有很多种，总的来说，这些内存类型可以从是不是文件映射，以及是不是私有内存这两个不同的维度来做区分，也就是可以划分为四类内存。**</p>
+<ul>
+<li><p>私有匿名内存。进程的堆、栈，以及 mmap(MAP_ANON | MAP_PRIVATE) 这种方式申请的内存都属于这种类型的内存。其中栈是由操作系统来进行管理的，应用程序无需关注它的申请和释放；堆和私有匿名映射则是由应用程序（程序员）来进行管理的，它们的申请和释放都是由应用程序来负责的，所以它们是容易产生内存泄漏的地方。</p>
+</li>
+<li><p>共享匿名内存。进程通过 mmap(MAP_ANON | MAP_SHARED) 这种方式来申请的内存，比如说 tmpfs 和 shm。这个类型的内存也是由应用程序来进行管理的，所以也可能会发生内存泄漏。</p>
+</li>
+<li><p>私有文件映射。进程通过 mmap(MAP_FILE | MAP_PRIVATE) 这种方式来申请的内存，比如进程将共享库（Shared libraries）和可执行文件的代码段（Text Segment）映射到自己的地址空间就是通过这种方式。对于共享库和可执行文件的代码段的映射，这是通过操作系统来进行管理的，应用程序无需关注它们的申请和释放。而应用程序直接通过 mmap(MAP_FILE | MAP_PRIVATE) 来申请的内存则是需要应用程序自己来进行管理，这也是可能会发生内存泄漏的地方。</p>
+</li>
+<li><p>共享文件映射。进程通过 mmap(MAP_FILE | MAP_SHARED) 这种方式来申请的内存，我们在上一个模块课程中讲到的 File Page Cache 就属于这类内存。这部分内存也需要应用程序来申请和释放，所以也存在内存泄漏的可能性。</p>
+</li>
+</ul>
+<p><strong>总结</strong></p>
+<ul>
+<li>进程直接读写的都是虚拟地址，虚拟地址最终会通过 Paging（分页）来转换为物理内存的地址，Paging 这个过程是由内核来完成的。</li>
+<li>进程的内存类型可以从 anon（匿名）与 file（文件）、private（私有）与 shared（共享）这四项来区分为 4 种不同的类型，进程相关的所有内存都是这几种方式的不同组合。</li>
+<li>查看进程内存时，可以先使用 top 来看系统中各个进程的内存使用概况，再使用 pmap 去观察某个进程的内存细节。</li>
+</ul>
+<h4 id="直接内存回收是指在进程上下文同步进行内存回收，那么它具体是怎么引起-load-飙高的呢？"><a href="#直接内存回收是指在进程上下文同步进行内存回收，那么它具体是怎么引起-load-飙高的呢？" class="headerlink" title="直接内存回收是指在进程上下文同步进行内存回收，那么它具体是怎么引起 load 飙高的呢？"></a>直接内存回收是指在进程上下文同步进行内存回收，那么它具体是怎么引起 load 飙高的呢？</h4><p>因为直接内存回收是在进程申请内存的过程中同步进行的回收，而这个回收过程可能会消耗很多时间，进而导致进程的后续行为都被迫等待，这样就会造成很长时间的延迟，以及系统的 CPU 利用率会升高，最终引起 load 飙高。</p>
+<p>那么，针对直接内存回收引起 load 飙高或者业务 RT 抖动的问题，一个解决方案就是及早地触发后台回收来避免应用程序进行直接内存回收，那具体要怎么做呢？那么，我们可以增大 min_free_kbytes 这个配置选项来及早地触发后台回收，该选项最终控制的是内存回收水位</p>
+<h4 id="系统中脏页过多引起-load-飙高"><a href="#系统中脏页过多引起-load-飙高" class="headerlink" title="系统中脏页过多引起 load 飙高"></a>系统中脏页过多引起 load 飙高</h4><p>那如何解决这类问题呢？一个比较省事的解决方案是控制好系统中积压的脏页数据。很多人知道需要控制脏页，但是往往并不清楚如何来控制好这个度，脏页控制的少了可能会影响系统整体的效率，脏页控制的多了还是会触发问题，所以我们接下来看下如何来衡量好这个“度”。</p>
+<p>kbdirty 就是系统中的脏页大小，它同样也是对 /proc/vmstat 中 nr_dirty 的解析。你可以通过调小如下设置来将系统脏页个数控制在一个合理范围:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vm.dirty_background_bytes=0</span><br><span class="line">vm.dirty_background_ratio=10</span><br><span class="line">vm.dirty_bytes=0</span><br><span class="line">vm.dirty_expire_centisecs=3000</span><br><span class="line">vm.dirty_ratio=20</span><br></pre></td></tr></tbody></table></figure>
+
+<p>调整这些配置项有利有弊，调大这些值会导致脏页的积压，但是同时也可能减少了 I/O 的次数，从而提升单次刷盘的效率；调小这些值可以减少脏页的积压，但是同时也增加了 I/O 的次数，降低了 I/O 的效率。</p>
+<p><strong>至于这些值调整大多少比较合适，也是因系统和业务的不同而异，我的建议也是一边调整一边观察，将这些值调整到业务可以容忍的程度就可以了，即在调整后需要观察业务的服务质量 (SLA)，要确保 SLA 在可接受范围内。调整的效果你可以通过 /proc/vmstat 来查看：</strong></p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">grep "nr_dirty_" /proc/vmstat</span><br><span class="line">nr_dirty_threshold 366998</span><br><span class="line">nr_dirty_background_threshold 183275</span><br></pre></td></tr></tbody></table></figure>
+
+<p>你可以观察一下调整前后这两项的变化。这里我要给你一个避免踩坑的提示，解决该方案中的设置项如果设置不妥会触发一个内核 Bug，这是我在 2017 年进行性能调优时发现的一个内核 Bug，我给社区提交了一个 patch 将它 fix 掉了，具体的 commit 见 <a target="_blank" rel="noopener" href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=94af584692091347baea4d810b9fc6e0f5483d42">writeback: schedule periodic writeback with sysctl</a>  , commit log 清晰地描述了该问题，我建议你有时间看一看。</p>
+<h4 id="系统-NUMA-策略配置不当引起的-load-飙高"><a href="#系统-NUMA-策略配置不当引起的-load-飙高" class="headerlink" title="系统 NUMA 策略配置不当引起的 load 飙高"></a>系统 NUMA 策略配置不当引起的 load 飙高</h4><p>除了我前面提到的这两种引起系统 load 飙高或者业务延迟抖动的场景之外，还有另外一种场景也会引起 load 飙高，那就是系统 NUMA 策略配置不当引起的 load 飙高。</p>
+<p>比如说，我们在生产环境上就曾经遇到这样的问题：系统中还有一半左右的 free 内存，但还是频频触发 direct reclaim，导致业务抖动得比较厉害。后来经过排查发现是由于设置了 zone_reclaim_mode，这是 NUMA 策略的一种。</p>
+<p>设置 zone_reclaim_mode 的目的是为了增加业务的 NUMA 亲和性，但是在实际生产环境中很少会有对 NUMA 特别敏感的业务，这也是为什么内核将该配置从默认配置 1 修改为了默认配置 0: mm: disable zone_reclaim_mode by default ，配置为 0 之后，就避免了在其他 node 有空闲内存时，不去使用这些空闲内存而是去回收当前 node 的 Page Cache，也就是说，通过减少内存回收发生的可能性从而避免它引发的业务延迟。</p>
+<p>那么如何来有效地衡量业务延迟问题是否由 zone reclaim 引起的呢？它引起的延迟究竟有多大呢？这个衡量和观察方法也是我贡献给 Linux Kernel 的：mm/vmscan: add tracepoints for node reclaim ，大致的思路就是利用 linux 的 tracepoint 来做这种量化分析，这是性能开销相对较小的一个方案。</p>
+<p>推荐将 zone_reclaim_mode 配置为 0。vm.zone_reclaim_mode = 0因为相比内存回收的危害而言，NUMA 带来的性能提升几乎可以忽略，所以配置为 0，利远大于弊。</p>
+<p>好了，对于 Page Cache 管理不当引起的系统 load 飙高和业务时延抖动问题，我们就分析到这里，希望通过这篇的学习，在下次你遇到直接内存回收引起的 load 飙高问题时不再束手无策。</p>
+<p>总的来说，这些问题都是 Page Cache 难以释放而产生的问题，那你是否想过，是不是 Page Cache 很容易释放就不会产生问题了？这个答案可能会让你有些意料不到：Page Cache 容易释放也有容易释放的问题。这到底是怎么回事呢，我们下节课来分析下这方面的案例。</p>
+<h4 id="内核机制引起-Page-Cache-被回收而产生的业务性能下降"><a href="#内核机制引起-Page-Cache-被回收而产生的业务性能下降" class="headerlink" title="内核机制引起 Page Cache 被回收而产生的业务性能下降"></a>内核机制引起 Page Cache 被回收而产生的业务性能下降</h4><p>我简单来解释一下这个图。Reclaimer 是指回收者，它可以是内核线程（包括 kswapd）也可以是用户线程。回收的时候，它会依次来扫描 pagecache page 和 slab page 中有哪些可以被回收的，如果有的话就会尝试去回收，如果没有的话就跳过。在扫描可回收 page 的过程中回收者一开始扫描的较少，然后逐渐增加扫描比例直至全部都被扫描完。这就是内存回收的大致过程。</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/16d86ebdcc1c462790cb53176cf084ca~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>接下来我所要讲述的案例就发生在“relcaim slab”中，我们从前一个案例已然知道，如果 inode 被回收的话，那么它对应的 Page Cache 也都会被回收掉，所以如果业务进程读取的文件对应的 inode 被回收了，那么该文件所有的 Page Cache 都会被释放掉，这也是容易引起性能问题的地方。</p>
+<p>那这个行为是否有办法观察？这同样也是可以通过 /proc/vmstat 来观察的，/proc/vmstat 简直无所不能（这也是为什么我会在之前说内核开发者更习惯去观察 /proc/vmstat）。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ grep inodesteal /proc/vmstat</span><br><span class="line">pginodesteal 114341</span><br><span class="line">kswapd_inodesteal 1291853</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个行为对应的事件是 inodesteal，就是上面这两个事件，其中 kswapd_inodesteal 是指在 kswapd 回收的过程中，因为回收 inode 而释放的 pagecache page 个数；pginodesteal 是指 kswapd 之外其他线程在回收过程中，因为回收 inode 而释放的 pagecache page 个数。所以在你发现业务的 Page Cache 被释放掉后，你可以通过观察来发现是否因为该事件导致的。</p>
+<h4 id="如何避免-Page-Cache-被回收而引起的性能问题？"><a href="#如何避免-Page-Cache-被回收而引起的性能问题？" class="headerlink" title="如何避免 Page Cache 被回收而引起的性能问题？"></a>如何避免 Page Cache 被回收而引起的性能问题？</h4><p>我们在分析一些问题时，往往都会想这个问题是我的模块有问题呢，还是别人的模块有问题。也就是说，是需要修改我的模块来解决问题还是需要修改其他模块来解决问题。与此类似，避免 Page Cache 里相对比较重要的数据被回收掉的思路也是有两种：</p>
+<ul>
+<li>从应用代码层面来优化；</li>
+<li>从系统层面来调整。</li>
+</ul>
+<p>从应用程序代码层面来解决是相对比较彻底的方案，因为应用更清楚哪些 Page Cache 是重要的，哪些是不重要的，所以就可以明确地来对读写文件过程中产生的 Page Cache 区别对待。比如说，对于重要的数据，可以通过 mlock(2) 来保护它，防止被回收以及被 drop；对于不重要的数据（比如日志），那可以通过 madvise(2) 告诉内核来立即释放这些 Page Cache。</p>
+<p>在有些情况下，对应用程序而言，修改源码是件比较麻烦的事，如果可以不修改源码来达到目的那就最好不过了。Linux 内核同样实现了这种不改应用程序的源码而从系统层面调整来保护重要数据的机制，这个机制就是 memory cgroup protection。</p>
+<p>它大致的思路是，将需要保护的应用程序使用 memory cgroup 来保护起来，这样该应用程序读写文件过程中所产生的 Page Cache 就会被保护起来不被回收或者最后被回收。memory cgroup protection 大致的原理如下图所示：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c00228defb2a4041b6afe64e5389b029~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>如上图所示，memory cgroup 提供了几个内存水位控制线 memory.{min, low, high, max} 。</p>
+<ul>
+<li>memory.max这是指 memory cgroup 内的进程最多能够分配的内存，如果不设置的话，就默认不做内存大小的限制。</li>
+<li>memory.high如果设置了这一项，当 memory cgroup 内进程的内存使用量超过了该值后就会立即被回收掉，所以这一项的目的是为了尽快的回收掉不活跃的 Page Cache。</li>
+<li>memory.low这一项是用来保护重要数据的，当 memory cgroup 内进程的内存使用量低于了该值后，在内存紧张触发回收后就会先去回收不属于该 memory cgroup 的 Page Cache，等到其他的 Page Cache 都被回收掉后再来回收这些 Page Cache。</li>
+<li>memory.min这一项同样是用来保护重要数据的，只不过与 memoy.low 有所不同的是，当 memory cgroup 内进程的内存使用量低于该值后，即使其他不在该 memory cgroup 内的 Page Cache 都被回收完了也不会去回收这些 Page Cache，可以理解为这是用来保护最高优先级的数据的。</li>
+</ul>
+<p><strong>那么，如果你想要保护你的 Page Cache 不被回收，你就可以考虑将你的业务进程放在一个 memory cgroup 中，然后设置 memory.{min,low} 来进行保护；与之相反，如果你想要尽快释放你的 Page Cache，那你可以考虑设置 memory.high 来及时的释放掉不活跃的 Page Cache。</strong></p>
+<p>除了缓存和缓冲区，通过内存映射获取的文件映射页，也是一种常见的文件页。它也可以被释放掉，下次再访问的时候，从文件重新读取。</p>
+<p>除了文件页外，还有没有其他的内存可以回收呢？比如，应用程序动态分配的堆内存，也就是我们在内存管理中说到的匿名页（Anonymous Page），是不是也可以回收呢？</p>
+<p>我想，你肯定会说，它们很可能还要再次被访问啊，当然不能直接回收了。非常正确，这些内存自然不能直接释放。</p>
+<p>但是，如果这些内存在分配后很少被访问，似乎也是一种资源浪费。是不是可以把它们暂时先存在磁盘里，释放内存给其他更需要的进程？</p>
+<p>其实，这正是 Linux 的Swap机制。Swap把这些不常访问的内存先写到磁盘中，然后释放这些内存，给其他更需要的进程使用。再次访问这些内存时，重新从磁盘读入内存就可以了。</p>
+<p>在前几节的案例中，我们已经分别学过缓存和 OOM 的原理和分析。那 Swap 又是怎么工作的呢？因为内容比较多，接下来，我将用两节课的内容，带你探索 Swap 的工作原理，以及 Swap 升高后的分析方法。</p>
+<p>今天我们先来看看，Swap 究竟是怎么工作的。</p>
+<h3 id="Swap-原理"><a href="#Swap-原理" class="headerlink" title="Swap 原理"></a>Swap 原理</h3><p>Swap 说白了就是把一块磁盘空间或者一个本地文件（以下讲解以磁盘为例），当成内存来使用。它包括换出和换入两个过程。</p>
+<ul>
+<li><p>所谓换出，就是把进程暂时不用的内存(swap)数据存储到磁盘中，并释放这些数据占用的内存。</p>
+</li>
+<li><p>而换入，则是在进程再次访问这些内存的时候，把它们从磁盘读到内存(swap)中来。</p>
+</li>
+</ul>
+<p>所以你看，Swap 其实是把系统的可用内存变大了。这样，即使服务器的内存不足，也可以运行大内存的应用程序。</p>
+<p>还记得我最早学习 Linux操作系统时，内存实在太贵了，一个普通学生根本就用不起大的内存，那会儿我就是开启了Swap来运行Linux桌面。当然，现在的内存便宜多了，服务器一般也会配置很大的内存，那是不是说Swap就没有用武之地了呢？</p>
+<p>当然不是。事实上，内存再大，对应用程序来说，也有不够用的时候。</p>
+<p>一个很典型的场景就是，即使内存不足时，有些应用程序也并不想被 OOM 杀死，而是希望能缓一段时间，等待人工介入，或者等系统自动释放其他进程的内存，再分配给它。</p>
+<p>除此之外，我们常见的笔记本电脑的休眠和快速开机的功能，也基于 Swap 。休眠时，把系统的内存存入磁盘，这样等到再次开机时，只要从磁盘中加载内存就可以。这样就省去了很多应用程序的初始化过程，加快了开机速度。</p>
+<p>话说回来，既然 Swap 是为了回收内存，那么Linux到底在什么时候需要回收内存呢？前面一直在说内存资源紧张，又该怎么来衡量内存是不是紧张呢？</p>
+<p>一个最容易想到的场景就是，有新的大块内存分配请求，但是剩余内存不足。这个时候系统就需要回收一部分内存（比如前面提到的缓存），进而尽可能地满足新内存请求。这个过程通常被称为直接内存回收。</p>
+<p>除了直接内存回收，还有一个专门的内核线程用来定期回收内存，也就是 <strong>kswapd0</strong>。为了衡量内存的使用情况，kswapd0 定义了三个内存阈值（watermark，也称为水位），分别是</p>
+<p>页最小阈值（pages_min）、页低阈值（pages_low）和页高阈值（pages_high）。剩余内存，则使用 pages_free 表示。</p>
+<p><img src="https://files.mdnice.com/user/7503/ef4a6f9c-d453-4648-9d23-c09efda7efe7.png"></p>
+<p>kswapd0 定期扫描内存的使用情况，并根据剩余内存落在这三个阈值的空间位置，进行内存的回收操作。</p>
+<ul>
+<li>剩余内存小于页最小阈值，说明进程可用内存都耗尽了，只有内核才可以分配内存。</li>
+<li>剩余内存落在页最小阈值和页低阈值中间，说明内存压力比较大，剩余内存不多了。这时 kswapd0 会执行内存回收，直到剩余内存大于高阈值为止。</li>
+<li>剩余内存落在页低阈值和页高阈值中间，说明内存有一定压力，但还可以满足新内存请求。</li>
+<li>剩余内存大于页高阈值，说明剩余内存比较多，没有内存压力。</li>
+</ul>
+<p>我们可以看到，一旦剩余内存小于页低阈值，就会触发内存的回收。这个页低阈值，其实可以通过内核选项 /proc/sys/vm/min_free_kbytes 来间接设置。min_free_kbytes 设置了页最小阈值，而其他两个阈值，都是根据页最小阈值计算生成的，计算方法如下 ：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pages_low = pages_min*5/4</span><br><span class="line">pages_high = pages_min*3/2</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="NUMA-与-Swap"><a href="#NUMA-与-Swap" class="headerlink" title="NUMA 与 Swap"></a>NUMA 与 Swap</h3><p>很多情况下，你明明发现了Swap升高，可是在分析系统的内存使用时，却很可能发现，系统剩余内存还多着呢。为什么剩余内存很多的情况下，也会发生 Swap 呢？</p>
+<p>看到上面的标题，你应该已经想到了，这正是处理器的 NUMA （Non-Uniform Memory Access）架构导致的。</p>
+<p>关于 NUMA，我在 CPU 模块中曾简单提到过。在 NUMA 架构下，多个处理器被划分到不同 Node 上，且每个 Node 都拥有自己的本地内存空间。</p>
+<p>而同一个 Node 内部的内存空间，实际上又可以进一步分为不同的内存域（Zone），比如直接内存访问区（DMA）、普通内存区（NORMAL）、伪内存区（MOVABLE）等，如下图所示：</p>
+<p><img src="https://files.mdnice.com/user/7503/6227fe07-393e-4fa3-95fd-b6c8f3b546ea.png"></p>
+<p>先不用特别关注这些内存域的具体含义，我们只要会查看阈值的配置，以及缓存、匿名页的实际使用情况就够了。</p>
+<p>既然 NUMA 架构下的每个 Node 都有自己的本地内存空间，那么，在分析内存的使用时，我们也应该针对每个 Node 单独分析。</p>
+<p>你可以通过 numactl 命令，来查看处理器在 Node 的分布情况，以及每个 Node 的内存使用情况。比如，下面就是一个 numactl 输出的示例：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ numactl --hardware</span><br><span class="line">available: 1 nodes (0)</span><br><span class="line">node 0 cpus: 0 1</span><br><span class="line">node 0 size: 7977 MB</span><br><span class="line">node 0 free: 4416 MB</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个界面显示，我的系统中只有一个 Node，也就是 Node 0 ，而且编号为 0 和 1 的两个 CPU， 都位于 Node 0 上。另外，Node 0 的内存大小为 7977 MB，剩余内存为 4416 MB。</p>
+<p>了解了 NUNA 的架构和 NUMA 内存的查看方法后，你可能就要问了这跟 Swap 有什么关系呢？</p>
+<p>实际上，前面提到的三个内存阈值（页最小阈值、页低阈值和页高阈值），都可以通过内存域在 proc 文件系统中的接口 /proc/zoneinfo 来查看。</p>
+<p>比如，下面就是一个 /proc/zoneinfo 文件的内容示例：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">$ cat /proc/zoneinfo</span><br><span class="line">...</span><br><span class="line">Node 0, zone   Normal</span><br><span class="line"> pages free     227894</span><br><span class="line">       min      14896</span><br><span class="line">       low      18620</span><br><span class="line">       high     22344</span><br><span class="line">...</span><br><span class="line">     nr_free_pages 227894</span><br><span class="line">     nr_zone_inactive_anon 11082</span><br><span class="line">     nr_zone_active_anon 14024</span><br><span class="line">     nr_zone_inactive_file 539024</span><br><span class="line">     nr_zone_active_file 923986</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个输出中有大量指标，我来解释一下比较重要的几个。</p>
+<ul>
+<li><p>pages 处的 min、low、high，就是上面提到的三个内存阈值，而 free 是剩余内存页数，它跟后面的 nr_free_pages 相同。</p>
+</li>
+<li><p>nr_zone_active_anon 和 nr_zone_inactive_anon，分别是活跃和非活跃的匿名页数。</p>
+</li>
+<li><p>nr_zone_active_file 和 nr_zone_inactive_file，分别是活跃和非活跃的文件页数。</p>
+</li>
+</ul>
+<p>从这个输出结果可以发现，剩余内存远大于页高阈值，所以此时的 kswapd0 不会回收内存。</p>
+<p>当然，某个 Node 内存不足时，系统可以从其他 Node 寻找空闲内存，也可以从本地内存中回收内存。具体选哪种模式，你可以通过 /proc/sys/vm/zone_reclaim_mode 来调整。它支持以下几个选项：</p>
+<ul>
+<li>默认的 0 ，也就是刚刚提到的模式，表示既可以从其他 Node 寻找空闲内存，也可以从本地回收内存。</li>
+<li>1、2、4 都表示只回收本地内存，2 表示可以回写脏数据回收内存，4 表示可以用 Swap 方式回收内存。</li>
+</ul>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">vm.zone_reclaim_mode</span><br><span class="line"></span><br><span class="line">设置方法：</span><br><span class="line"></span><br><span class="line">echo 0 &gt; /proc/sys/vm/zone_reclaim_mode，或</span><br><span class="line"></span><br><span class="line">sysctl -w vm.zone_reclaim_mode=0，或</span><br><span class="line"></span><br><span class="line">编辑/etc/sysctl.conf文件，加入vm.zone_reclaim_mode=0</span><br><span class="line"></span><br><span class="line"># echo 0 &gt; /proc/sys/vm/zone_reclaim_mode</span><br><span class="line"># # 意味着关闭zone_reclaim模式，可以从其他zone或NUMA节点回收内存</span><br><span class="line"># echo 1 &gt; /proc/sys/vm/zone_reclaim_mode</span><br><span class="line"># # 表示打开zone_reclaim模式，这样内存回收只会发生在本地节点内</span><br><span class="line"># echo 2 &gt; /proc/sys/vm/zone_reclaim_mode</span><br><span class="line"># # 在本地回收内存时，可以将cache中的脏数据写回硬盘，以回收内存。</span><br><span class="line"># echo 4 &gt; /proc/sys/vm/zone_reclaim_mode</span><br><span class="line"># # 可以用swap方式回收内存。</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="swappiness"><a href="#swappiness" class="headerlink" title="swappiness"></a>swappiness</h3><p>到这里，我们就可以理解内存回收的机制了。这些回收的内存既包括了文件页，又包括了匿名页。</p>
+<ul>
+<li>对文件页的回收，当然就是直接回收缓存，或者把脏页写回磁盘后再回收。</li>
+<li>而对匿名页的回收，其实就是通过 Swap 机制，把它们写入磁盘后再释放内存。</li>
+</ul>
+<p>不过，你可能还有一个问题。既然有两种不同的内存回收机制，那么在实际回收内存时，到底该先回收哪一种呢？</p>
+<p>其实，Linux 提供了一个 /proc/sys/vm/swappiness 选项，用来调整使用 Swap 的积极程度。</p>
+<p>swappiness 的范围是 0-100，数值越大，越积极使用 Swap，也就是更倾向于回收匿名页；数值越小，越消极使用 Swap，也就是更倾向于回收文件页。</p>
+<p>虽然 swappiness 的范围是 0-100，不过要注意，这并不是内存的百分比，而是调整 Swap 积极程度的权重，即使你把它设置成 0，当剩余内存 + 文件页小于页高阈值(<a target="_blank" rel="noopener" href="https://www.kernel.org/doc/Documentation/sysctl/vm.txt)%E6%97%B6%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%9A%E5%8F%91%E7%94%9F">https://www.kernel.org/doc/Documentation/sysctl/vm.txt)时，还是会发生</a> Swap。</p>
+<p>清楚了 Swap 原理后，当遇到 Swap 使用变高时，又该怎么定位、分析呢？别急，下一节，我们将用一个案例来探索实践。</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>在内存资源紧张时，Linux 通过直接内存回收和定期扫描的方式，来释放文件页和匿名页，以便把内存分配给更需要的进程使用。</p>
+<ul>
+<li>文件页的回收比较容易理解，直接清空，或者把脏数据写回磁盘后再释放。</li>
+<li>而对匿名页的回收，需要通过 Swap 换出到磁盘中，下次访问时，再从磁盘换入到内存中。</li>
+</ul>
+<p>你可以设置 /proc/sys/vm/min_free_kbytes，来调整系统定期回收内存的阈值（也就是页低阈值），还可以设置 /proc/sys/vm/swappiness，来调整文件页和匿名页的回收倾向。</p>
+<p>在 NUMA 架构下，每个 Node都有自己的本地内存空间，而当本地内存不足时，默认既可以从其他 Node 寻找空闲内存，也可以从本地内存回收。</p>
+<p>你可以设置 /proc/sys/vm/zone_reclaim_mode 来调整 NUMA 本地内存的回收策略。</p>
+<h3 id="程序被oom-kill"><a href="#程序被oom-kill" class="headerlink" title="程序被oom-kill"></a>程序被oom-kill</h3><p>很快系统内存就会被耗尽，进而触发 OOM killer 去杀进程。这个信息可以通过 dmesg（该命令是用来查看内核日志的）这个命令来查看：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dmesg</span><br><span class="line"></span><br><span class="line">oom_adj 的范围是 [-17, 15]，数值越大，表示进程越容易被 OOM 杀死；数值越小，表示进程越不容易被 OOM 杀死，其中 -17 表示禁止 OOM。</span><br><span class="line"></span><br><span class="line">echo -17 &gt; /proc/$(pidof ele-vue)/oom_adj</span><br><span class="line"></span><br><span class="line">$ sudo sh -c "echo -17 &gt; /proc/$(pidof ele-vue)/oom_adj"</span><br></pre></td></tr></tbody></table></figure>
+
+<p>开启 Swap 后，你可以设置 /proc/sys/vm/min_free_kbytes来调整系统定期回收内存的阈值，也可以设置 /proc/sys/vm/swappiness ，来调整文件页和匿名页的回收倾向。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo 0 &gt;/proc/sys/vm/swappiness</span><br></pre></td></tr></tbody></table></figure>
+<p>永久修改：</p>
+<p>在 /etc/sysctl.conf 文件添加 ”vm.swappiness=0” 行</p>
+<p>脏页(应用程序修改过但暂时未写入磁盘的数据)的数据处理（启用内核线程 pdflush 负责这些脏页的刷新）/proc/sys/vm/nr_pdflush_threads</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vm.nr_pdflush_threads=2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>kbdirty 就是系统中的脏页大小，它同样也是对 /proc/vmstat 中 nr_dirty 的解析。你可以通过调小如下设置来将系统脏页个数控制在一个合理范围:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vm.dirty_background_bytes=0</span><br><span class="line">vm.dirty_background_ratio=10</span><br><span class="line">vm.dirty_bytes=0</span><br><span class="line">vm.dirty_expire_centisecs=3000</span><br><span class="line">vm.dirty_ratio=20</span><br></pre></td></tr></tbody></table></figure>
+
+<p>调整这些配置项有利有弊，调大这些值会导致脏页的积压，但是同时也可能减少了 I/O 的次数，从而提升单次刷盘的效率；调小这些值可以减少脏页的积压，但是同时也增加了 I/O 的次数，降低了 I/O 的效率。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">vm.min_free_kbytes=409600（来调整系统定期回收内存的阈值）</span><br><span class="line"></span><br><span class="line">vm.vfs_cache_pressure=200</span><br><span class="line">#加大这个参数设置了虚拟内存回收directory和i-node缓冲的倾向，这个值越大，回收的倾向越严重。调整这3个参数的目的就是让操作系统在平时就尽快回收缓冲，释放物理内存，这样就可以避免突发性的大规模换页。</span><br><span class="line"></span><br><span class="line">vm.overcommit_memory=1(表示即使内存耗尽也不杀死任何进程)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#查看</span><br><span class="line">sysctl -a</span><br></pre></td></tr></tbody></table></figure> 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2022/08/09/linux-01/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/08/09/linux-02/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            linux系统不可中断进程和僵尸进程
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/08/09/lock-03/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">深入了解Synchronized同步锁的优化方法</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

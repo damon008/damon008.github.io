@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-oauth2"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  统一认证中心 Oauth2 认证坑
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/11/11/oauth2/" class="article-date">
+  <time datetime="2021-11-11T07:11:21.000Z" itemprop="datePublished">2021-11-11</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.6k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">7 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <p>在前面文章 <a href="https://damon008.github.io/2021/10/11/oauth-ha/">Springcloud Oauth2 HA篇</a> 中，实现了基于 Oauth2 的统一认证的认证与授权。在配置中，我们可以看到：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">cas-server-url: http://cas-server-service #这里配置成HA地址</span><br><span class="line"></span><br><span class="line">security:</span><br><span class="line">  oauth2: #与cas-server对应的配置</span><br><span class="line">    client:</span><br><span class="line">      client-id: admin-web</span><br><span class="line">      client-secret: admin-web-123</span><br><span class="line">      user-authorization-uri: ${cas-server-url}/oauth/authorize #是授权码认证方式需要的</span><br><span class="line">      access-token-uri: ${cas-server-url}/oauth/token #是密码模式需要用到的获取 token 的接口</span><br><span class="line">    resource:</span><br><span class="line">      loadBalanced: true</span><br><span class="line">      id: admin-web</span><br><span class="line">      user-info-uri: ${cas-server-url}/api/user #指定user info的URI</span><br><span class="line">      prefer-token-info: false</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里的 url 配置是基于k8s的 Service，实现负载均衡，从而实现高可用。但我们接下来分析 user-info-uri。user-info-uri 的原理是在授权服务器认证后将认证信息 Principal 通过形参绑定的方法通过URL的方式获取用户信息。当然它也有配套的 UserInfoTokenService 等。</p>
+<p>但这个在客户端获取用户权限时候，是存在一定问题的。譬如 Web端请求消费端的某个接口：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 返回发现的所有服务</span><br><span class="line"> * @author Damon</span><br><span class="line"> * @date 2021年11月2日 下午8:18:44</span><br><span class="line"> * @return</span><br><span class="line"> *</span><br><span class="line"> */</span><br><span class="line">@PreAuthorize("hasRole('admin')")</span><br><span class="line">	@GetMapping(value = "/getService")</span><br><span class="line">    public String getService(){</span><br><span class="line">		HttpHeaders headers = new HttpHeaders();</span><br><span class="line">		MediaType type = MediaType.parseMediaType("application/json; charset=UTF-8");</span><br><span class="line">		headers.setContentType(type);</span><br><span class="line">		headers.add("Accept", MediaType.APPLICATION_JSON.toString());</span><br><span class="line">		HttpEntity&lt;String&gt; formEntity = new HttpEntity&lt;String&gt;(null, headers);</span><br><span class="line">		String body = "";</span><br><span class="line">		try {</span><br><span class="line">			ResponseEntity&lt;String&gt; responseEntity = restTemplate.exchange("http://cas-server/api/v1/user",</span><br><span class="line">					HttpMethod.GET, formEntity, String.class);</span><br><span class="line">			if (responseEntity.getStatusCodeValue() == 200) {</span><br><span class="line">				return "ok";</span><br><span class="line">			}</span><br><span class="line">		} catch (Exception e) {</span><br><span class="line">			System.out.println(e.getMessage());</span><br><span class="line">		}</span><br><span class="line">		return body;</span><br><span class="line">    }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在这个接口中，我们通过添加<code>@PreAuthorize("hasRole('admin')")</code>来控制权限，只要是admin的用户才能访问改接口。</p>
+<p>我们先来请求认证中心登录接口，获取token：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eeb4bb0860054c15a2f03e781d165664~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>在拿到token之后，我们请求这个接口，我们会发现：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4bbca89d4ba84ac0acc6dde997d279e7~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>说明未认证，我们再看看：发现原来当请求这个接口时，消费端后去请求认证中心的接口：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">2021-11-03 15:59:09.385 DEBUG 127896 --- [io2-2001-exec-4] org.springframework.web.HttpLogging      : HTTP GET http://cas-server/auth/user</span><br><span class="line">2021-11-03 15:59:09.389 DEBUG 127896 --- [io2-2001-exec-4] org.springframework.web.HttpLogging      : Accept=[application/json, application/*+json]</span><br><span class="line">2021-11-03 15:59:09.427 DEBUG 127896 --- [io2-2001-exec-4] org.springframework.web.HttpLogging      : Response 404 NOT_FOUND</span><br><span class="line">2021-11-03 15:59:09.446 DEBUG 127896 --- [io2-2001-exec-4] o.s.w.c.HttpMessageConverterExtractor    : Reading to [org.springframework.security.oauth2.common.exceptions.OAuth2Exception]</span><br><span class="line">2021-11-03 15:59:09.456  WARN 127896 --- [io2-2001-exec-4] o.s.b.a.s.o.r.UserInfoTokenServices      : Could not fetch user details: class org.springframework.web.client.HttpClientErrorException$NotFound, 404 : [{"timestamp":"2021-11-03T07:59:09.423+00:00","status":404,"error":"Not Found","message":"","path":"/auth/user"}]</span><br><span class="line">2021-11-03 15:59:09.457 ERROR 127896 --- [io2-2001-exec-4] c.l.h.CustomAuthenticationEntryPoint     : 无效的token，请重新认证访问</span><br><span class="line">{"data":"b34841b4-61fa-4dbb-9e2b-76496deb27b4","result":{"code":20202,"msg":"未认证","status":401}}</span><br></pre></td></tr></tbody></table></figure>
+<p>但认证中心给返回的<code>404</code>状态码，此时会走统一异常EntryPoint提示报错：<code>无效的token，请重新认证访问</code>。从而返回信息体：<code>{"data":"b34841b4-61fa-4dbb-9e2b-76496deb27b4","result":{"code":20202,"msg":"未认证","status":401}}</code>。</p>
+<p>接下来分析：为什么认证中心会返回<code>404</code>呢？看认证中心日志：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">2021-11-03 15:59:09.407 DEBUG 54492 --- [o2-2000-exec-15] o.s.web.servlet.DispatcherServlet        : GET "/auth/user", parameters={}</span><br><span class="line">2021-11-03 15:59:09.409 DEBUG 54492 --- [o2-2000-exec-15] o.s.w.s.handler.SimpleUrlHandlerMapping  : Mapped to ResourceHttpRequestHandler ["classpath:/META-INF/resources/", "classpath:/resources/", "classpath:/static/", "classpath:/public/"]</span><br><span class="line">2021-11-03 15:59:09.413 DEBUG 54492 --- [o2-2000-exec-15] o.s.w.s.r.ResourceHttpRequestHandler     : Resource not found</span><br><span class="line">2021-11-03 15:59:09.414 DEBUG 54492 --- [o2-2000-exec-15] o.s.web.servlet.DispatcherServlet        : Completed 404 NOT_FOUND</span><br><span class="line">2021-11-03 15:59:09.422 DEBUG 54492 --- [o2-2000-exec-15] o.s.web.servlet.DispatcherServlet        : "ERROR" dispatch for GET "/error", parameters={}</span><br><span class="line">2021-11-03 15:59:09.423 DEBUG 54492 --- [o2-2000-exec-15] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped to org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController#error(HttpServletRequest)</span><br><span class="line">2021-11-03 15:59:09.424 DEBUG 54492 --- [o2-2000-exec-15] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Using 'application/json', given [application/json] and supported [application/json, application/*+json, application/json, application/*+json, application/json, application/*+json]</span><br><span class="line">2021-11-03 15:59:09.424 DEBUG 54492 --- [o2-2000-exec-15] o.s.w.s.m.m.a.HttpEntityMethodProcessor  : Writing [{timestamp=Wed Nov 03 15:59:09 CST 2021, status=404, error=Not Found, message=, path=/auth/user}]</span><br><span class="line">2021-11-03 15:59:09.426 DEBUG 54492 --- [o2-2000-exec-15] o.s.web.servlet.DispatcherServlet        : Exiting from "ERROR" dispatch, status 404</span><br></pre></td></tr></tbody></table></figure>
+<p>发现原来Oauth2没有此类接口:<code>/auth/user</code>。最后决定自写一个接口来替换原生:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@GetMapping("/api/v1/user")</span><br><span class="line">    public Authentication user(Map map, Principal user, Authentication auth) {</span><br><span class="line">        //获取当前用户信息</span><br><span class="line">    	logger.info("cas-server provide user: " + JSON.toJSONString(auth));</span><br><span class="line">        return auth;</span><br><span class="line">    }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在封装、覆盖后，在消费端直接配置相关配置：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">cas-server-url: http://cas-server</span><br><span class="line"></span><br><span class="line">security:</span><br><span class="line">  path:</span><br><span class="line">    ignores: /,/index,/static/**,/css/**, /image/**, /favicon.ico, /js/**,/plugin/**,/avue.min.js,/img/**,/fonts/**</span><br><span class="line">  oauth2:</span><br><span class="line">    client:</span><br><span class="line">      client-id: rest-service</span><br><span class="line">      client-secret: rest-service-123</span><br><span class="line">      user-authorization-uri: ${cas-server-url}/oauth/authorize</span><br><span class="line">      access-token-uri: ${cas-server-url}/oauth/token</span><br><span class="line">    resource:</span><br><span class="line">      loadBalanced: true</span><br><span class="line">      id: rest-service</span><br><span class="line">      prefer-token-info: false</span><br><span class="line">      user-info-uri: ${cas-server-url}/api/v1/user</span><br><span class="line">    authorization:</span><br><span class="line">      check-token-access: ${cas-server-url}/oauth/check_token</span><br></pre></td></tr></tbody></table></figure>
+
+<p>同时启动认证中心、消费端，继续获取token后，请求接口：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/29428df6a1234d6da3e94f6911dd5c38~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
+<p>此时，发现是<code>403</code>，没有权限了，这下我们可以对用户添加这种权限即可：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">"authorities": [ { "authority": "ROLE_admin" }, { "authority": "admin" }</span><br></pre></td></tr></tbody></table></figure>
+
+<p>添加完之后，我们发现可以请求接口成功：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">{ "authorities": [ { "authority": "ROLE_admin" }, { "authority": "admin" } ], "details": { "remoteAddress": "0:0:0:0:0:0:0:1", "sessionId": null, "tokenValue": "b34841b4-61fa-4dbb-9e2b-76496deb27b4", "tokenType": "bearer", "decodedDetails": null }, "authenticated": true, "userAuthentication": { "authorities": [ { "authority": "ROLE_admin" }, { "authority": "admin" } ], "details": { "authorities": [ { "authority": "ROLE_admin" }, { "authority": "admin" } ], "details": { "remoteAddress": "169.254.200.12", "sessionId": null, "tokenValue": "b34841b4-61fa-4dbb-9e2b-76496deb27b4", "tokenType": "Bearer", "decodedDetails": null }, "authenticated": true, "userAuthentication": { "authorities": [ { "authority": "ROLE_admin" }, { "authority": "admin" } ],</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里简单测试，直接写的返回当前用户权限的接口，发现权限就是”ROLE_admin、”admin”。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>有时候官网的源码解析很少，我们必须看源码，结合实际行动才能准确的分析其用意。所以当其不存在、或者不满足我们的需求时，可以选择覆盖其源码逻辑，实现自定义模式，这样会避免很多不必要的麻烦。因为源码解析毕竟不同版本，对应的源码也是不同的。</p>
+<br>
+<br>
+
+
+<p><span class="suffix" style="display: none;"></span></p>
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">结束福利</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">开源实战利用 k8s 作微服务的架构设计代码:</p>
+<pre class="custom" data-tool="mdnice编辑器" style="margin-top: 10px; margin-bottom: 10px;"><code class="hljs" style="overflow-x: auto; padding: 16px; color: #abb2bf; background: #282c34; display: -webkit-box; font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; border-radius: 0px; font-size: 12px; -webkit-overflow-scrolling: touch;">https://gitee.com/damon_one/spring-cloud-k8s
+</code></pre>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎大家 star，多多指教。</p>
+<br data-tool="mdnice编辑器">
+
+
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，长期从事 Java 开发、Spring Cloud 的微服务架构设计，以及结合 Docker、K8s 做微服务容器化，自动化部署等一站式项目部署、落地。目前主要从事基于 K8s 云原生架构研发的工作。Golang 语言开发，长期研究边缘计算框架 KubeEdge、调度框架 Volcano 等。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">交个朋友之猿天地</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">MrNull008</code>，个人网站：<a class="nav-item-link" target="_blank" href="http://damon008.github.io" style="text-decoration: none" title="">交个朋友之猿天地 | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+<br data-tool="mdnice编辑器">
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://www.infoq.cn/profile/1905020/following/user" title="InfoQ">InfoQ</a></p>
+
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">欢迎关注：<a class="nav-item-link" target="_blank" href="https://cloud.tencent.com/developer/column/invite/533b1afb" title="">腾讯自媒体专栏</a></p>
+
+<br>
+
+<h2 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; font-weight: bold; color: black; font-size: 22px;"><span class="prefix" style="display: none;"></span><span class="content">欢迎关注</span><span class="suffix"></span></h2>
+
+
+<p><img src="https://static001.geekbang.org/infoq/38/385163791aa296c4cc23be10afa5631d.jpeg" alt="公号：交个朋友之猿天地"></p>
+<p><img src="https://static001.geekbang.org/infoq/86/860561234baac42a49dac2ea24239882.jpeg" alt="公号：damon8"></p>
+<p><img src="https://static001.geekbang.org/infoq/31/31b11ee840215b57487aa0269453e572.jpeg" alt="公号：天山六路折梅手"></p>
+<br>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <div class="declare">
+      <ul class="post-copyright">
+        <li>
+          <i class="ri-copyright-line"></i>
+          <strong>版权声明： </strong>
+          本博客所有文章除特别声明外，著作权归作者所有。转载请注明出处！
+        </li>
+      </ul>
+    </div>
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2021/11/11/oauth2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2021/11/12/oauth2-ha/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            统一认证中心 Oauth2 高可用坑
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2021/11/11/spring-cloud-k8s-note2/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">基于 spring-cloud-k8s 跨NS坑续集</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>

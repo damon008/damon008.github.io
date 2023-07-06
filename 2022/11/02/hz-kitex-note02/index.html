@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-CN">
+
+
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8" />
+  <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
+  <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
+   
+  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+   
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title style="color: blue; font-style: oblique">
+    交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </title>
+  <meta name="generator" content="hexo-theme-ayer">
+
+  
+  <link rel="shortcut icon" href="/images/logo/6.jpg" />
+  
+
+  
+<link rel="stylesheet" href="/dist/main.css">
+
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css">
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+  
+  
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+  
+
+  <script>
+      (function(){
+          var src = "https://jspassport.ssl.qhimg.com/11.0.1.js?d182b3f28525f2db83acfaaf6e696dba";
+          document.write('<script src="' + src + '" id="sozz"><\/script>');
+      })();
+  </script>
+
+
+  <!--<script data-ad-client="ca-pub-1354758384344627" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js">
+  Owner 交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  程序猿交个朋友之猿天地 | 微服务 | 容器化 | 自动化
+  </script>-->
+
+  
+
+  
+
+
+  <!--<script async custom-element="amp-auto-ads"
+          src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+  </script>-->
+
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+<link rel="alternate" href="/atom.xml" title="交个朋友之猿天地 | 微服务 | 容器化 | 自动化" type="application/atom+xml"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+
+</html>
+
+<body>
+
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    &lt;!&ndash; Unit one &ndash;&gt;
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:400px;height:90px"
+         data-ad-client="ca-pub-1354758384344627"
+         data-ad-slot="8964778819"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>-->
+
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-hz-kitex-note02"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  入门 KiteX 基础篇
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2022/11/02/hz-kitex-note02/" class="article-date">
+  <time datetime="2022-11-02T12:41:00.000Z" itemprop="datePublished">2022-11-02</time>
+</a>   
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">2.3k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">9 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>KiteX 是 bytedance 开源的高性能 RPC 框架，实现了高吞吐、高负载、高性能等居多特性，具体请看 <a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/QO1pn6QYdGiNgpRaAnGI8w">KiteX 的实践</a>，文章介绍多传输协议、消息协议时，说到 KiteX 支持的协议类型：Thrift、Protobuf 等，今天我们主要来实践如何利用 KiteX 基于对应的 IDL 生成对应协议的代码。</p>
+<h2 id="Thrift-简介"><a href="#Thrift-简介" class="headerlink" title="Thrift 简介"></a>Thrift 简介</h2><p>Thrift 本身是一软件框架（远程过程调用框架），用来进行可扩展且跨语言的服务的开发。它结合了功能强大的软件堆栈和代码生成引 擎，以构建在 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, and OCaml 这些编程语言间无缝结合的、高效的服务。同时，作为 IDL（接口定义语言 Interface Definition Language），允许你定义一个简单的定义文件中的数据类型和服务接口，以作为输入文件，编译器生成代码用来方便地生成 RPC 客户端和服务器通信的无缝跨编程语言。</p>
+<h2 id="Protobuf-简介"><a href="#Protobuf-简介" class="headerlink" title="Protobuf 简介"></a>Protobuf 简介</h2><p>Protobuf 全称是 Google Protocol Buffer，是一种高效轻便的结构化数据存储方式，用于数据的通信协议、数据存储等。相对比 XML 来说，其特点：</p>
+<ul>
+<li>语言无关，平台无关</li>
+<li>高效</li>
+<li>扩展性、兼容性更强</li>
+</ul>
+<h2 id="基于-IDL-的-KiteX-实践"><a href="#基于-IDL-的-KiteX-实践" class="headerlink" title="基于 IDL 的 KiteX 实践"></a>基于 IDL 的 KiteX 实践</h2><p>在 RPC 框架中，我们知道，服务端与客户端通信的前提是远程通信，但这种通信又存在一种关联，那就是通过一套相关的协议（消息、通信、传输等）来规范，但客户端又不用关心底层的技术实现，只要定义好了这种通信方式即可。</p>
+<p>在 KiteX 中，也提供了一种生成代码的命令行工具：kitex，目前支持 thrift、protobuf 等 IDL，并且支持生成一个服务端项目的骨架。</p>
+<h3 id="安装命令行工具"><a href="#安装命令行工具" class="headerlink" title="安装命令行工具"></a>安装命令行工具</h3><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li>如果您之前未搭建 Golang 开发环境， 可以参考 Golang 安装</li>
+<li>推荐使用最新版本的 Golang，我们保证最新三个正式版本的兼容性(现在 &gt;= v1.16)。</li>
+<li>确保打开 go mod 支持 (Golang &gt;= 1.15 时，默认开启)</li>
+<li>kitex 暂时没有针对 Windows 做支持，如果本地开发环境是 Windows 建议使用 WSL2</li>
+</ul>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><ul>
+<li>确保 GOPATH 环境变量已经被正确地定义（例如 export GOPATH=~/go）并且将 $GOPATH/bin添加到 PATH 环境变量之中（例如 export PATH=$GOPATH/bin:$PATH）；请勿将 GOPATH 设置为当前用户没有读写权限的目录</li>
+<li>安装 kitex：go install github.com/cloudwego/kitex/tool/cmd/kitex@latest</li>
+<li>安装 thriftgo：go install github.com/cloudwego/thriftgo@latest</li>
+</ul>
+<p>安装成功后，执行 <code>kitex --version</code> 可以看到如下信息：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ kitex --version</span><br><span class="line">v0.4.2</span><br></pre></td></tr></tbody></table></figure>
+
+<p>如果在安装阶段发生问题，可能主要是由于对 Golang 的不当使用造成的，需要逐一排查。</p>
+<h3 id="编写一个-IDL"><a href="#编写一个-IDL" class="headerlink" title="编写一个 IDL"></a>编写一个 IDL</h3><p>我们先新建一个项目：<code>hz-kitex-examples</code>，新建完之后，我们在该项目下新建一个目录：idl，然后我们编写一个 thrift IDL：</p>
+<p><img src="https://files.mdnice.com/user/7503/307830aa-fa66-44bc-92f0-a6ea9fc27d9f.png"></p>
+<p>接下来，我们编写这个 IDL:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">namespace go hello</span><br><span class="line"></span><br><span class="line">struct ReqBody {</span><br><span class="line">    1: string name</span><br><span class="line">    2: i32 type</span><br><span class="line">    3: string email</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">struct Request {</span><br><span class="line">	1: string data</span><br><span class="line">	2: string message</span><br><span class="line">	3: ReqBody reqBody</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">struct Msg {</span><br><span class="line">	1: i64 status</span><br><span class="line">	2: i64 code</span><br><span class="line">	3: string msg</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">struct Response {</span><br><span class="line">	1: Msg msg</span><br><span class="line">	2: string data</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">service HelloService {</span><br><span class="line">    Response echo(1: Request req)</span><br><span class="line">    Response testHello4Get(1: Request req)</span><br><span class="line">    Response testHello4Post(1: Request req)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里我们定义了一个命名空间：<code>hello</code>，这个是代表生成的代码中有一个目录：hello，然后我们编写一个请求对象：<code>ReqBody</code>，接着定义一个泛对象，包括了那个请求对象，这块没要求，自己定义好就行，同时我们定义了响应对象<code>Response</code>，此外，我们还定义了一个类，类中存在三个函数方法。</p>
+<h3 id="生成代码"><a href="#生成代码" class="headerlink" title="生成代码"></a>生成代码</h3><p>在定义完 IDL 后，我们来看如何生成代码呢？直接执行如下命令：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kitex -module "hz-kitex-examples" -thrift frugal_tag -service helloserver idl/hello.thrift</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这里有几个参数 tag:</p>
+<p><strong>-module module_name</strong></p>
+<ul>
+<li><p>该参数用于指定生成代码所属的 Go 模块，会影响生成代码里的 import path。</p>
+</li>
+<li><p>如果当前目录是在 $GOPATH/src 下的一个目录，那么可以不指定该参数；kitex 会使用 $GOPATH/src 开始的相对路径作为 import path 前缀。例如，在 $GOPATH/src/example.com/hello/world 下执行 kitex，那么 kitex_gen/example_package/example_package.go 在其他代码代码里的 import path 会是 example.com/hello/world/kitex_gen/example_package。</p>
+</li>
+<li><p>如果当前目录不在 $GOPATH/src 下，那么必须指定该参数。</p>
+</li>
+<li><p>如果指定了 -module 参数，那么 kitex 会从当前目录开始往上层搜索 go.mod 文件</p>
+<ul>
+<li>如果不存在 go.mod 文件，那么 kitex 会调用 go mod init 生成 go.mod；</li>
+<li>如果存在 go.mod 文件，那么 kitex 会检查 -module 的参数和 go.mod 里的模块名字是否一致，如果不一致则会报错退出；</li>
+<li>最后，go.mod 的位置及其模块名字会决定生成代码里的 import path。</li>
+</ul>
+</li>
+</ul>
+<p><strong>-service service_name</strong></p>
+<ul>
+<li>使用该选项时，kitex 会生成构建一个服务的脚手架代码，参数 service_name 给出启动时服务自身的名字，通常其值取决于使用 Kitex 框架时搭配的服务注册和服务发现功能。</li>
+</ul>
+<p>对于当前项目，我们执行如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kitex -module "hz-kitex-examples" -thrift frugal_tag -service helloserver idl/hello.thrift</span><br></pre></td></tr></tbody></table></figure>
+
+<p>由于当前项目不在环境路径下，需要指定 go.mod 所在的目录模块的名称，同时，我们指定一个服务名。</p>
+<p>这样在执行后，我们会发现生成的目录结构如下图：</p>
+<p><img src="https://files.mdnice.com/user/7503/4000be37-6df0-45ad-9f0d-af69ade7d771.png"></p>
+<p>在生成的目录中根目录是<code>kitex_gen</code>，代表是 kitex 工具生成的，其次其目录下有一个 hello 目录，这是代表 IDL 文件中的 ns，在其下面有一个文件：定义了请求对象与响应对象的序列化、传输信息的读写等操作。</p>
+<p>在其下面还存在一个 service 目录，用来生成跟客户端与服务端相关的 service 处理逻辑。其中也定义了 service 中处理的方法信息。</p>
+<p>同时，我们可以看到生成了服务端的基础框架：</p>
+<p><img src="https://files.mdnice.com/user/7503/75201fe3-6329-4e38-bc3d-d428d3910b06.png"></p>
+<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><p>新建一个<code>server</code> 目录，然后在里面新建一个项目<code>hello</code>，此时把生成服务端的骨架代码拷贝到里面：</p>
+<p><img src="https://files.mdnice.com/user/7503/09e3aeec-7dec-4dab-b6c5-bb84e52ff31f.png"></p>
+<p>拷贝完之后，我们可以丰满服务端的函数的逻辑，以 Echo 函数为例：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">func (s *HelloApi) Echo(ctx context.Context, req *api.Request) (resp *api.Response, err error) {</span><br><span class="line">	klog.Info("hello service enter: " + GetIpAddr2())</span><br><span class="line"></span><br><span class="line">	resp = &amp;api.Response {</span><br><span class="line">		Msg:  &amp;api.Msg {</span><br><span class="line">			Status: 200,</span><br><span class="line">			Code:   10000,</span><br><span class="line">			Msg:    req.Message,</span><br><span class="line">		},</span><br><span class="line">		Data: req.Message,</span><br><span class="line">	}</span><br><span class="line">	return resp, nil</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">func GetIpAddr2() string {</span><br><span class="line">	conn, err := net.Dial("udp", "8.8.8.8:53")</span><br><span class="line">	if err != nil {</span><br><span class="line">		klog.Error(err)</span><br><span class="line">		return ""</span><br><span class="line">	}</span><br><span class="line">	localAddr := conn.LocalAddr().(*net.UDPAddr)</span><br><span class="line">	// 192.168.1.20:61085</span><br><span class="line">	ip := strings.Split(localAddr.String(), ":")[0]</span><br><span class="line"></span><br><span class="line">	return ip</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>然后再定义启动函数：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">svr := hello.NewServer(new(api.HelloApi),</span><br><span class="line">    server.WithServiceAddr(&amp;net.TCPAddr{Port: 2008}),</span><br><span class="line">		server.WithServerBasicInfo(&amp;rpcinfo.EndpointBasicInfo{ServiceName: constants.HelloServiceName}),</span><br><span class="line">    server.WithPayloadCodec(thrift.NewThriftCodecWithConfig(thrift.FastRead | thrift.FastWrite)),</span><br><span class="line">		server.WithErrorHandler(func(err error) error {</span><br><span class="line">			error := errno.ConvertErr(err)</span><br><span class="line">			return error</span><br><span class="line">		}),</span><br><span class="line">		//指定默认 Codec 的包大小限制，默认无限制 option: codec.NewDefaultCodecWithSizeLimit</span><br><span class="line">		server.WithCodec(codec.NewDefaultCodecWithSizeLimit(1024 * 1024 * 10)),//10M</span><br><span class="line">		server.WithLimit(&amp;limit.Option{MaxConnections: 10000, MaxQPS: 5000}),</span><br><span class="line">		//连接多路复用(mux)</span><br><span class="line">		server.WithMuxTransport(),</span><br><span class="line">		server.WithMetaHandler(transmeta.ServerTTHeaderHandler),</span><br><span class="line">		server.WithRegistry(registry.NewNacosRegistry(r1)),</span><br><span class="line">	)</span><br></pre></td></tr></tbody></table></figure>
+
+<p>在这里，我们定义了服务端的端口：2008，同时被注册到 Nacos。启动之后：</p>
+<p><img src="https://files.mdnice.com/user/7503/0280244e-ff5a-42c4-9038-1d28d460b07c.png"></p>
+<p>可以看到被注册到 Nacos：</p>
+<p><img src="https://files.mdnice.com/user/7503/c17b6791-538e-4249-8bfb-d82319c8e182.png"></p>
+<p>这里注册 Nacos 的代码前面已经讲过了，具体可以看：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/QO1pn6QYdGiNgpRaAnGI8w">KiteX 的实践</a>。</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>关于客户端，也是一样，新建一个 client 目录，里面新建一个项目<code>customer-service</code>，新建启动 main 函数，这里与服务端类似不再赘述了。主要注意一点：这里由于需要提供 Http 协议接口，需要结合 Hertz 来进行：</p>
+<p><img src="https://files.mdnice.com/user/7503/a3bba152-b715-4340-86b5-55aef44ed5b3.png"></p>
+<p>至于 Hertz，它是一个高性能的 Http 微服务框架在后面的文章中会进一步讲解，此处不再赘述。</p>
+<p>启动函数新建完后，我们需要初始化一个 RPC 连接的客户端：</p>
+<p><img src="https://files.mdnice.com/user/7503/c318be9e-d18f-4cd2-b1d2-ffcee94cbf25.png"></p>
+<p>此处客户端的初始化，也是基于之前生成的代码：</p>
+<p><img src="https://files.mdnice.com/user/7503/a7b92cd7-a002-4a66-b2d4-8d45723112e4.png"></p>
+<p>在这个函数初始化客户端时，需要定义请求的服务名、网络库、负载均衡策略、出错误处理机制等。同时，我们还需要复写需要调用的函数，去调用相关的接口：</p>
+<p><img src="https://files.mdnice.com/user/7503/70736c7b-c438-46f1-a947-70372f20af41.png"></p>
+<p><img src="https://files.mdnice.com/user/7503/950e63bb-121e-40d4-abdf-83fc8133e183.png"></p>
+<p>写完 RPC 的部分，一个简单的 RPC 协议调用就能串联起来了，此时，我们来简单写下客户端的接口调用：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func HelloDemo(ctx context.Context, c *app.RequestContext) {</span><br><span class="line">	req := &amp;api.Request{Message: "my request"}</span><br><span class="line">  // TODO</span><br><span class="line">	resp, err := rpc.Echo(context.Background(), req)</span><br><span class="line">	if err != nil {</span><br><span class="line">		log.Fatal(err)</span><br><span class="line">	}</span><br><span class="line">	klog.Info(resp)</span><br><span class="line">  // TODO</span><br><span class="line">	c.JSON(consts.StatusOK, (resp))</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面定义的是客户端的接口入口，进入后，会调用 rpc 的部分。同时在调用 RPC 前后，可以有自己的逻辑处理以及响应数据的处理，在 TODO 部分。</p>
+<p>启动客户端进行服务注册：</p>
+<p><img src="https://files.mdnice.com/user/7503/d26ed937-f443-4e07-a6f0-972d2617c5de.png"></p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>在启动完服务端、客户端后，我们访问客户端的 http 接口：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://192.168.6.51:3000/v1/hello/test</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://files.mdnice.com/user/7503/258de3f3-de81-4b07-ba9e-a65e42b53a34.png"></p>
+<p>我们再多几次进行访问：</p>
+<p><img src="https://files.mdnice.com/user/7503/16d091c9-1c81-4a80-bf37-45afaf27cf5d.png"></p>
+<p>发现其访问的性能以及速度还是不错的，这得益于 KiteX 框架中使用了自研的 Netpoll 网络库以及实现了高效的吞吐编解码性能提升。</p>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2022/11/02/hz-kitex-note02/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Go/" rel="tag">Go</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KiteX/" rel="tag">KiteX</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+      <a href="/2022/11/07/hz-kitex-note03/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            KiteX 基于 K8s 的服务注册与发现
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2022/10/16/hz-kitex-note01/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">基于高性能 RPC 框架 Kitex 实现微服务实战</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
+<script>
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
+</script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
+
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2020-2023
+        <i class="ri-heart-fill heart_icon"></i> 交个朋友之猿天地
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        
+        Powered By <a href="https://hexo.io" target="_blank">Hexo</a>
+        <span class="division">|</span>
+        Title - Nothing
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+        
+        <span>
+  <span><i class="ri-user-3-fill"></i>访问人数:<span id="busuanzi_value_site_uv"></span></s>
+  <span class="division">|</span>
+  <span><i class="ri-eye-fill"></i>浏览次数:<span id="busuanzi_value_page_pv"></span></span>
+</span>
+        
+      </li>
+    </ul>
+    <ul>
+      
+        <li>
+          <a href="http://www.beian.miit.gov.cn/" target="_black"></a>
+        </li>
+        
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1279099062&amp;web_id=1279099062'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+      <div class="float_btns">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+      </div>
+    </main>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href=""><img src="/images/logo/6.jpg" alt="程序猿Damon"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/essay">专栏</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/doc">文档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/os">开源</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜索">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+
+
+    <script>
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        document.querySelector('.content').classList.remove('on');
+        document.querySelector('.sidebar').classList.remove('on');
+      }
+    </script>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat1.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+
+<style type="text/css">
+    #so360{white-space:nowrap}
+    #so360_keyword{width:222
+    #so360 form{margin:0;padding:0}px center;}
+    #so360_submit{width:60outline:0;vertical-align:middle;padding-right: 95px;}
+    #so360_keyword{background:url(https://p.ssl.qhimg.com/t01ab1a3fb05f0ee893.png)
+    no-repeat 242
+</style>
+
+<div id="so360">
+    <form action="http://www.so.com/s" target="_blank" id="so360form">
+        <input type="text" autocomplete="off" name="q" id="so360_keyword">
+        <input type="submit" id="so360_submit" value="搜 索">
+        <input type="hidden" name="ie" value="utf8">
+        <input type="hidden" name="src" value="zz_damon008.github.io">
+        <input type="hidden" name="site" value="damon008.github.io">
+        <input type="hidden" name="rg" value="0">
+    </form>
+</div>
+
+
+
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: '程序猿Damon'
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+<!-- MathJax -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+
+<!-- CanvasBackground -->
+
+
+<script src="/js/dz.js"></script>
+
+
+
+    
+  </div><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+
+<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle"
+     style="display:block; text-align:center; width:700px; height:90px;"
+     data-ad-layout="in-article"
+     data-ad-format="fluid"
+     data-ad-client="ca-pub-1354758384344627"
+     data-ad-slot="1051270406"></ins>
+<script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+</script>-->
+
+</html>
