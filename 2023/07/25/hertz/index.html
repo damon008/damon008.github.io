@@ -9,8 +9,10 @@
   <meta name="baidu-site-verification" content="code-xvzKzvj2SW" />
   <meta name="sogou_site_verification" content="2PtvzVZiEs"/>
    
-  <meta name="keywords" content="java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
+  <meta name="keywords" content="云原生,java, K8s, 云原生基础架构, 云原生微服务, spring-cloud-k8s" />
    
+  <meta name="description" content="实战毫秒级高性能微服务框架Hertz，让你的字节飞起来~" />
+  
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title style="color: blue; font-style: oblique">
     交个朋友之猿天地 | 微服务 | 容器化 | 自动化
@@ -84,7 +86,7 @@
     <main class="content on">
       <section class="outer">
   <article
-  id="post-core-java03"
+  id="post-hertz"
   class="article article-type-post"
   itemscope
   itemprop="blogPost"
@@ -95,22 +97,22 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  单机Java极致高性能优化
+  一分钟教你学会如何使用 Hertz 框架
 </h1>
  
 
     </header>
      
     <div class="article-meta">
-      <a href="/2022/08/11/core-java03/" class="article-date">
-  <time datetime="2022-08-11T07:43:56.000Z" itemprop="datePublished">2022-08-11</time>
+      <a href="/2023/07/25/hertz/" class="article-date">
+  <time datetime="2023-07-25T10:06:12.000Z" itemprop="datePublished">2023-07-25</time>
 </a>   
 <div class="word_count">
     <span class="post-time">
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">3.6k</span>
+            <span class="post-count">1.6k</span>
         </span>
     </span>
 
@@ -119,7 +121,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长约</span>
-            <span class="post-count">12 分钟</span>
+            <span class="post-count">6 分钟</span>
         </span>
     </span>
 </div>
@@ -134,80 +136,104 @@
   
     <div class="article-entry" itemprop="articleBody">
        
-  <p>CPU 密集型操作，顾名思义就是需要持续依赖 CPU 资源来执行的操作，比如各种逻辑计算、解析、判断等等。在这种情况下，我们的优化方向是尽可能地利用多核 CPU 资源，并且避免让 CPU 做无效的切换，因为 CPU 已经在不停地工作了，谁来干都一样，同时切换 CPU 还浪费资源。所以这个时候，我们最好让任务线程数和 CPU 核数保持一致，从而最大限度地利用 CPU 资源。</p>
-<p>和 CPU 密集型操作相对的，就是 IO 密集型操作了，比如磁盘 IO 或者网络 IO，这个过程操作系统会挂起任务线程，让出 CPU 资源。此时如果任务线程较少，同时 IO 时间相对较长，那可能会出现所有线程都被挂起，然后 CPU 资源都在闲着的情况，所以此时我们需要适当地增加任务线程数量，来提高吞吐量，同时将 CPU 资源利用起来。</p>
-<p>那为什么要说这个呢？因为这是做程序优化的基本原则。通过前面课程的学习，我们知道，秒杀系统里有提供两种类型的服务，一个是 Web 服务，一个是 RPC 服务，前者一般提供 HTTP 接口，后者提供 RPC 接口。当然这两种服务我们一般都是通过 Tomcat 来启动发布，但它们两者之间还是有些不同的。Web 服务接受和处理请求走的是 Tomcat 那套线程模型，而 RPC 服务则是根据选择的 RPC 框架的不同而有所变化，所以这节课我们首先来了解一下 Tomcat 相关的知识。</p>
-<h2 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a>Tomcat</h2><p>根据我们以往“知己知彼”的学习方式，先看下 Tomcat 在 NIO 线程模型下是怎么工作的，简图如下所示：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/75fcf8774b13471688e425aa49046789~tplv-k3u1fbpfcp-watermark.image" alt="1660204876339.jpg"></p>
-<p>简单来说就是：</p>
+  <h2 id="Hertz-是什么"><a href="#Hertz-是什么" class="headerlink" title="Hertz 是什么"></a>Hertz 是什么</h2><p>Hertz[həːts] 是字节 CloudWeGo 团队一个 Golang 微服务 HTTP 框架，在设计之初参考了其他开源框架 fasthttp、gin、echo 的优势， 并结合字节跳动内部的需求，使其具有高易用性、高性能、高扩展性等特点，目前在字节跳动内部已广泛使用。 如今越来越多的微服务选择使用 Golang，如果对微服务性能有要求，又希望框架能够充分满足内部的可定制化需求，Hertz 会是一个不错的选择。</p>
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><h3 id="基础依赖"><a href="#基础依赖" class="headerlink" title="基础依赖"></a>基础依赖</h3><p>在开发、部署运行该项目之前，需要有一定的基础环境：</p>
 <ul>
-<li>Tomcat 启动时，会创建一个 Server 端的 Socket，来监控我们配置的端口号；</li>
-<li>之后使用一个 Acceptor 来接受请求，然后将请求放到一个 Poller 下的事件队列中；</li>
-<li>Poller 会轮询取出事件队列中的 Channel，并将其注册到自身下的 Selector；</li>
-<li>而 Selector 也会不停轮询检查就绪的 Channel，然后将其交给 Tomcat 线程池；</li>
-<li>Tomcat 线程池会拿出一个线程来进行处理，包括解析请求头、请求体等，并将其封装进 HttpServletRequest；</li>
-<li>最后执行自定义的 Servlet 业务逻辑，执行完毕将响应结果返回。</li>
+<li><p>go v1.16+</p>
+</li>
+<li><p>hz 脚手架工具 v0.6.3</p>
+</li>
+<li><p>支持 win、mac、linux</p>
+</li>
 </ul>
-<p>所以从上图可以看出，所谓的非阻塞，其实就是相对以前的 BIO，Tomcat 不再是用一个线程将一个请求从头处理到尾，而是分阶段来执行了。好处显然易见，那就是提高了系统吞吐量。</p>
-<p>在了解了 Tomcat 基本原理之后，我们再回过头来看下有什么地方是我们可以入手优化的。先看下 Tomcat 给我们开放了哪些可配置项：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;Connector port="8080" protocol="HTTP/1.1" connectionTimeout="20000" redirectPort="8443" /&gt;</span><br></pre></td></tr></tbody></table></figure>
-
-<p>上面是 Tomcat 的 Connector 默认配置，首先是端口号，其次是 protocol，也就是上面说到的线程模型。Tomcat 8 之后默认使用的都是 NIO 模式，这个也可以通过我们服务的启动来查看：</p>
-<p>如上图所示，就代表分别使用的是 NIO 模式和 NIO2(AIO) 模式，当然还可以选择 BIO 模式以及 APR 模式。具体对比可参考下表：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7f96b743e321460394b3349f93c6fb1a~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<p>那说完线程模型的选择，从上图中我们可以看到有个 Tomcat 线程池的概念，它是通过哪些配置来控制的呢？这里我们只摘几个重要的配置说一下，详细信息如下表所示：</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6d2095a8a7f14c57b37a08d93369a4aa~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<p>说完了 Tomcat 的配置，这里再简单说说 Servlet 的部分知识。我们都知道 Servlet 从 3.0 开始加入了异步，从 3.1 开始又新增了对 IO 非阻塞的支持，那么这个和 Tomcat 线程模型中提到的异步非阻塞是一个概念吗？这里我们就来捋一捋。</p>
-<p>首先从上面的 Tomcat 线程模型图中，我们可以清晰地看到，NIO 或 AIO 的概念是针对请求的接收来说，而 Servlet 的异步非阻塞主要是针对请求的处理，已经是到了 Tomcat 线程池那里了。</p>
-<p>我们先来看下 Servlet3.0 前后的变化对比，如下图所示：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5fc53861fe22472c9ab2f53cea0100df~tplv-k3u1fbpfcp-watermark.image" alt="1660205091435.jpg"></p>
-<p>概述一下就是，Servlet3.0 之前，Tomcat 线程在执行自定义 Servlet 时，如果过程中发生了 IO，那么 Tomcat 线程只能在那等着结果，这时线程是被挂起的，如果被挂起的多了，自然会影响对其他请求的处理。</p>
-<p>所以在 Servlet3.0 之后，支持在这种情况下将这种等待的任务交给一个自定义的业务线程池去做，这样 Tomcat 线程可以很快地回到线程池，处理其他请求。而业务线程在执行完业务逻辑以后，通过调用指定的方法，告诉 Tomcat 线程池接下来可以将业务线程执行的结果返回给调用方，这样就实现了同步转异步的效果。</p>
-<p>这样做的好处，可能对提高系统的吞吐量有一定帮助，但从 JVM 层面来说，并没有减少工作量。业务线程在执行任务遇到 IO 时，依然会阻塞，现在只是由业务线程池代替了 Tomcat 线程池做了最耗时的那部分工作，这样也许可以将原来的 200 个 Tomcat 线程，拆分成 20 个 Tomcat 线程、180 个业务线程来配合工作。这里原生 Servlet 以及 SpringMVC 对异步功能支持的测试代码，你可以看 GitHub 代码库中的 AsyncServlet 类和 TestAsyncController 类，相信你一看就明白了。</p>
-<p>接着我们再聊一下 Servlet3.1 的非阻塞，这块简单来说，就是针对请求消息体的读取，这是个 IO 过程，以前是阻塞式读取，现在支持非阻塞读取了。实现的大致原理就是在读取数据时，新增一个监听事件，在读取完成后由 Tomcat 线程执行回调。</p>
-<p>在了解了 Tomcat 线程模型之后，我们接着再说下 RPC 框架相关的知识。</p>
-<h2 id="RPC-框架"><a href="#RPC-框架" class="headerlink" title="RPC 框架"></a>RPC 框架</h2><p>虽然 RPC 服务处理请求的过程，会依据选用的 RPC 框架而有所不同，但绝大部分 RPC 框架底层使用的都是 Netty，而 Netty 则是基于 NIO 开发的一种网络通信框架，支持多种通信协议，其服务端线程模型简略图如下所示：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff09958563d84cf1b54e41f0ce754d4e~tplv-k3u1fbpfcp-watermark.image" alt="1660205197207.jpg"></p>
-<p>简单描述就是：</p>
+<h3 id="安装-go"><a href="#安装-go" class="headerlink" title="安装 go"></a>安装 go</h3><p>直接参考官方文档：<a target="_blank" rel="noopener" href="https://go.dev/doc/install">https://go.dev/doc/install</a></p>
+<h3 id="安装命令行脚手架工具-hz"><a href="#安装命令行脚手架工具-hz" class="headerlink" title="安装命令行脚手架工具 hz"></a>安装命令行脚手架工具 hz</h3><p>hz 是 Hertz 框架提供的一个用于生成代码的命令行工具。目前，hz 可以基于 thrift 和 protobuf 的 IDL 生成 Hertz 项目的脚手架。</p>
+<p>注意：</p>
 <ul>
-<li>在服务启动时，会创建一个 Server 端 Socket，监控我们配置的端口号；</li>
-<li>然后将 NioServerSocketChannel 注册到 Boss Pool 中的一个 Selector 上；</li>
-<li>再之后对 Selector 做轮询，将就绪状态的连接封装成 NioSocketChannel 并注册到 Worker Pool 下的一个 Selector 上；</li>
-<li>而 Worker Pool 下的 Selector 也是同样轮询，找出可读和可写状态的分别执行不同操作。</li>
-<li>同时两个 Pool 中都有任务队列，是不同场景下用户自定义或外部通过特定方式提交过去的任务，都会被依次执行。</li>
+<li><p>确保 GOPATH 环境变量已经被正确地定义（例如 export GOPATH=~/go）并且将 $GOPATH/bin 添加到 PATH 环境变量之中(例如 export PATH=$GOPATH/bin:$PATH)；请勿将 GOPATH 设置为当前用户没有读写权限的目录</p>
+</li>
+<li><p>安装 hz：go install github.com/cloudwego/hertz/cmd/hz@latest</p>
+</li>
 </ul>
-<p>所以当我们的应用只提供 RPC 服务时，我们可以将 Tomcat 的核心线程池配置，也就是 minSpareThreads 配置成 1，因为用不到。而我们主要需要调整的是 RPC 框架的相关配置，以 Dubbo 为例，我们看下 <a href="dubbo:protocol">dubbo:protocol</a> 的主要配置项：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7f5ce4bcfaa24d2ca9e848b011075b1f~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<p>在 Netty 中，虽然只有一个 Worker Pool，但会做两种类型的事情，一个是做 IO 处理，包括请求消息的读写，另一个是做业务逻辑处理。</p>
-<p>而 Dubbo 将其分成了两个线程池，也就是上面表格中的两个线程池配置。这两个线程池做的事情，会根据 Dispatcher 的配置而有所不同。Netty 是以事件驱动的形式来工作的，像请求、响应、连接、断开、异常等操作都是事件；而 Dubbo 中的 Dispatcher 就是将不同的事件类型分给不同的线程池来处理，如果你感兴趣的话可以去看下 Dubbo 中 WrappedChannelHandler 类的 5 个实现类，分别对应 Dispatcher 的 5 个选项。</p>
-<p>最后一个配置项 Queues，这个默认值是 0，也就是不接受等待，如果没有空闲线程处理任务，将会直接返回。这个得和客户端配置配合使用，如果这里配置了 0，那客户端最好配置重试。</p>
-<p>讲完了两种服务的底层线程模型之后，我们再来介绍一下静态资源相关的优化。</p>
-<h2 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h2><p>我们知道在秒杀系统中，客户端与服务端既有动态数据交互，也有静态数据交互，而我们做系统优化有个基本的原则，即前后端交互越少，数据越小，链路越短，数据离用户越近，响应就越快。</p>
-<p>基于这个原则，针对以上的静态数据，我们就可以把静态文件 CDN 化，资源前移到全国各地的 CDN 节点上，用户秒杀的时候就近进行下载，就不需要都挤到中心的 Tomcat 服务器上了。</p>
-<p>静态资源前移，大家平常也会做，感受比较深的是不是就是客户端的页面加载更快了，但除了性能的提升外，其实它对系统稳定也至关重要。</p>
-<p>试想一下，当几百万人同时来拉取这些较大的资源文件时，对中心的 Tomcat 服务器以及公司的网络带宽都是巨大的压力。京东当初在进行口罩抢购的时候，这些静态资源就差点把公司的出口带宽打满，影响交易大盘，后来紧急扩容才避免了危机。</p>
-<p>另外，这些静态资源对 Tomcat 所在物理机的网卡挑战也很大，京东在资源 CDN 化前，物理机的万兆网卡曾被打满，后来经过优化之后，网卡的流量只有原来的 10% 了。</p>
-<p>在最后，我们再说下 Java 运行的基础环境，JVM 相关的知识以及优化。</p>
-<h2 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h2><p>这里如果你对一些基本概念，比如 JVM 内存结构、GC 原理、垃圾收集器类型等还不了解，那建议你先了解一下，会有事半功倍的效果。这块的内容比较多，又比较重要，但我们没办法一一展开，只说最核心的优化点。</p>
-<p>先看个 JVM 内存模型以及常用配置，如下图所示：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bb90ca34af2842aca042bc0159d303c3~tplv-k3u1fbpfcp-watermark.image" alt="aa.jpg"></p>
-<p>其实针对 JVM 的优化，我们最关心的无非就两个问题，一个是垃圾回收器怎么选择，另一个就是对选择的垃圾回收器如何做优化。这里我们分别讲一下。</p>
-<p>对于垃圾回收器的选择，是需要分业务场景的。如果我们提供的服务对响应时间敏感，并且堆内存能够给到 8G 以上的，那建议选择 G1；堆内存较小或 JDK 版本较低的，可以选择 CMS。相反如果对响应时间不敏感，追求一定的吞吐量的，则建议选择 ParallelGC，同时这也是 JDK8 的默认垃圾回收器。</p>
-<p>选择完垃圾回收器之后，接下来就针对不同的垃圾回收器，分别做不同的参数优化。</p>
-<p>首先是 ParallelGC，其主要配置参数如下：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/da4faa6d3edd4ac088c48d1b794a580c~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<p>然后是 CMS，在 ParallelGC 配置参数的基础上增加以下配置：</p>
-<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e487996d8efa4556bbaeee285c3c6309~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<p>再说下 G1 的优化配置（在使用了 G1 的情况下，就不要设置 -Xmn 和 XX:NewRatio 了），同样是在 ParallelGC 配置参数的基础上增加以下配置：</p>
-<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/67e5b9ba7fd14f5eb26d895e440c6af7~tplv-k3u1fbpfcp-watermark.image" alt="image.png"></p>
-<p>因为我们秒杀的业务场景更适合选择 G1 来做垃圾回收器，那这里也给一个在 8 核 16G 容器下的 JVM 配置，具体如下：</p>
-<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-Xms8192m -Xmx8192m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:ParallelGCThreads=8 -XX:ConcGCThreads=4 -XX:G1HeapRegionSize=8m</span><br></pre></td></tr></tbody></table></figure>
+<p>安装完成后执行命令：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hz -version</span><br></pre></td></tr></tbody></table></figure>
 
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>对于 Tomcat 的优化，在秒杀的特定业务场景下针对线程模型的选择，从理论和实际压测上看，NIO2 比 NIO 是有吐吞量的提升，但不是很大，如果为了省事，选择默认的 NIO 即可。而 APR 的话，因为我们静态资源都上到 CDN 了，并且 Web 服务并不直接对外（请求由 Nginx 转发过来），也不要求是 HTTPS 方式，所以这里也不考虑了，和线程池相关的配置，最好按照这节课中的建议做适当的调整。</p>
-<p>同时我们也提到了 Servlet 在 3.0 和 3.1 版本提供的异步非阻塞功能，由于秒杀的接口入参不涉及文件之类的较大消息体，所以 IO 非阻塞可以不用。而异步功能这块，其实可以有更好的选择，那就是 Vertx 技术，这也是我们在下节课中，将会单独介绍的一种异步化编程思想技术。</p>
-<p>而对于 RPC 框架，我们主要介绍了基于 NIO 开发的一种网络通信框架 Netty，了解了 Netty 主要使用两个池子，即使用 Boss Pool 和 Worker Pool 来实现 Reactor 模式。同时选择了一个具体的 RPC 框架 Dubbo，来做了详细的配置优化讲解。</p>
-<p>在聊完了两种服务的底层线程模型与优化后，我们介绍了静态资源的优化方案，即将静态资源上到 CDN，以减轻对秒杀域名流量的压力，同时可以依靠 CDN 的全国部署，快速加载到对应的静态资源。</p>
-<p>另外，我们还提到了 Java 运行的环境 JVM，包括垃圾回收器的选择与优化，即如果我们提供的服务对响应时间敏感，并且堆内存能够给到 8G 以上的，那就选择 G1；而堆内存较小或 JDK 版本较低的，可以选择 CMS。相反如果对响应时间不敏感，追求一定的吞吐量的，则建议选择 ParallelGC。同时针对不同的垃圾回收器，也给出了对应的优化配置。</p>
+<p>出现如下结果，即为安装成功：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hz version v0.6.4</span><br></pre></td></tr></tbody></table></figure>
+
+<h3 id="生成代码与运行代码"><a href="#生成代码与运行代码" class="headerlink" title="生成代码与运行代码"></a>生成代码与运行代码</h3><h4 id="代码目录确定位置"><a href="#代码目录确定位置" class="headerlink" title="代码目录确定位置"></a>代码目录确定位置</h4><ol>
+<li><p>若将代码放置于 $GOPATH/src 下，需在 $GOPATH/src 下创建代码目录，进入该目录后再进行操作</p>
+</li>
+<li><p>直接新建一个项目目录</p>
+</li>
+</ol>
+<h4 id="生成代码"><a href="#生成代码" class="headerlink" title="生成代码"></a>生成代码</h4><p>我们选择方式二：在任一目录新建一个项目<code>uranus</code>，如下图：</p>
+<p><img src="https://files.mdnice.com/user/7503/3b26ac79-aa1b-4622-a160-d809b05c0677.png"></p>
+<p>由于我们是做一个大的项目工程，类似 Java 的父子工程，所以我们需要先建立一个依赖，新建一个<code>go.mod</code>文件:</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go 1.20</span><br></pre></td></tr></tbody></table></figure>
+
+<p>由于这边用的是最新的 go 版本，所以直接用 v1.20。</p>
+<p>然后我们新建今天的第一个项目:<code>kronos</code>，由于我们后面的编解码都是通过 idl 文件进行生成，所以这里需要用到<code>idl</code>目录，然后我们再创建一个 pkg 目录，来专门存放工具库，综合目录情况如下：</p>
+<p><img src="https://files.mdnice.com/user/7503/c7c9ce29-83fe-4766-b456-f73065c6dc6b.png"></p>
+<p>参考 go 项目基本布局：<a target="_blank" rel="noopener" href="https://github.com/golang-standards/project-layout/blob/master/README_zh.md">https://github.com/golang-standards/project-layout/blob/master/README_zh.md</a></p>
+<p>最后，我们需要对当前项目进行环境配置：</p>
+<p>设置 go 环境</p>
+<p><img src="https://files.mdnice.com/user/7503/3c682ba0-01db-488d-ae3c-f1aaad3f8444.png"></p>
+<p><img src="https://files.mdnice.com/user/7503/e929102d-48dc-49f6-8285-4d37872d8d87.png"></p>
+<p><img src="https://files.mdnice.com/user/7503/73920ab1-77d8-457e-bc43-7cbe82413a00.png"></p>
+<p>注：<strong>在配置代理时，选择国内的域名进行配置。</strong></p>
+<h5 id="插曲"><a href="#插曲" class="headerlink" title="插曲"></a>插曲</h5><p>在使用 hz 工具生成代码之前，我们需要先了解下编解码序列化工具：thrift、protobuf</p>
+<ul>
+<li><p>protocol buffers,谷歌开发的数据序列号格式。以二进制形式有效而紧凑地存储结构化数据，允许在网络连接上更快传输。</p>
+</li>
+<li><p>thrift 不仅仅提供全套 rpc 解决方案，包括序列化机制、传输层、并发处理框架等的 rpc 服务框架。利用 idl 文件来定义接口和数据类型。通过 thrift 提供的编译器编译成不同语言代码，以此实现跨语言调用。</p>
+</li>
+</ul>
+<p>protobuf 和 json 的区别</p>
+<ul>
+<li>速度：在序列化和反序列化数据方面，Protobuf 比 JSON 快得多。由于格式是二进制的，json 是文本格式，Protobuf 中读写结构化数据所需的时间比在 JSON 中要短。</li>
+<li>大小：Protobuf 比 JSON 小得多，在网络带宽有限的情况下，由于二进制数据流的紧凑性，存储和传输 Protobuf 信息所占用的空间比 JSON 信息要少。</li>
+<li>数据类型：Protobuf 支持更复杂的数据类型，如枚举和 map</li>
+<li>平台兼容性：由于 Protobuf 是一种开源格式，语言和平台独立的，它可以在多个平台上使用而没有困难或兼容性问题。</li>
+</ul>
+<h5 id="手写一个-IDL-文件"><a href="#手写一个-IDL-文件" class="headerlink" title="手写一个 IDL 文件"></a>手写一个 IDL 文件</h5><p>在前面，我们了解到 thrift、protobuf 是什么之后，我们先来手写一个 IDL 文件：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">namespace go hello</span><br><span class="line"></span><br><span class="line">struct Request {</span><br><span class="line">	1: string name</span><br><span class="line">	2: string age</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">struct Response {</span><br><span class="line">	1: i8 code</span><br><span class="line">    2: string msg</span><br><span class="line">	3: map&lt;string,string&gt; data</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">service HelloApi {</span><br><span class="line">    Response echo(1: Request req)</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>上面写的是一个基于 thrift 的 IDL，同样，我们也可以基于：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">syntax = "proto3";</span><br><span class="line">package elena;</span><br><span class="line">option go_package = "elena";</span><br><span class="line"></span><br><span class="line">message BaseResp {</span><br><span class="line">    int16 code = 1;</span><br><span class="line">    string msg = 2;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">message Elena {</span><br><span class="line">    int64 id = 1;</span><br><span class="line">    string name = 2;</span><br><span class="line">    string pthone = 3;</span><br><span class="line">    string password = 4;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">message CreateRequest {</span><br><span class="line">    string name = 1;</span><br><span class="line">    string password = 2;</span><br><span class="line">    string pthone = 3;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">message CreateResponse {</span><br><span class="line">    BaseResp result = 1;</span><br><span class="line">    string data = 2;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">service ElenaService {</span><br><span class="line">    rpc CreateElena (CreateRequest) returns (CreateResponse) {}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+
+<p>当然，由于 thrift、protobuf 在不同场景下具有不同的特性与性能，一般：</p>
+<ul>
+<li>基于 Streaming 场景下，基于 Protobuf 编码，有两种：Kitex Protobuf 和 gRPC。性能较快</li>
+<li>其它场景基本基于 thrift 进行序列化编解码即可</li>
+</ul>
+<h5 id="代码生成"><a href="#代码生成" class="headerlink" title="代码生成"></a>代码生成</h5><p>我们按照前面写的 thrift 模板文件 idl，来依赖 hz 工具生成，在生成代码之前，需要安装相应的编译器 thriftgo、protoc：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go install github.com/cloudwego/thriftgo@latest</span><br></pre></td></tr></tbody></table></figure>
+
+<p>对于 protoc，可以参考：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// brew 安装</span><br><span class="line">$ brew install protobuf</span><br><span class="line"></span><br><span class="line">// 官方镜像安装，以 macos 为例</span><br><span class="line">$ wget https://github.com/protocolbuffers/protobuf/releases/download/v3.19.4/protoc-3.19.4-osx-x86_64.zip</span><br><span class="line">$ unzip protoc-3.19.4-osx-x86_64.zip</span><br><span class="line">$ cp bin/protoc /usr/local/bin/protoc</span><br><span class="line">// 确保 include/google 放入 /usr/local/include下</span><br><span class="line">$ cp -r include/google /usr/local/include/google</span><br></pre></td></tr></tbody></table></figure>
+
+<p>也可以参考官方：<a target="_blank" rel="noopener" href="https://github.com/protocolbuffers/protobuf">https://github.com/protocolbuffers/protobuf</a></p>
+<p>安装完成编译器后，我们进入目录<code>kronos</code>，执行：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hz new -module kronos --idl ../idl/hello.thrift -t=template=slim</span><br><span class="line"></span><br><span class="line">hz update ../idl/hello.thrift -t=template=slim</span><br><span class="line"></span><br><span class="line">go mod tidy</span><br></pre></td></tr></tbody></table></figure>
+
+<p><img src="https://files.mdnice.com/user/7503/3e217cfb-363a-459a-a1c8-a6e90d39e57b.jpg"></p>
+<p>注意，在生成代码后，需要进行微调，目录结构、go.mod 等不同，会出现一些小问题，同时需要执行：<code>go mod tidy</code>进行整理。</p>
+<h5 id="运行项目"><a href="#运行项目" class="headerlink" title="运行项目"></a>运行项目</h5><p>执行文件：main.go</p>
+<p><img src="https://files.mdnice.com/user/7503/852cdf1e-0fac-457a-bd5a-75ab08a93dd9.png"></p>
+<p>启动之后，看控制台：</p>
+<p><img src="https://files.mdnice.com/user/7503/e3291a15-2502-48e0-90df-b4c23b45bfb8.jpg"></p>
+<p>可以看到有几个接口，同时当前服务默认监听端口：8888。</p>
+<p>打开一个web ui，访问API接口:</p>
+<p><img src="https://files.mdnice.com/user/7503/310c9938-ae61-40ca-8298-ae7a1db1a306.jpg"></p>
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，微服务架构设计，云原生、容器化技术，现从事Go相关，涉及云原生、边缘计算、AI人工智能、云产品Devops落地实践等云原生技术。拿过专利。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">交个朋友之猿天地</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">DamonStatham</code>，星球：《交个朋友之猿田地》，个人网站：<a class="nav-item-link" target="_blank" href="http://damon008.github.io" style="text-decoration: none" title="">交个朋友之猿天地 | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+
+
+<h4 id="欢迎关注"><a href="#欢迎关注" class="headerlink" title="欢迎关注"></a>欢迎关注</h4><p><img src="https://gitee.com/damon_one/picture/raw/master/2023-07-26/qrcode.jpg" alt="公号：交个朋友之猿天地"></p>
+<h4 id="AI绘画扫我"><a href="#AI绘画扫我" class="headerlink" title="AI绘画扫我"></a>AI绘画扫我</h4><p><img src="https://gitee.com/damon_one/picture/raw/master/2023-07-26/wechat.jpg"></p>
+<h4 id="星球"><a href="#星球" class="headerlink" title="星球"></a>星球</h4><p><img src="https://gitee.com/damon_one/picture/raw/master/2023-07-26/1690369392782.jpg"></p>
+<p><img src="https://gitee.com/damon_one/picture/raw/master/2023-07-26/1690369410565.jpg"></p>
  
       <!-- reward -->
       
@@ -264,30 +290,32 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2022/08/11/core-java03/" alt="微信分享二维码">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2023/07/25/hertz/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hertz/" rel="tag">hertz</a></li></ul>
+
     </footer>
   </div>
 
    
   <nav class="article-nav">
     
-      <a href="/2022/10/16/hz-kitex-note01/" class="article-nav-link">
+      <a href="/2023/07/26/otel/" class="article-nav-link">
         <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
-            基于高性能 RPC 框架 Kitex 实现微服务实战
+            无缝插拔分布式链路跟踪
           
         </div>
       </a>
     
     
-      <a href="/2022/08/11/Mysql-03/" class="article-nav-link">
+      <a href="/2023/02/02/linux-cmd/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">表过大如何优化</div>
+        <div class="article-nav-title">Linux 常用命令</div>
       </a>
     
   </nav>
