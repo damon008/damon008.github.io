@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Springboot 微服务应用的启动可克星</title>
+    <title>Springboot 微服务应用启动慢的克星</title>
     <url>/2023/07/31/java-startup-analyzer/</url>
     <content><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>随着业务的复杂程度越来越大，所启动的实例或函数越来越多，Spring cloud 应用的启动越来越慢，那么如何发现 Spring 容器启动慢的原因或位置，有没有一款工具，帮助我们用户发现 Spring 应用启动慢的位置呢？同时，还可以提供 Spring Bean 异步初始化的工具。那么答案是有的。</p>
 <h2 id="实战操作"><a href="#实战操作" class="headerlink" title="实战操作"></a>实战操作</h2><p>下面，我们可以通过下面的方法尝试分析一下自己的应用吧，Let us go~</p>
