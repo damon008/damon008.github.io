@@ -82,593 +82,235 @@
     
       
     <main class="content on">
+      <section class="outer">
+  <article
+  id="post-image-build"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  如何将镜像体积海量缩减
+</h1>
+ 
+
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2023/07/31/image-build/" class="article-date">
+  <time datetime="2023-07-31T08:53:09.000Z" itemprop="datePublished">2023-07-31</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1.4k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长约</span>
+            <span class="post-count">5 分钟</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
       
-<section class="cover" style="width: auto; height: auto">
+    <div class="tocbot"></div>
 
-  <div class="cover-frame" style="width: auto; height: auto">
-    <div class="bg-box">
-      <img src="/images/cover/cover2.jpg" alt="交个朋友之猿天地" /> <!--image frame-->
-    </div>
-    <div class="cover-inner text-center text-white">
-      <h1><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&__biz=MzA5NTE1MjY0NQ==&scene=24&album_id=1337875960212930562&uin=MzQzMzI2NjAxMQ%3D%3D&key=4b0291f9d497b1b0adf3ed21ee1b029db146d5ee63cde4ee4e6b23fe41322085ebd54e5b8f1717d2381094f5bd3406e16c5d93e74ddeb5d86d72067dfe7fad92d1a77f15674bc087da1567db5c24fca9&devicetype=Windows+10+x64&version=62090529&lang=zh_CN&ascene=14&pass_ticket=W5QtMNsJ%2F73G0qioRbWzRExnsNTp%2FldE13k9HR%2BmjG8WfxP2GmAd5BJWPI%2BrDgTA"><span style="color: blueviolet">交个朋友之猿天地</span></a></h1>
 
-      <div id="subtitle-box" style="width: auto; height: auto; color: red">
-        
-        <span id="subtitle"></span>
-        
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="镜像的传统构建"><a href="#镜像的传统构建" class="headerlink" title="镜像的传统构建"></a>镜像的传统构建</h2><p>我们随便找个Golang代码项目作为案例，来开始构建一个镜像。下面我们以我的一个实战项目开始讲解：<code>https://gitee.com/damon_one/uranus</code>。</p>
+<p>第一步：我们把项目代码克隆到本地：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://gitee.com/damon_one/uranus</span><br></pre></td></tr></tbody></table></figure>
+
+<p>第二步，书写其编译的Dockerfile：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM golang:1.20</span><br><span class="line">WORKDIR /opt/app</span><br><span class="line">COPY . .</span><br><span class="line">go build -o hz-zeus ./zeus</span><br><span class="line">CMD ["/opt/app/hz-zeus"]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这个 Dockerfile 描述的构建过程非常简单，我们首选 Golang:1.20 版本的镜像作为编译环境，将源码拷贝到镜像中，然后运行 go build 编译源码生成二进制可执行文件，最后配置启动命令。</p>
+<p>第三步，构建镜像：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t hz-zeus -f Dockerfile .</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这样编译构建的镜像会很大，这里就不展示最后的镜像信息了。</p>
+<h2 id="Dockerfile-优化"><a href="#Dockerfile-优化" class="headerlink" title="Dockerfile 优化"></a>Dockerfile 优化</h2><p>从上面的 Dockerfile 可以看出，我们在容器内运行了 go build -o hz-zeus ./zeus，这条命令将会编译生成二进制的可执行文件，由于编译的过程中需要 Golang 编译工具的支持，所以我们必须要使用 Golang 镜像作为基础镜像，这是导致镜像体积过大的直接原因。</p>
+<p>既然依赖基础镜像比较大，那么我们是否可以替换为轻量级的镜像呢？发现可以将 Golang:1.20 基础镜像替换为 golang:1.20-alpine 版本。</p>
+<p>但，这样的构建之后，发现镜像还是很大。毕竟是在镜像内镜像编译二进制文件后构建镜像。那是否可以在外部进行构建后再同步到镜像内部呢？</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o hz-zeus ./zeus</span><br><span class="line">$ ls -lh</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
+
+<p>最简单的办法就是在本地先编译出可执行文件，再将它复制到一个更小体积的 ubuntu 镜像内。具体做法是，首先在本地使用交叉编译生成 Linux 平台的二进制可执行文件。接下来，使用 Dockerfile 文件构建镜像。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">FROM ubuntu:latest</span><br><span class="line">WORKDIR /opt/app</span><br><span class="line">COPY hz-zeus ./</span><br><span class="line"></span><br><span class="line">CMD ["/opt/app/hz-zeus"]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>因为不再需要在容器里进行编译，所以我们直接引入了不包含 Golang 编译工具的 ubuntu 镜像作为基础运行环境，接下来使用 docker build 命令构建镜像。</p>
+<p>这种构建方式生成的镜像在体积上比最初的缩小了几乎 90% 。镜像的最终大小就相当于 ubuntu:latest 的大小加上 Golang 二进制可执行文件的大小。不过，这种方式将应用的编译过程拆分到了宿主机上，这会让 Dockerfile 失去描述应用编译和打包的作用，不是一个好的实践。</p>
+<h2 id="多阶段构建"><a href="#多阶段构建" class="headerlink" title="多阶段构建"></a>多阶段构建</h2><p>多阶段构建的本质其实就是将镜像构建过程拆分成编译过程和运行过程。第一个阶段对应编译的过程，负责生成可执行文件；第二个阶段对应运行过程，也就是拷贝第一阶段的二进制可执行文件，并为程序提供运行环境，最终镜像也就是第二阶段生成的镜像。</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">FROM golang:1.20 as builder</span><br><span class="line">WORKDIR /opt/app</span><br><span class="line">COPY . .</span><br><span class="line">RUN go build -o hz-zeus ./zeus</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">FROM ubuntu:latest</span><br><span class="line">WORKDIR /opt/app</span><br><span class="line">COPY --from=builder /opt/app/hz-zeus ./hz-zeus</span><br><span class="line"></span><br><span class="line">CMD ["/opt/app/hz-zeus"]</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这段内容里有两个 FROM 语句，所以这是一个包含两个阶段的构建过程。</p>
+<p>第二阶段，它的作用是将第一阶段生成的二进制可执行文件复制到当前阶段，把 ubuntu:latest 作为运行环境，并设置 CMD 启动命令。</p>
+<p>最后，我们执行docker build后会发现镜像大小与上面的先编译后copy到镜像种的操作生成的镜像一样大小。</p>
+<p>到这里，对镜像大小的优化已经基本上完成了，镜像大小也在可接受的范围内。在实际的项目中，我也推荐你使用 ubuntu:latest 作为第二阶段的程序运行镜像。</p>
+<h2 id="如何复用构建缓存"><a href="#如何复用构建缓存" class="headerlink" title="如何复用构建缓存"></a>如何复用构建缓存</h2><p>在第一阶段的构建过程中，我们先是用 COPY . .  的方式拷贝了源码，又进行了编译，这会产生一个缺点，那就是如果只是源码变了，但依赖并没有变，Docker 将无法复用依赖的镜像层缓存。在实际构建过程中，你会发现 Docker 每次都会重新下载 Golang 依赖。</p>
+<p>这就引出了另外一个构建镜像的小技巧：尽量使用 Docker 构建缓存。</p>
+<p>要使用 Golang 依赖的缓存，最简单的办法是：先复制依赖文件，再下载依赖，最后再复制源码进行编译。基于这种思路，我们可以将第一阶段的构建修改如下：</p>
+<figure class="highlight plaintext"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">FROM golang:1.20 as builder</span><br><span class="line">WORKDIR /opt/app</span><br><span class="line">COPY go.* ./</span><br><span class="line">RUN go mod download</span><br><span class="line">COPY . .</span><br><span class="line">RUN go build -o hz-zeus ./zeus</span><br></pre></td></tr></tbody></table></figure>
+
+<p>这样，在每次代码变更而依赖不变的情况下，Docker 都会复用之前产生的构建缓存，这可以加速镜像构建过程。</p>
+<h4 data-tool="mdnice编辑器" style="margin-top: 30px; margin-bottom: 15px; padding: 0px; font-weight: bold; color: black; font-size: 18px;"><span class="prefix" style="display: none;"></span><span class="content">关于作者</span><span class="suffix" style="display: none;"></span></h4>
+<p data-tool="mdnice编辑器" style="font-size: 16px; padding-top: 8px; padding-bottom: 8px; margin: 0; line-height: 26px; color: black;">  <em style="font-style: italic; color: black;">笔名：Damon，技术爱好者，微服务架构设计，云原生、容器化技术，现从事Go相关，涉及云原生、边缘计算、AI人工智能、云产品Devops落地实践等云原生技术。拿过专利。公众号 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">交个朋友之猿天地</code> 发起人。个人微信 <code style="font-size: 14px; word-wrap: break-word; padding: 2px 4px; border-radius: 4px; margin: 0 2px; background-color: rgba(27,31,35,.05); font-family: Operator Mono, Consolas, Monaco, Menlo, monospace; word-break: break-all; color: rgb(239, 112, 96);">DamonStatham</code>，星球：《交个朋友之猿田地》，个人网站：<a class="nav-item-link" target="_blank" href="http://damon008.github.io" style="text-decoration: none" title="">交个朋友之猿天地 | 微服务 | 容器化 | 自动化</a>，欢迎來撩。</em></p>
+
+
+<h4 id="欢迎关注"><a href="#欢迎关注" class="headerlink" title="欢迎关注"></a>欢迎关注</h4><p><img src="https://files.mdnice.com/user/7503/45b21d55-aef4-4987-8d6d-828c8d95a48f.jpg" alt="公号：交个朋友之猿天地"></p>
+<h4 id="AI绘画扫我"><a href="#AI绘画扫我" class="headerlink" title="AI绘画扫我"></a>AI绘画扫我</h4><p><img src="https://files.mdnice.com/user/7503/ce058881-1af4-46f3-8b61-44d8cfc99e28.jpg"></p>
+<h4 id="星球"><a href="#星球" class="headerlink" title="星球"></a>星球</h4><p><img src="https://files.mdnice.com/user/7503/2ef583a6-d423-4754-801c-efdefc0a91dc.jpg"></p>
+<p><img src="https://files.mdnice.com/user/7503/e9e45ef8-4c82-4f5d-ae73-cf3837c262ce.jpg"></p>
+ 
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
       </div>
+      
+    </div>
+    
 
-      <div style="width: auto; height: auto">
-        
-        <img
-          src="/images/qrcode/qr.png"
-          style="height: 150px; width: 150px"
-          class="cover-logo"
-          alt="交个朋友之猿天地"
-        />
-
-        <img
-                src="/images/hb/hb.png"
-                style="height: 150px; width: 300px"
-                class="cover-logo"
-                alt="交个朋友之猿天地"
-        />
-          <img
-                  src="/images/sale/50.png"
-                  style="height: 150px; width: 150px"
-                  class="cover-logo"
-                  alt="交个朋友之猿天地"
-          />
-
-          <img
-                  src="/images/web.png"
-                  style="height: 150px; width: 150px"
-                  class="cover-logo"
-                  alt="交个朋友之猿天地"
-          />
-
-        
-
-
-          <img
-                  src="/images/wechat.jpg"
-                  style="height: 230px; width: 140px"
-                  class="cover-logo"
-                  alt="交个朋友之猿天地"
-          />
-          <p>AI绘画功能，扫我立码解决</p>
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
       </div>
-    </div>
-
-    <!--<div style="width: auto; height: auto">&lt;!&ndash;style="height: 277px; width: 147px"  776 × 1456 px&ndash;&gt;
-
-    </div>-->
-
-  </div>
-  <div class="cover-learn-more">
-    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
-  </div>
-</section>
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
-
-
-<!-- Subtitle -->
-
-  <script>
-    try {
-      var typed = new Typed("#subtitle", {
-        strings: ['平时多流汗 战时少流血' , '面朝大海 春暖花开', '愿你一生努力 一生被爱', '想要的都能拥有 得不到的都将释怀'],
-        startDelay: 0,
-        typeSpeed: 200,
-        loop: true,
-        backSpeed: 100,
-        showCursor: true
-      });
-    } catch (err) {
-      console.log(err)
-    }
-  </script>
-
-
-
-
-<!--<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-&lt;!&ndash; Unit one &ndash;&gt;
-<ins class="adsbygoogle"
-     style="display:inline-block;text-align:center;width:880px;height:90px"
-     data-ad-client="ca-pub-1354758384344627"
-     data-ad-slot="8964778819"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>-->
-
-
-  
-
-<div id="main">
-  <section class="outer">
-  <article class="articles">
-    
-    
-    
-    
-    <article
-  id="post-jupyter"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/07/12/jupyter/"
-    >Jupyter Notebook 的使用</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/07/12/jupyter/" class="article-date">
-  <time datetime="2021-07-12T09:45:47.000Z" itemprop="datePublished">2021-07-12</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Jupyter/" rel="tag">Jupyter</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-ServiceMesh-01"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/03/30/ServiceMesh-01/"
-    >Service Mesh 是下一代微服务架构</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/03/30/ServiceMesh-01/" class="article-date">
-  <time datetime="2021-03-30T07:09:35.000Z" itemprop="datePublished">2021-03-30</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-Service-Mesh"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/03/30/Service-Mesh/"
-    >什么是服务网格（Service Mesh）</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/03/30/Service-Mesh/" class="article-date">
-  <time datetime="2021-03-30T06:41:28.000Z" itemprop="datePublished">2021-03-30</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-popularize-02"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/03/19/popularize-02/"
-    >云产品年中大优惠</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/03/19/popularize-02/" class="article-date">
-  <time datetime="2021-03-19T10:05:26.000Z" itemprop="datePublished">2021-03-19</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%B4%BB%E5%8A%A8/">活动</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag">服务器</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-k8s-backup"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/02/22/k8s-backup/"
-    >备份Kubernetes的5个最佳实践</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/02/22/k8s-backup/" class="article-date">
-  <time datetime="2021-02-22T09:14:29.000Z" itemprop="datePublished">2021-02-22</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/K8s/" rel="tag">K8s</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-spring-cloud-k8s"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2021/02/04/spring-cloud-k8s/"
-    >Spring Cloud 与 K8s 在微服务层面的不同</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2021/02/04/spring-cloud-k8s/" class="article-date">
-  <time datetime="2021-02-04T02:18:16.000Z" itemprop="datePublished">2021-02-04</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/K8s/" rel="tag">K8s</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-volcano-reserve"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/12/28/volcano-reserve/"
-    >Volcano 作业资源预留设计原理解读</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2020/12/28/volcano-reserve/" class="article-date">
-  <time datetime="2020-12-28T06:37:04.000Z" itemprop="datePublished">2020-12-28</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/volcano/" rel="tag">volcano</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-study-go"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/12/23/study-go/"
-    >Go 并发基础</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2020/12/23/study-go/" class="article-date">
-  <time datetime="2020-12-23T07:17:50.000Z" itemprop="datePublished">2020-12-23</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Go/" rel="tag">Go</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-microservice-k8s"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/12/22/microservice-k8s/"
-    >云原生时代跨语言间微服务的打法</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2020/12/22/microservice-k8s/" class="article-date">
-  <time datetime="2020-12-22T10:28:34.000Z" itemprop="datePublished">2020-12-22</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%90%8E%E7%AB%AF/">后端</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-    <article
-  id="post-geekbang-time"
-  class="article article-type-post"
-  itemscope
-  itemprop="blogPost"
-  data-scroll-reveal
->
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2020/12/16/geekbang-time/"
-    >极客时间专栏分享</a> 
-</h2>
- 
-
-    </header>
-     
-    <div class="article-meta">
-      <a href="/2020/12/16/geekbang-time/" class="article-date">
-  <time datetime="2020-12-16T07:12:38.000Z" itemprop="datePublished">2020-12-16</time>
-</a> 
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF%E5%AD%A6%E4%B9%A0/">技术学习</a>
-  </div>
-   
-    </div>
-       
-
-    <!-- copyright -->
-    
-    <footer class="article-footer">
-       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%81%E5%AE%A2/" rel="tag">极客</a></li></ul>
-
-    </footer>
-  </div>
-
-    
- 
-   
-</article>
-
-    
-  </article>
-  
-
-  
-  <nav class="page-nav">
-    
-    <a class="extend prev" rel="prev" href="/page/4/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/6/">下一页</a>
-  </nav>
-  
-</section>
 </div>
 
-<br>
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://damon008.github.io/2023/07/31/image-build/" alt="微信分享二维码">
+    </div>
+</div>
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Unit one -->
-<ins class="adsbygoogle"
-     style="display:inline-block;text-align:center;width:880px;height:100px"
-     data-ad-client="ca-pub-1354758384344627"
-     data-ad-slot="8964778819"></ins>
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag">后端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%BF%90%E7%BB%B4/" rel="tag">运维</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2023/07/31/java-startup-analyzer/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Springboot 微服务应用启动慢的克星</div>
+      </a>
+    
+  </nav>
+
+   
+<!-- valine评论 -->
+<div id="vcomments-box">
+  <div id="vcomments"></div>
+</div>
+<!--<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>-->
+<!--<script src="https://cdn.jsdelivr.net/npm/valine@1.4.14/dist/Valine.min.js"></script>-->
 <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
+  new Valine({
+    el: "#vcomments",
+    app_id: "",
+    app_key: "",
+    path: window.location.pathname,
+    avatar: "monsterid",
+    placeholder: "给我的文章加点评论吧~",
+    recordIP: true,
+  });
+  const infoEle = document.querySelector("#vcomments .info");
+  if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+    infoEle.childNodes.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  }
 </script>
+<style>
+  #vcomments-box {
+    padding: 5px 30px;
+  }
 
+  @media screen and (max-width: 800px) {
+    #vcomments-box {
+      padding: 5px 0px;
+    }
+  }
+
+  #vcomments-box #vcomments {
+    background-color: #fff;
+  }
+
+  .v .vlist .vcard .vh {
+    padding-right: 20px;
+  }
+
+  .v .vlist .vcard {
+    padding-left: 10px;
+  }
+</style>
+
+ 
+     
+</article>
+
+</section>
       <footer class="footer">
   <div class="outer">
     <ul>
@@ -830,6 +472,23 @@
 <script src="/js/lazyload.min.js"></script>
 
 <!-- Tocbot -->
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: 'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto'
+  });
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
